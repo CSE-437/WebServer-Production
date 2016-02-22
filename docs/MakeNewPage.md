@@ -10,16 +10,16 @@ In this folder create 3 files.
 Here is what each file looks like initially
 
 package.json
-`{
+```{
   "name": "TodoPage",
   "version": "0.0.0",
   "private": true,
   "main": "./TodoPage.js"
 }
-`
+```
 
 TodoPage.scss
-`/**
+```/**
  * React Starter Kit (https://www.reactstarterkit.com/)
  *
  * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.
@@ -39,11 +39,11 @@ TodoPage.scss
   padding: 0 0 40px;
   max-width: $max-content-width;
 }
-`
+```
 
 TodoPage.js
 
-  `/**
+  ```/**
    * React Starter Kit (https://www.reactstarterkit.com/)
    *
    * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.
@@ -131,7 +131,7 @@ TodoPage.js
 
   export default TodoPage;
 
-  `
+  ```
 #Create enpoints for Todo.
 We now need to two things.
 1. Make sure our app is aware of the Todo page, and links to the Todo Page content.
@@ -140,7 +140,7 @@ We now need to two things.
 ##Register the Todo page.
 
 In the contnet folder, create a file called todo.jade, and post the following content.
-  `---
+  ```---
   title: Stuff ToDo
   component: TodoJade
   ---
@@ -148,7 +148,7 @@ In the contnet folder, create a file called todo.jade, and post the following co
     div
       h3 Welcome to TODO
 
-  `
+  ```
 The .jade is a templating engine. You can read more of it [here](http://jade-lang.com/tutorial/)
 
 The lines between the --- are front-matter. They define custom
@@ -157,12 +157,12 @@ endpoint /api/content reads.
 
 ##Register the Todo api.
 In server.js. post this line after the '/api/content'
-  `server.use('/api/todo', require('./api/todo'));`
+  ```server.use('/api/todo', require('./api/todo'));```
 
 ##Code the Todo api
 Make ./api/todo
 
-  `//Register todos with aws dynammodb.
+  ```//Register todos with aws dynammodb.
   import Promise from 'bluebird';
   import {Router} from 'express';
 
@@ -202,4 +202,4 @@ Make ./api/todo
   });
 
   export default router;
-  `
+  ```
