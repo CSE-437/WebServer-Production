@@ -63,8 +63,6 @@ module.exports =
   
   __webpack_require__(1);
   
-  //This transcribes the es6 to es5
-  
   var _path = __webpack_require__(2);
   
   var _path2 = _interopRequireDefault(_path);
@@ -85,17 +83,17 @@ module.exports =
   
   var _routes2 = _interopRequireDefault(_routes);
   
-  var _componentsHtml = __webpack_require__(68);
+  var _componentsHtml = __webpack_require__(69);
   
   var _componentsHtml2 = _interopRequireDefault(_componentsHtml);
   
-  var _assets = __webpack_require__(69);
+  var _assets = __webpack_require__(70);
   
   var _assets2 = _interopRequireDefault(_assets);
   
   var _config = __webpack_require__(14);
   
-  var server = global.server = (0, _express2['default'])(); //Allows any code run by node to access server
+  var server = global.server = (0, _express2['default'])();
   
   //
   // Register Node.js middleware
@@ -105,8 +103,9 @@ module.exports =
   //
   // Register API middleware
   // -----------------------------------------------------------------------------
-  server.use('/api/todo', __webpack_require__(70));
-  server.use('/api/content', __webpack_require__(72));
+  
+  server.use('/api/todo', __webpack_require__(71));
+  server.use('/api/content', __webpack_require__(73));
   
   //
   // Register server-side rendering middleware
@@ -265,19 +264,19 @@ module.exports =
   
   var _componentsTodoPage2 = _interopRequireDefault(_componentsTodoPage);
   
-  var _componentsLoginPage = __webpack_require__(56);
+  var _componentsLoginPage = __webpack_require__(57);
   
   var _componentsLoginPage2 = _interopRequireDefault(_componentsLoginPage);
   
-  var _componentsRegisterPage = __webpack_require__(59);
+  var _componentsRegisterPage = __webpack_require__(60);
   
   var _componentsRegisterPage2 = _interopRequireDefault(_componentsRegisterPage);
   
-  var _componentsNotFoundPage = __webpack_require__(62);
+  var _componentsNotFoundPage = __webpack_require__(63);
   
   var _componentsNotFoundPage2 = _interopRequireDefault(_componentsNotFoundPage);
   
-  var _componentsErrorPage = __webpack_require__(65);
+  var _componentsErrorPage = __webpack_require__(66);
   
   var _componentsErrorPage2 = _interopRequireDefault(_componentsErrorPage);
   
@@ -2127,7 +2126,6 @@ module.exports =
    * This source code is licensed under the MIT license found in the
    * LICENSE.txt file in the root directory of this source tree.
    */
-  
   //facebook js library
   'use strict';
   
@@ -2153,7 +2151,6 @@ module.exports =
   
   var _historyLibUseQueries2 = _interopRequireDefault(_historyLibUseQueries);
   
-  //
   var location = (0, _historyLibUseQueries2['default'])(_fbjsLibExecutionEnvironment.canUseDOM ? _historyLibCreateBrowserHistory2['default'] : _historyLibCreateMemoryHistory2['default'])();
   
   exports['default'] = location;
@@ -3281,7 +3278,7 @@ module.exports =
   
   var _coreDispatcher2 = _interopRequireDefault(_coreDispatcher);
   
-  var _jquery = __webpack_require__(76);
+  var _jquery = __webpack_require__(56);
   
   var _jquery2 = _interopRequireDefault(_jquery);
   
@@ -3322,6 +3319,12 @@ module.exports =
 
 /***/ },
 /* 56 */
+/***/ function(module, exports) {
+
+  module.exports = require("jquery");
+
+/***/ },
+/* 57 */
 /***/ function(module, exports, __webpack_require__) {
 
   /**
@@ -3353,7 +3356,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _LoginPageScss = __webpack_require__(57);
+  var _LoginPageScss = __webpack_require__(58);
   
   var _LoginPageScss2 = _interopRequireDefault(_LoginPageScss);
   
@@ -3416,11 +3419,11 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 57 */
+/* 58 */
 /***/ function(module, exports, __webpack_require__) {
 
   
-      var content = __webpack_require__(58);
+      var content = __webpack_require__(59);
       var insertCss = __webpack_require__(20);
   
       if (typeof content === 'string') {
@@ -3448,7 +3451,7 @@ module.exports =
     
 
 /***/ },
-/* 58 */
+/* 59 */
 /***/ function(module, exports, __webpack_require__) {
 
   exports = module.exports = __webpack_require__(19)();
@@ -3465,7 +3468,7 @@ module.exports =
   };
 
 /***/ },
-/* 59 */
+/* 60 */
 /***/ function(module, exports, __webpack_require__) {
 
   /**
@@ -3497,7 +3500,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _RegisterPageScss = __webpack_require__(60);
+  var _RegisterPageScss = __webpack_require__(61);
   
   var _RegisterPageScss2 = _interopRequireDefault(_RegisterPageScss);
   
@@ -3560,11 +3563,11 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 60 */
+/* 61 */
 /***/ function(module, exports, __webpack_require__) {
 
   
-      var content = __webpack_require__(61);
+      var content = __webpack_require__(62);
       var insertCss = __webpack_require__(20);
   
       if (typeof content === 'string') {
@@ -3592,7 +3595,7 @@ module.exports =
     
 
 /***/ },
-/* 61 */
+/* 62 */
 /***/ function(module, exports, __webpack_require__) {
 
   exports = module.exports = __webpack_require__(19)();
@@ -3609,7 +3612,7 @@ module.exports =
   };
 
 /***/ },
-/* 62 */
+/* 63 */
 /***/ function(module, exports, __webpack_require__) {
 
   /**
@@ -3641,7 +3644,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _NotFoundPageScss = __webpack_require__(63);
+  var _NotFoundPageScss = __webpack_require__(64);
   
   var _NotFoundPageScss2 = _interopRequireDefault(_NotFoundPageScss);
   
@@ -3702,11 +3705,11 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 63 */
+/* 64 */
 /***/ function(module, exports, __webpack_require__) {
 
   
-      var content = __webpack_require__(64);
+      var content = __webpack_require__(65);
       var insertCss = __webpack_require__(20);
   
       if (typeof content === 'string') {
@@ -3734,7 +3737,7 @@ module.exports =
     
 
 /***/ },
-/* 64 */
+/* 65 */
 /***/ function(module, exports, __webpack_require__) {
 
   exports = module.exports = __webpack_require__(19)();
@@ -3748,7 +3751,7 @@ module.exports =
 
 
 /***/ },
-/* 65 */
+/* 66 */
 /***/ function(module, exports, __webpack_require__) {
 
   /**
@@ -3780,7 +3783,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _ErrorPageScss = __webpack_require__(66);
+  var _ErrorPageScss = __webpack_require__(67);
   
   var _ErrorPageScss2 = _interopRequireDefault(_ErrorPageScss);
   
@@ -3840,11 +3843,11 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 66 */
+/* 67 */
 /***/ function(module, exports, __webpack_require__) {
 
   
-      var content = __webpack_require__(67);
+      var content = __webpack_require__(68);
       var insertCss = __webpack_require__(20);
   
       if (typeof content === 'string') {
@@ -3872,7 +3875,7 @@ module.exports =
     
 
 /***/ },
-/* 67 */
+/* 68 */
 /***/ function(module, exports, __webpack_require__) {
 
   exports = module.exports = __webpack_require__(19)();
@@ -3886,7 +3889,7 @@ module.exports =
 
 
 /***/ },
-/* 68 */
+/* 69 */
 /***/ function(module, exports, __webpack_require__) {
 
   /**
@@ -3991,13 +3994,13 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 69 */
+/* 70 */
 /***/ function(module, exports) {
 
   module.exports = require("./assets");
 
 /***/ },
-/* 70 */
+/* 71 */
 /***/ function(module, exports, __webpack_require__) {
 
   //Register todos with aws dynammodb.
@@ -4013,7 +4016,7 @@ module.exports =
   
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
   
-  var _bluebird = __webpack_require__(71);
+  var _bluebird = __webpack_require__(72);
   
   var _bluebird2 = _interopRequireDefault(_bluebird);
   
@@ -4069,13 +4072,13 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 71 */
+/* 72 */
 /***/ function(module, exports) {
 
   module.exports = require("bluebird");
 
 /***/ },
-/* 72 */
+/* 73 */
 /***/ function(module, exports, __webpack_require__) {
 
   /**
@@ -4097,7 +4100,7 @@ module.exports =
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
-  var _fs = __webpack_require__(73);
+  var _fs = __webpack_require__(74);
   
   var _fs2 = _interopRequireDefault(_fs);
   
@@ -4105,15 +4108,15 @@ module.exports =
   
   var _express = __webpack_require__(3);
   
-  var _bluebird = __webpack_require__(71);
+  var _bluebird = __webpack_require__(72);
   
   var _bluebird2 = _interopRequireDefault(_bluebird);
   
-  var _jade = __webpack_require__(74);
+  var _jade = __webpack_require__(75);
   
   var _jade2 = _interopRequireDefault(_jade);
   
-  var _frontMatter = __webpack_require__(75);
+  var _frontMatter = __webpack_require__(76);
   
   var _frontMatter2 = _interopRequireDefault(_frontMatter);
   
@@ -4210,28 +4213,22 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 73 */
+/* 74 */
 /***/ function(module, exports) {
 
   module.exports = require("fs");
 
 /***/ },
-/* 74 */
+/* 75 */
 /***/ function(module, exports) {
 
   module.exports = require("jade");
 
 /***/ },
-/* 75 */
-/***/ function(module, exports) {
-
-  module.exports = require("front-matter");
-
-/***/ },
 /* 76 */
 /***/ function(module, exports) {
 
-  module.exports = require("jquery");
+  module.exports = require("front-matter");
 
 /***/ }
 /******/ ]);

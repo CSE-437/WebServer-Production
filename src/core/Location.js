@@ -6,7 +6,6 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE.txt file in the root directory of this source tree.
  */
-
 //facebook js library
 import { canUseDOM } from 'fbjs/lib/ExecutionEnvironment';
 //Perserves browser history
@@ -14,7 +13,6 @@ import createHistory from 'history/lib/createBrowserHistory';
 import createMemoryHistory from 'history/lib/createMemoryHistory';
 import useQueries from 'history/lib/useQueries';
 
-//
 const location = useQueries(canUseDOM ? createHistory : createMemoryHistory)();
 
 export default location;

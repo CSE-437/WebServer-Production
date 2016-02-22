@@ -7,7 +7,8 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-import 'babel-core/polyfill'; //This transcribes the es6 to es5
+
+import 'babel-core/polyfill';
 import path from 'path';
 import express from 'express';
 import React from 'react';
@@ -17,7 +18,8 @@ import Html from './components/Html';
 import assets from './assets';
 import { port } from './config';
 
-const server = global.server = express(); //Allows any code run by node to access server
+
+const server = global.server = express();
 
 //
 // Register Node.js middleware
@@ -27,6 +29,7 @@ server.use(express.static(path.join(__dirname, 'public')));
 //
 // Register API middleware
 // -----------------------------------------------------------------------------
+
 server.use('/api/todo', require('./api/todo'));
 server.use('/api/content', require('./api/content'));
 

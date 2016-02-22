@@ -13,12 +13,12 @@ import fetch from './core/fetch';
 import App from './components/App';
 import ContentPage from './components/ContentPage';
 import ContactPage from './components/ContactPage';
+
 import TodoPage from './components/TodoPage';
 import LoginPage from './components/LoginPage';
 import RegisterPage from './components/RegisterPage';
 import NotFoundPage from './components/NotFoundPage';
 import ErrorPage from './components/ErrorPage';
-
 /*
 Use a router from react-routing project.
 https://github.com/kriasoft/react-routing
