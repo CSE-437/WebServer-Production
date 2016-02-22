@@ -157,7 +157,7 @@ endpoint /api/content reads.
 
 ##Register the Todo api.
 In server.js. post this line after the '/api/content'
-  ```server.use('/api/todo', require('./api/todo'));```
+  `server.use('/api/todo', require('./api/todo'));``
 
 ##Code the Todo api
 Make ./api/todo

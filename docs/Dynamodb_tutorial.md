@@ -12,7 +12,7 @@ A built-in JavaScript shell should open on http://localhost:8000/shell
 Type the following code into the browsers Javascript shell
 
 Note that you can have a partition key or you can have a partition and sort key. It doesn't really matter as long as you remember what is what.
-`var params = {
+```var params = {
     TableName : "Music",
     KeySchema: [       
         { AttributeName: "Artist", KeyType: "HASH" },  //Partition key
@@ -34,11 +34,11 @@ dynamodb.createTable(params, function(err, data) { //creates the table
     else
         console.log(JSON.stringify(data, null, 2));
 });
-`
+```
 
 You will get this response
 
-`{
+```{
           "TableDescription": {
                     "AttributeDefinitions": [
                               {
@@ -74,13 +74,13 @@ You will get this response
                     "ItemCount": 0,
                     "TableArn": "arn:aws:dynamodb:ddblocal:000000000000:table/Music"
           }
-}`
+}```
 
 #2. Getting Info about a table
 It's similar to any sql.
 
 Here is the code to get the table Description
-`var params = {
+```var params = {
     TableName: "Music"
 };
 
@@ -89,22 +89,24 @@ dynamodb.describeTable(params, function(err, data) {
         console.log(JSON.stringify(err, null, 2));
     else
         console.log(JSON.stringify(data, null, 2));
-});`
+});
+```
 
 Similarly for listing tables
-`var params = {};
+```var params = {};
 
 dynamodb.listTables(params, function(err, data) {
     if (err)
         console.log(JSON.stringify(err, null, 2));
     else
         console.log(JSON.stringify(data, null, 2));
-});`
+});
+```
 
 #3. Writing to the table
 
 ##Single Item
-`var params = {
+```var params = {
     TableName: "Music",
     Item: {
         "Artist":"No One You Know",//Partition key must include
@@ -132,14 +134,14 @@ docClient.put(params, function(err, data) {
     else
         console.log(JSON.stringify(data, null, 2));
 });
-`
+```
 
 [http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DataModel.html#DataModel.DataTypes](Shows more datatypes)
 
 ##Conditional Write
 
 Modify params so it adds a conditional expression
-`var params = {
+```var params = {
     TableName: "Music",
     Item: {
         "Artist":"No One You Know",
@@ -158,11 +160,13 @@ Modify params so it adds a conditional expression
         }
     },//Following line makes put check to see if there is a collisison
     "ConditionExpression": "attribute_not_exists(Artist) and attribute_not_exists(SongTitle)"
-};`
+};
+```
 
 ##Writing multiple items using **BatchWriteItem**
 
-`var params = {
+```
+var params = {
     RequestItems: { //Say that we are making a request
         "Music": [//The table for this particular request. You can have manny
             {  
@@ -231,13 +235,15 @@ docClient.batchWrite(params, function (err, data) {
         console.log(JSON.stringify(err, null, 2));
     else
         console.log(JSON.stringify(data, null, 2));
-});`
+});
+```
 
 #4. Reading an Item
 
 Reading a single item uses the same params, but a different docClient method
 
-`var params = {
+```
+var params = {
     TableName: "Music",
     Key: {
         "Artist": "No One You Know",
@@ -253,10 +259,10 @@ docClient.get(params, function(err, data) {
     else
         console.log(JSON.stringify(data, null, 2));
 });
-`
+```
 
 Reading a single field requires the **ProjectionExpression** attribute
-`var params = {
+```var params = {
     TableName: "Music",
     Key: {
         "Artist": "No One You Know",
@@ -264,10 +270,10 @@ Reading a single field requires the **ProjectionExpression** attribute
     },
     ProjectionExpression: "AlbumTitle"
 };
-`
+```
 
 But what about the case where you have multiple params? It be nice if you could use some variables. **ExpressionAttributesNames** solves this.
-`var params = {
+```var params = {
     TableName: "Music",
     Key: {
         "Artist": "No One You Know",
@@ -276,10 +282,12 @@ But what about the case where you have multiple params? It be nice if you could 
     ProjectionExpression: "AlbumTitle, #y",
     ExpressionAttributeNames: {"#y": "Year"} //#y is used at runtime.
 
-};`
+};
+```
 
 But what about all of those nested attributes we wrote before?
-`var params = {
+```
+var params = {
     TableName: "Music",
     Key: {
         "Artist": "No One You Know",
@@ -287,11 +295,13 @@ But what about all of those nested attributes we wrote before?
     },
     ProjectionExpression: "AlbumTitle, #y, Tags.Composers[0], Tags.LengthInSeconds",
     ExpressionAttributeNames: {"#y": "Year"}
-};`
+};
+```
 
 
 And of course, reading multiple attributes from multiple objects
-`var params = {
+```
+var params = {
     RequestItems: {
         "Music": {
             Keys: [
@@ -322,14 +332,16 @@ docClient.batchGet(params, function (err, data) {
         console.log(JSON.stringify(err, null, 2));
     else
         console.log(JSON.stringify(data, null, 2));
-});`
+});
+```
 
 #5 Querying (Here is where it stops being trivial)
 
 ##5.1 Running a Query
 
 ###Use a partition Key
-`var params = {
+```
+var params = {
     TableName: "Music",
     KeyConditionExpression: "Artist = :artist",
     ExpressionAttributeValues: {
@@ -342,10 +354,12 @@ docClient.query(params, function(err, data) {
         console.log(JSON.stringify(err, null, 2));
     else
         console.log(JSON.stringify(data, null, 2));
-});`
+});
+```
 
 ###Using Key Attributes
-`var params = {
+```
+var params = {
     TableName: "Music",
     ProjectionExpression: "SongTitle",
     KeyConditionExpression: "Artist = :artist and begins_with(SongTitle, :letter)",
@@ -354,12 +368,13 @@ docClient.query(params, function(err, data) {
         ":letter": "S"
     }
 };
-`
+```
 
 ##5.2 Filter Query Results
 
 Modifying the previous param statement
-`var params = {
+```
+var params = {
     TableName: "Music",
     ProjectionExpression: "SongTitle, PromotionInfo.Rotation",
     KeyConditionExpression: "Artist = :artist",
@@ -369,11 +384,13 @@ Modifying the previous param statement
         ":artist": "The Acme Band",
         ":howmany": 3
     },
-};`
+};
+```
 
 
 ##Fuck it, retrieve everything
-`var params = {
+```
+var params = {
     TableName: "Music"
 };
 
@@ -383,7 +400,7 @@ docClient.scan(params, function(err, data) {
     else
         console.log(JSON.stringify(data, null, 2));
 });
-`
+```
 
 #6. Using Secondary indexs.
 Using Artist and SongTitle make it fast to search for songs with those
@@ -392,7 +409,8 @@ attributes, but what about searching for ones by Price?
 Secondary keys allow you to search for items in tables without the
 partition or sort keys
 
-`var params = {
+```
+var params = {
     TableName: "Music", //We AREN'T creating a new table (technically)
     AttributeDefinitions:[
         {AttributeName: "Genre", AttributeType: "S"},
@@ -425,7 +443,7 @@ dynamodb.updateTable(params, function(err, data) {
         console.log(JSON.stringify(data, null, 2));
 });
 
-`
+```
 
 Query and scan like before
 
@@ -445,7 +463,8 @@ By default, Update Item does not return data, you must specify.
 - UPDATED_NEW returns only the updated attributes as they appeared after the update.
 
 Here's the code
-`var params = {
+```
+var params = {
     TableName: "Music",
     Key: {
         "Artist":"No One You Know",
@@ -464,10 +483,11 @@ docClient.update(params, function(err, data) {
     else
         console.log(JSON.stringify(data, null, 2));
 });
-`
+```
 
 But what if you only want to update conditionally.
-`var params = {
+```
+var params = {
     TableName: "Music",
     Key: {
         "Artist":"No One You Know",
@@ -481,13 +501,14 @@ But what if you only want to update conditionally.
     ConditionExpression: "attribute_not_exists(RecordLabel)",
     ReturnValues: "ALL_NEW"
 };
-`
+```
 
 #SPECIFYING ATOMIC COUNTERS
 It's in bold be cause this is how you ensure transactions in dynamo
 
 
-`var params = {
+```
+var params = {
     TableName: "Music",
     Key: {
         "Artist":"No One You Know",
@@ -499,12 +520,14 @@ It's in bold be cause this is how you ensure transactions in dynamo
         ":incr": 1
     },
     ReturnValues: "UPDATED_NEW"
-};`
+};
+```
 
 #7.2 Deleting an Item
 
 **DeleteItem** API
-`var params = {
+```
+var params = {
     TableName: "Music",
     Key: {
         Artist: "The Acme Band",
@@ -517,10 +540,12 @@ docClient.delete(params, function(err, data) {
         console.log(JSON.stringify(err, null, 2));
     else
         console.log(JSON.stringify(data, null, 2));
-});`
+});
+```
 
 Guess how conditional deletions are done?
-`var params = {
+```
+var params = {
     TableName: "Music",
     Key: {
         Artist: "No One You Know",
@@ -530,4 +555,5 @@ Guess how conditional deletions are done?
     ExpressionAttributeValues: {
         ":price": 0.00
     }
-};`
+};
+```
