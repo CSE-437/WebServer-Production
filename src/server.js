@@ -30,6 +30,7 @@ server.use(express.static(path.join(__dirname, 'public')));
 // Register API middleware
 // -----------------------------------------------------------------------------
 
+server.use('/api/user', require('./api/users/UserRouter'));
 server.use('/api/todo', require('./api/todo'));
 server.use('/api/content', require('./api/content'));
 

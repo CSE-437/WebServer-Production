@@ -104,8 +104,9 @@ module.exports =
   // Register API middleware
   // -----------------------------------------------------------------------------
   
-  server.use('/api/todo', __webpack_require__(71));
-  server.use('/api/content', __webpack_require__(73));
+  server.use('/api/user', __webpack_require__(71));
+  server.use('/api/todo', __webpack_require__(75));
+  server.use('/api/content', __webpack_require__(76));
   
   //
   // Register server-side rendering middleware
@@ -4014,6 +4015,228 @@ module.exports =
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
+  var _bluebird = __webpack_require__(72);
+  
+  var _bluebird2 = _interopRequireDefault(_bluebird);
+  
+  var _express = __webpack_require__(3);
+  
+  var _UserModel = __webpack_require__(73);
+  
+  var _UserModel2 = _interopRequireDefault(_UserModel);
+  
+  var router = new _express.Router();
+  
+  //Authentication middleware
+  router.use(function callee$0$0(req, res, next) {
+    return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
+      while (1) switch (context$1$0.prev = context$1$0.next) {
+        case 0:
+  
+          //TODO replace this with user authentication
+          if (true) {
+            next();
+          } else {
+            res.status(403).send({ error: "Not authenticated" });
+          }
+  
+        case 1:
+        case 'end':
+          return context$1$0.stop();
+      }
+    }, null, _this);
+  });
+  
+  router.get('/all', function callee$0$0(req, res, next) {
+    var users;
+    return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
+      while (1) switch (context$1$0.prev = context$1$0.next) {
+        case 0:
+          console.log(_UserModel2['default']);
+          context$1$0.next = 3;
+          return regeneratorRuntime.awrap(_UserModel2['default'].getAllUsers());
+  
+        case 3:
+          users = context$1$0.sent;
+  
+          console.log(users);
+          res.status(200).send(users);
+          return context$1$0.abrupt('return');
+  
+        case 7:
+        case 'end':
+          return context$1$0.stop();
+      }
+    }, null, _this);
+  });
+  
+  router.param('userid', function (req, res, next, id) {
+    req.userid = id;
+    next();
+  });
+  
+  //TODO: Get user by id
+  router.route('/:userid').get(function callee$0$0(req, res, next) {
+    var userid;
+    return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
+      while (1) switch (context$1$0.prev = context$1$0.next) {
+        case 0:
+          try {
+            userid = req.userid;
+  
+            res.status(200).send({ message: "Hi" });
+          } catch (err) {
+            next(err);
+          }
+          return context$1$0.abrupt('return');
+  
+        case 2:
+        case 'end':
+          return context$1$0.stop();
+      }
+    }, null, _this);
+  });
+  //.put()
+  //.delete()
+  
+  //TODO UPDATE PUT'/:userid'
+  //TODO create PUT'/:userid'
+  //TODO delete DELETE '/:userid'
+  
+  exports['default'] = router;
+  module.exports = exports['default'];
+
+/***/ },
+/* 72 */
+/***/ function(module, exports) {
+
+  module.exports = require("bluebird");
+
+/***/ },
+/* 73 */
+/***/ function(module, exports, __webpack_require__) {
+
+  'use strict';
+  
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  
+  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+  
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+  
+  var _bluebird = __webpack_require__(72);
+  
+  var _bluebird2 = _interopRequireDefault(_bluebird);
+  
+  var _objectAssign = __webpack_require__(74);
+  
+  var _objectAssign2 = _interopRequireDefault(_objectAssign);
+  
+  var running_id = 0;
+  var users = [];
+  
+  var User = (function () {
+    //all users have a name, friends: array of ids, and decks: array of ids
+  
+    function User() {
+      var obj = arguments.length <= 0 || arguments[0] === undefined ? { name: "default", friends: [], decks: [] } : arguments[0];
+  
+      _classCallCheck(this, User);
+  
+      this.name = obj.name;
+      this.friends = obj.friends;
+      this.decks = obj.decks;
+      this.id = running_id++;
+    }
+  
+    _createClass(User, [{
+      key: 'update',
+      value: function update(obj) {
+        var name = obj.name || this.name;
+        var friends = obj.friends || this.friends;
+        var decks = obj.decks || this.decks;
+  
+        (0, _objectAssign2['default'])(this, { name: name, friends: friends, decks: decks });
+      }
+    }, {
+      key: 'delete',
+      value: function _delete() {
+        delete users[this.id];
+      }
+    }]);
+  
+    return User;
+  })();
+  
+  var populateUsers = function populateUsers() {
+    var t = [{
+      name: "david",
+      friends: [1],
+      decks: [1, 2, 4]
+    }, {
+      name: "john",
+      friends: [],
+      decks: [3]
+    }];
+    return t.map(function (item) {
+      return new User(item);
+    });
+  };
+  
+  users = populateUsers();
+  
+  var UserModel = (function () {
+    function UserModel() {
+      _classCallCheck(this, UserModel);
+    }
+  
+    _createClass(UserModel, [{
+      key: 'getAllUsers',
+      value: function getAllUsers() {
+        console.log(users);
+        return users;
+      }
+    }, {
+      key: 'newUser',
+      value: function newUser(obj) {
+        user = new User();
+        console.log("New User: ", user);
+        users.append(user);
+        return user;
+      }
+    }]);
+  
+    return UserModel;
+  })();
+  
+  exports['default'] = new UserModel();
+  module.exports = exports['default'];
+
+/***/ },
+/* 74 */
+/***/ function(module, exports) {
+
+  module.exports = require("object-assign");
+
+/***/ },
+/* 75 */
+/***/ function(module, exports, __webpack_require__) {
+
+  //Register todos with aws dynammodb.
+  'use strict';
+  
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  
+  var _this = this;
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+  
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
   
   var _bluebird = __webpack_require__(72);
@@ -4032,7 +4255,10 @@ module.exports =
     this.name = obj.name;
     this.description = obj.description;
     this.id = running_id++;
-  };
+  }
+  
+  //Might as well make it more complicated than it needs to be.
+  ;
   
   var populateTodos = function populateTodos() {
     var t = [{
@@ -4072,13 +4298,7 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 72 */
-/***/ function(module, exports) {
-
-  module.exports = require("bluebird");
-
-/***/ },
-/* 73 */
+/* 76 */
 /***/ function(module, exports, __webpack_require__) {
 
   /**
@@ -4100,7 +4320,7 @@ module.exports =
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
-  var _fs = __webpack_require__(74);
+  var _fs = __webpack_require__(77);
   
   var _fs2 = _interopRequireDefault(_fs);
   
@@ -4112,11 +4332,11 @@ module.exports =
   
   var _bluebird2 = _interopRequireDefault(_bluebird);
   
-  var _jade = __webpack_require__(75);
+  var _jade = __webpack_require__(78);
   
   var _jade2 = _interopRequireDefault(_jade);
   
-  var _frontMatter = __webpack_require__(76);
+  var _frontMatter = __webpack_require__(79);
   
   var _frontMatter2 = _interopRequireDefault(_frontMatter);
   
@@ -4213,19 +4433,19 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 74 */
+/* 77 */
 /***/ function(module, exports) {
 
   module.exports = require("fs");
 
 /***/ },
-/* 75 */
+/* 78 */
 /***/ function(module, exports) {
 
   module.exports = require("jade");
 
 /***/ },
-/* 76 */
+/* 79 */
 /***/ function(module, exports) {
 
   module.exports = require("front-matter");
