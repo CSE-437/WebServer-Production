@@ -63,6 +63,8 @@ module.exports =
   
   __webpack_require__(1);
   
+  //This transcribes the es6 to es5
+  
   var _path = __webpack_require__(2);
   
   var _path2 = _interopRequireDefault(_path);
@@ -83,17 +85,17 @@ module.exports =
   
   var _routes2 = _interopRequireDefault(_routes);
   
-  var _componentsHtml = __webpack_require__(61);
+  var _componentsHtml = __webpack_require__(68);
   
   var _componentsHtml2 = _interopRequireDefault(_componentsHtml);
   
-  var _assets = __webpack_require__(62);
+  var _assets = __webpack_require__(69);
   
   var _assets2 = _interopRequireDefault(_assets);
   
   var _config = __webpack_require__(14);
   
-  var server = global.server = (0, _express2['default'])();
+  var server = global.server = (0, _express2['default'])(); //Allows any code run by node to access server
   
   //
   // Register Node.js middleware
@@ -103,7 +105,8 @@ module.exports =
   //
   // Register API middleware
   // -----------------------------------------------------------------------------
-  server.use('/api/content', __webpack_require__(63));
+  server.use('/api/todo', __webpack_require__(70));
+  server.use('/api/content', __webpack_require__(72));
   
   //
   // Register server-side rendering middleware
@@ -258,23 +261,34 @@ module.exports =
   
   var _componentsContactPage2 = _interopRequireDefault(_componentsContactPage);
   
-  var _componentsLoginPage = __webpack_require__(49);
+  var _componentsTodoPage = __webpack_require__(49);
+  
+  var _componentsTodoPage2 = _interopRequireDefault(_componentsTodoPage);
+  
+  var _componentsLoginPage = __webpack_require__(56);
   
   var _componentsLoginPage2 = _interopRequireDefault(_componentsLoginPage);
   
-  var _componentsRegisterPage = __webpack_require__(52);
+  var _componentsRegisterPage = __webpack_require__(59);
   
   var _componentsRegisterPage2 = _interopRequireDefault(_componentsRegisterPage);
   
-  var _componentsNotFoundPage = __webpack_require__(55);
+  var _componentsNotFoundPage = __webpack_require__(62);
   
   var _componentsNotFoundPage2 = _interopRequireDefault(_componentsNotFoundPage);
   
-  var _componentsErrorPage = __webpack_require__(58);
+  var _componentsErrorPage = __webpack_require__(65);
   
   var _componentsErrorPage2 = _interopRequireDefault(_componentsErrorPage);
   
+  /*
+  Use a router from react-routing project.
+  https://github.com/kriasoft/react-routing
+  */
   var router = new _reactRoutingSrcRouter2['default'](function (on) {
+    /*
+    on('path', function) calls the function when ever the passed path matches.
+    */
     on('*', function callee$1$0(state, next) {
       var component;
       return regeneratorRuntime.async(function callee$1$0$(context$2$0) {
@@ -297,7 +311,7 @@ module.exports =
         }
       }, null, _this);
     });
-  
+    //Show contact page
     on('/contact', function callee$1$0() {
       return regeneratorRuntime.async(function callee$1$0$(context$2$0) {
         while (1) switch (context$2$0.prev = context$2$0.next) {
@@ -310,7 +324,7 @@ module.exports =
         }
       }, null, _this);
     });
-  
+    //show login page. TODO Implement
     on('/login', function callee$1$0() {
       return regeneratorRuntime.async(function callee$1$0$(context$2$0) {
         while (1) switch (context$2$0.prev = context$2$0.next) {
@@ -323,12 +337,25 @@ module.exports =
         }
       }, null, _this);
     });
-  
+    //show register page.
     on('/register', function callee$1$0() {
       return regeneratorRuntime.async(function callee$1$0$(context$2$0) {
         while (1) switch (context$2$0.prev = context$2$0.next) {
           case 0:
             return context$2$0.abrupt('return', _react2['default'].createElement(_componentsRegisterPage2['default'], null));
+  
+          case 1:
+          case 'end':
+            return context$2$0.stop();
+        }
+      }, null, _this);
+    });
+    //show todo page
+    on('/todo', function callee$1$0() {
+      return regeneratorRuntime.async(function callee$1$0$(context$2$0) {
+        while (1) switch (context$2$0.prev = context$2$0.next) {
+          case 0:
+            return context$2$0.abrupt('return', _react2['default'].createElement(_componentsTodoPage2['default'], null));
   
           case 1:
           case 'end':
@@ -360,7 +387,7 @@ module.exports =
         }
       }, null, _this);
     });
-  
+    //Shows error pages. Custome 404 pages.
     on('error', function (state, error) {
       return state.statusCode === 404 ? _react2['default'].createElement(
         _componentsApp2['default'],
@@ -374,8 +401,25 @@ module.exports =
     });
   });
   
+  //Whenever someoene calls require(routes.js) they will get this function
   exports['default'] = router;
   module.exports = exports['default'];
+
+  /*
+  This actual blocks this function until the next one returns.
+  Ex: If path was /contact, it would block here, wait for the
+  function that passes the ContactPage to return, and resume.
+  THIS WAITS FOR MULTIPLE CHILD COMPONENTS
+  */
+
+  //This syntacts checks to make sure the component isn't nil, and
+  //Returns the <App context={state.context}>{component}</App>
+  //Equivilent to return (component)? nil : <App context={state.context}>{component}</App>;
+
+  //Gets the api info for that content
+
+  //Returns the content page. This content page will be inside the app
+  //due to the await next(); statement in the first on
 
 /***/ },
 /* 7 */
@@ -1282,6 +1326,7 @@ module.exports =
   exports.port = port;
   var host = process.env.WEBSITE_HOSTNAME || 'localhost:' + port;
   exports.host = host;
+  //TODO get googleAnalyticsId
   var googleAnalyticsId = 'UA-XXXXX-X';
   exports.googleAnalyticsId = googleAnalyticsId;
 
@@ -1882,6 +1927,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
+  //Allows you to use custom scss for components. React mixin
   function withStyles() {
     for (var _len = arguments.length, styles = Array(_len), _key = 0; _key < _len; _key++) {
       styles[_key] = arguments[_key];
@@ -1914,6 +1960,8 @@ module.exports =
           }
         }], [{
           key: 'contextTypes',
+  
+          //static is class wide.
           value: {
             insertCss: _react.PropTypes.func.isRequired
           },
@@ -1982,6 +2030,11 @@ module.exports =
   function isModifiedEvent(event) {
     return !!(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey);
   }
+  
+  //Wrapper around links to make history. Use this instead of a normal
+  //Also allows you to use the onClick method of whatever object you pass to Link
+  //with <Link onClick={{}}/>
+  //<a></a>
   
   var Link = (function (_Component) {
     _inherits(Link, _Component);
@@ -2075,6 +2128,7 @@ module.exports =
    * LICENSE.txt file in the root directory of this source tree.
    */
   
+  //facebook js library
   'use strict';
   
   Object.defineProperty(exports, '__esModule', {
@@ -2084,6 +2138,8 @@ module.exports =
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
   var _fbjsLibExecutionEnvironment = __webpack_require__(28);
+  
+  //Perserves browser history
   
   var _historyLibCreateBrowserHistory = __webpack_require__(29);
   
@@ -2097,6 +2153,7 @@ module.exports =
   
   var _historyLibUseQueries2 = _interopRequireDefault(_historyLibUseQueries);
   
+  //
   var location = (0, _historyLibUseQueries2['default'])(_fbjsLibExecutionEnvironment.canUseDOM ? _historyLibCreateBrowserHistory2['default'] : _historyLibCreateMemoryHistory2['default'])();
   
   exports['default'] = location;
@@ -2199,6 +2256,11 @@ module.exports =
             'a',
             { className: _NavigationScss2['default'].link, href: '/contact', onClick: _Link2['default'].handleClick },
             'Contact'
+          ),
+          _react2['default'].createElement(
+            'a',
+            { className: _NavigationScss2['default'].link, href: '/todo', onClick: _Link2['default'].handleClick },
+            'Todo'
           ),
           _react2['default'].createElement(
             'span',
@@ -2922,7 +2984,376 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _LoginPageScss = __webpack_require__(50);
+  var _decoratorsWithStyles = __webpack_require__(24);
+  
+  var _decoratorsWithStyles2 = _interopRequireDefault(_decoratorsWithStyles);
+  
+  //Applies custmo style
+  
+  var _TodoPageScss = __webpack_require__(50);
+  
+  var _TodoPageScss2 = _interopRequireDefault(_TodoPageScss);
+  
+  //Import custom styles
+  
+  var _storesTodoStore = __webpack_require__(52);
+  
+  var _storesTodoStore2 = _interopRequireDefault(_storesTodoStore);
+  
+  var _actionsTodoActions = __webpack_require__(55);
+  
+  var _actionsTodoActions2 = _interopRequireDefault(_actionsTodoActions);
+  
+  var _Link = __webpack_require__(25);
+  
+  var _Link2 = _interopRequireDefault(_Link);
+  
+  var title = 'Stuff Todo'; //page title
+  
+  //sets styles.
+  
+  var TodoPage = (function (_Component) {
+    _inherits(TodoPage, _Component);
+  
+    _createClass(TodoPage, null, [{
+      key: 'contextTypes',
+      value: {
+        onSetTitle: _react.PropTypes.func.isRequired
+      },
+  
+      //Constroctor for class.
+      //REMEBER props and state are two different things.
+      //databinding uses props.
+      enumerable: true
+    }]);
+  
+    function TodoPage(props) {
+      _classCallCheck(this, _TodoPage);
+  
+      _get(Object.getPrototypeOf(_TodoPage.prototype), 'constructor', this).call(this, props);
+      this.state = _storesTodoStore2['default'].getState();
+      //need to use bind so that the this variable for onChange
+      //refers to this TodoPage object not the function
+      this.onChange = this.onChange.bind(this);
+    }
+  
+    _createClass(TodoPage, [{
+      key: 'componentWillMount',
+      value: function componentWillMount() {
+        this.context.onSetTitle(title);
+      }
+  
+      //Alwasy call
+    }, {
+      key: 'componentDidMount',
+      value: function componentDidMount() {
+        //makes the TodoStore call the onchange function whenever it cnanges.
+        //This is why we had to use bind
+        _storesTodoStore2['default'].listen(this.onChange);
+        //As soon as it is poling for data get data
+        _actionsTodoActions2['default'].getTodos();
+      }
+    }, {
+      key: 'componentWillUnmount',
+      value: function componentWillUnmount() {
+        //remove event listener
+        _storesTodoStore2['default'].unlisten(this.onChange);
+      }
+  
+      //simply sets the state whenever the todo store changes
+    }, {
+      key: 'onChange',
+      value: function onChange(state) {
+        this.setState(state);
+        console.log(this.getState);
+      }
+    }, {
+      key: 'render',
+      value: function render() {
+        var todos = this.state.todos.map(function (todo) {
+          return _react2['default'].createElement(
+            'li',
+            { key: todo.id },
+            _react2['default'].createElement(
+              'a',
+              { href: '/todo/' + todo.id, onClick: _Link2['default'].handleClick },
+              todo.name
+            ),
+            _react2['default'].createElement(
+              'p',
+              null,
+              todo.description
+            )
+          );
+        });
+        //Render component
+        return _react2['default'].createElement(
+          'div',
+          { className: _TodoPageScss2['default'].root },
+          ' //Sets the root class',
+          _react2['default'].createElement(
+            'div',
+            { className: _TodoPageScss2['default'].container },
+            ' //sets the container style',
+            _react2['default'].createElement(
+              'h1',
+              null,
+              title
+            ),
+            ' //one way databinding //for loop to draw all of the todos',
+            todos,
+            _react2['default'].createElement(
+              'p',
+              null,
+              'Try to complete the aboe todos'
+            )
+          )
+        );
+      }
+    }]);
+  
+    var _TodoPage = TodoPage;
+    TodoPage = (0, _decoratorsWithStyles2['default'])(_TodoPageScss2['default'])(TodoPage) || TodoPage;
+    return TodoPage;
+  })(_react.Component);
+  
+  exports['default'] = TodoPage;
+  module.exports = exports['default'];
+
+/***/ },
+/* 50 */
+/***/ function(module, exports, __webpack_require__) {
+
+  
+      var content = __webpack_require__(51);
+      var insertCss = __webpack_require__(20);
+  
+      if (typeof content === 'string') {
+        content = [[module.id, content, '']];
+      }
+  
+      module.exports = content.locals || {};
+      module.exports._getCss = function() { return content.toString(); };
+      module.exports._insertCss = insertCss.bind(null, content);
+    
+      var removeCss = function() {};
+  
+      // Hot Module Replacement
+      // https://webpack.github.io/docs/hot-module-replacement
+      if (false) {
+        module.hot.accept("!!./../../../node_modules/css-loader/index.js?sourceMap&modules&localIdentName=[name]_[local]_[hash:base64:3]!./../../../node_modules/postcss-loader/index.js!./TodoPage.scss", function() {
+          var newContent = require("!!./../../../node_modules/css-loader/index.js?sourceMap&modules&localIdentName=[name]_[local]_[hash:base64:3]!./../../../node_modules/postcss-loader/index.js!./TodoPage.scss");
+          if (typeof newContent === 'string') {
+            newContent = [[module.id, content, '']];
+          }
+          removeCss = insertCss(newContent, { replace: true });
+        });
+        module.hot.dispose(function() { removeCss(); });
+      }
+    
+
+/***/ },
+/* 51 */
+/***/ function(module, exports, __webpack_require__) {
+
+  exports = module.exports = __webpack_require__(19)();
+  // imports
+  
+  
+  // module
+  exports.push([module.id, "/**\n * React Starter Kit (https://www.reactstarterkit.com/)\n *\n * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE.txt file in the root directory of this source tree.\n */\n\n/*\r\n * Colors\r\n * ========================================================================== */ /* #222 */   /* #404040 */ /* #555 */ /* #777 */ /* #eee */\r\n\r\n/*\r\n * Typography\r\n * ========================================================================== */\r\n\r\n/*\r\n * Layout\r\n * ========================================================================== */\r\n\r\n/*\r\n * Media queries breakpoints\r\n * ========================================================================== */  /* Extra small screen / phone */  /* Small screen / tablet */  /* Medium screen / desktop */ /* Large screen / wide desktop */\r\n\r\n/*\r\n * Animations\r\n * ========================================================================== */\n\n.TodoPage_root_3fz {\n\n}\n\n.TodoPage_container_1bn {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: 1000px;\n}\n", "", {"version":3,"sources":["/./src/components/TodoPage/TodoPage.scss","/./src/components/variables.scss"],"names":[],"mappings":"AAAA;;;;;;;GAOG;;ACPH;;gFAEgF,CAGxB,UAAU,GACV,aAAa,CACb,UAAU,CACV,UAAU,CACV,UAAU;;AAElE;;gFAEgF;;AAIhF;;gFAEgF;;AAIhF;;gFAEgF,EAEhD,gCAAgC,EAChC,2BAA2B,EAC3B,6BAA6B,CAC7B,iCAAiC;;AAEjE;;gFAEgF;;ADvBhF;;CAEC;;AAED;EACE,eAAe;EACf,kBAAkB;EAClB,kBAA8B;CAC/B","file":"TodoPage.scss","sourcesContent":["/**\n * React Starter Kit (https://www.reactstarterkit.com/)\n *\n * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE.txt file in the root directory of this source tree.\n */\n\n@import '../variables.scss';\n\n.root {\n\n}\n\n.container {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: $max-content-width;\n}\n","/*\r\n * Colors\r\n * ========================================================================== */\r\n\r\n$white-base:            hsl(255, 255, 255);\r\n$gray-darker:           color(black lightness(+13.5%)); /* #222 */\r\n$gray-dark:             color(black lightness(+25%));   /* #404040 */\r\n$gray:                  color(black lightness(+33.5%)); /* #555 */\r\n$gray-light:            color(black lightness(+46.7%)); /* #777 */\r\n$gray-lighter:          color(black lightness(+93.5%)); /* #eee */\r\n\r\n/*\r\n * Typography\r\n * ========================================================================== */\r\n\r\n$font-family-base:      'Segoe UI', 'HelveticaNeue-Light', sans-serif;\r\n\r\n/*\r\n * Layout\r\n * ========================================================================== */\r\n\r\n$max-content-width:     1000px;\r\n\r\n/*\r\n * Media queries breakpoints\r\n * ========================================================================== */\r\n\r\n$screen-xs-min:         480px;  /* Extra small screen / phone */\r\n$screen-sm-min:         768px;  /* Small screen / tablet */\r\n$screen-md-min:         992px;  /* Medium screen / desktop */\r\n$screen-lg-min:         1200px; /* Large screen / wide desktop */\r\n\r\n/*\r\n * Animations\r\n * ========================================================================== */\r\n\r\n$animation-swift-out:   .45s cubic-bezier(0.3, 1, 0.4, 1) 0s;\r\n"],"sourceRoot":"webpack://"}]);
+  
+  // exports
+  exports.locals = {
+  	"root": "TodoPage_root_3fz",
+  	"container": "TodoPage_container_1bn"
+  };
+
+/***/ },
+/* 52 */
+/***/ function(module, exports, __webpack_require__) {
+
+  'use strict';
+  
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  
+  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+  
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+  
+  var _coreDispatcher = __webpack_require__(53);
+  
+  var _coreDispatcher2 = _interopRequireDefault(_coreDispatcher);
+  
+  var _actionsTodoActions = __webpack_require__(55);
+  
+  var _actionsTodoActions2 = _interopRequireDefault(_actionsTodoActions);
+  
+  //Remember that ever component gets it's own store
+  
+  var TodoStore = (function () {
+    function TodoStore() {
+      _classCallCheck(this, TodoStore);
+  
+      this.bindActions(_actionsTodoActions2['default']);
+      this.todos = [];
+    }
+  
+    //Notice the naming scheme. Alt expects hte functions to be named on
+    //followed by Actions
+  
+    _createClass(TodoStore, [{
+      key: 'onGetTodosSuccess',
+      value: function onGetTodosSuccess(data) {
+        this.todos = data;
+      }
+    }, {
+      key: 'onGetTodosFail',
+      value: function onGetTodosFail(err) {
+        //use toastr library to have popup error
+        toastr.error(data.message);
+      }
+    }]);
+  
+    return TodoStore;
+  })();
+  
+  exports['default'] = _coreDispatcher2['default'].createStore(TodoStore);
+  module.exports = exports['default'];
+
+/***/ },
+/* 53 */
+/***/ function(module, exports, __webpack_require__) {
+
+  /**
+   * React Starter Kit (https://www.reactstarterkit.com/)
+   *
+   * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.txt file in the root directory of this source tree.
+   */
+  
+  'use strict';
+  
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+  
+  var _alt = __webpack_require__(54);
+  
+  var _alt2 = _interopRequireDefault(_alt);
+  
+  var dispatcher = new _alt2['default']();
+  
+  exports['default'] = dispatcher;
+  module.exports = exports['default'];
+
+/***/ },
+/* 54 */
+/***/ function(module, exports) {
+
+  module.exports = require("alt");
+
+/***/ },
+/* 55 */
+/***/ function(module, exports, __webpack_require__) {
+
+  'use strict';
+  
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  
+  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+  
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+  
+  var _coreDispatcher = __webpack_require__(53);
+  
+  var _coreDispatcher2 = _interopRequireDefault(_coreDispatcher);
+  
+  var _jquery = __webpack_require__(76);
+  
+  var _jquery2 = _interopRequireDefault(_jquery);
+  
+  //Remember that this file runs on the client not the server
+  
+  var TodoActions = (function () {
+    function TodoActions() {
+      _classCallCheck(this, TodoActions);
+  
+      //Each of these actiosn will become a function
+      this.generateActions('getTodosSuccess', 'getTodosFail');
+      console.log(this);
+    }
+  
+    //Directly callled by TodoPage
+    //R
+  
+    _createClass(TodoActions, [{
+      key: 'getTodos',
+      value: function getTodos() {
+        var _this = this;
+  
+        //Get all todos
+        console.log(this);
+        _jquery2['default'].ajax({ url: '/api/todo/all' }).done(function (data) {
+          _this.getTodosSuccess(data);
+        }).fail(function (err) {
+          _this.getTodosFail(err);
+        });
+      }
+    }]);
+  
+    return TodoActions;
+  })();
+  
+  exports['default'] = _coreDispatcher2['default'].createActions(TodoActions);
+  module.exports = exports['default'];
+
+/***/ },
+/* 56 */
+/***/ function(module, exports, __webpack_require__) {
+
+  /**
+   * React Starter Kit (https://www.reactstarterkit.com/)
+   *
+   * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.txt file in the root directory of this source tree.
+   */
+  
+  'use strict';
+  
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  
+  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+  
+  var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+  
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+  
+  function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+  
+  var _react = __webpack_require__(4);
+  
+  var _react2 = _interopRequireDefault(_react);
+  
+  var _LoginPageScss = __webpack_require__(57);
   
   var _LoginPageScss2 = _interopRequireDefault(_LoginPageScss);
   
@@ -2985,11 +3416,11 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 50 */
+/* 57 */
 /***/ function(module, exports, __webpack_require__) {
 
   
-      var content = __webpack_require__(51);
+      var content = __webpack_require__(58);
       var insertCss = __webpack_require__(20);
   
       if (typeof content === 'string') {
@@ -3017,7 +3448,7 @@ module.exports =
     
 
 /***/ },
-/* 51 */
+/* 58 */
 /***/ function(module, exports, __webpack_require__) {
 
   exports = module.exports = __webpack_require__(19)();
@@ -3034,7 +3465,7 @@ module.exports =
   };
 
 /***/ },
-/* 52 */
+/* 59 */
 /***/ function(module, exports, __webpack_require__) {
 
   /**
@@ -3066,7 +3497,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _RegisterPageScss = __webpack_require__(53);
+  var _RegisterPageScss = __webpack_require__(60);
   
   var _RegisterPageScss2 = _interopRequireDefault(_RegisterPageScss);
   
@@ -3129,11 +3560,11 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 53 */
+/* 60 */
 /***/ function(module, exports, __webpack_require__) {
 
   
-      var content = __webpack_require__(54);
+      var content = __webpack_require__(61);
       var insertCss = __webpack_require__(20);
   
       if (typeof content === 'string') {
@@ -3161,7 +3592,7 @@ module.exports =
     
 
 /***/ },
-/* 54 */
+/* 61 */
 /***/ function(module, exports, __webpack_require__) {
 
   exports = module.exports = __webpack_require__(19)();
@@ -3178,7 +3609,7 @@ module.exports =
   };
 
 /***/ },
-/* 55 */
+/* 62 */
 /***/ function(module, exports, __webpack_require__) {
 
   /**
@@ -3210,7 +3641,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _NotFoundPageScss = __webpack_require__(56);
+  var _NotFoundPageScss = __webpack_require__(63);
   
   var _NotFoundPageScss2 = _interopRequireDefault(_NotFoundPageScss);
   
@@ -3271,11 +3702,11 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 56 */
+/* 63 */
 /***/ function(module, exports, __webpack_require__) {
 
   
-      var content = __webpack_require__(57);
+      var content = __webpack_require__(64);
       var insertCss = __webpack_require__(20);
   
       if (typeof content === 'string') {
@@ -3303,7 +3734,7 @@ module.exports =
     
 
 /***/ },
-/* 57 */
+/* 64 */
 /***/ function(module, exports, __webpack_require__) {
 
   exports = module.exports = __webpack_require__(19)();
@@ -3317,7 +3748,7 @@ module.exports =
 
 
 /***/ },
-/* 58 */
+/* 65 */
 /***/ function(module, exports, __webpack_require__) {
 
   /**
@@ -3349,7 +3780,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _ErrorPageScss = __webpack_require__(59);
+  var _ErrorPageScss = __webpack_require__(66);
   
   var _ErrorPageScss2 = _interopRequireDefault(_ErrorPageScss);
   
@@ -3409,11 +3840,11 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 59 */
+/* 66 */
 /***/ function(module, exports, __webpack_require__) {
 
   
-      var content = __webpack_require__(60);
+      var content = __webpack_require__(67);
       var insertCss = __webpack_require__(20);
   
       if (typeof content === 'string') {
@@ -3441,7 +3872,7 @@ module.exports =
     
 
 /***/ },
-/* 60 */
+/* 67 */
 /***/ function(module, exports, __webpack_require__) {
 
   exports = module.exports = __webpack_require__(19)();
@@ -3455,7 +3886,7 @@ module.exports =
 
 
 /***/ },
-/* 61 */
+/* 68 */
 /***/ function(module, exports, __webpack_require__) {
 
   /**
@@ -3560,13 +3991,91 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 62 */
+/* 69 */
 /***/ function(module, exports) {
 
   module.exports = require("./assets");
 
 /***/ },
-/* 63 */
+/* 70 */
+/***/ function(module, exports, __webpack_require__) {
+
+  //Register todos with aws dynammodb.
+  'use strict';
+  
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  
+  var _this = this;
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+  
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+  
+  var _bluebird = __webpack_require__(71);
+  
+  var _bluebird2 = _interopRequireDefault(_bluebird);
+  
+  var _express = __webpack_require__(3);
+  
+  var running_id = 0;
+  
+  var Todo = function Todo() {
+    var obj = arguments.length <= 0 || arguments[0] === undefined ? { name: "default", description: "default" } : arguments[0];
+  
+    _classCallCheck(this, Todo);
+  
+    this.name = obj.name;
+    this.description = obj.description;
+    this.id = running_id++;
+  };
+  
+  var populateTodos = function populateTodos() {
+    var t = [{
+      name: "test1",
+      description: "Testing jade"
+    }, {
+      name: "test2",
+      description: "Testing node"
+    }];
+    return t.map(function (item) {
+      return new Todo(item);
+    });
+  };
+  
+  var todos = populateTodos();
+  
+  var getAllTodos = function getAllTodos() {
+    return todos;
+  };
+  
+  var router = new _express.Router();
+  
+  router.get('/all', function callee$0$0(req, res, next) {
+    return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
+      while (1) switch (context$1$0.prev = context$1$0.next) {
+        case 0:
+          res.status(200).send(getAllTodos());
+  
+        case 1:
+        case 'end':
+          return context$1$0.stop();
+      }
+    }, null, _this);
+  });
+  
+  exports['default'] = router;
+  module.exports = exports['default'];
+
+/***/ },
+/* 71 */
+/***/ function(module, exports) {
+
+  module.exports = require("bluebird");
+
+/***/ },
+/* 72 */
 /***/ function(module, exports, __webpack_require__) {
 
   /**
@@ -3588,7 +4097,7 @@ module.exports =
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
-  var _fs = __webpack_require__(64);
+  var _fs = __webpack_require__(73);
   
   var _fs2 = _interopRequireDefault(_fs);
   
@@ -3596,15 +4105,15 @@ module.exports =
   
   var _express = __webpack_require__(3);
   
-  var _bluebird = __webpack_require__(65);
+  var _bluebird = __webpack_require__(71);
   
   var _bluebird2 = _interopRequireDefault(_bluebird);
   
-  var _jade = __webpack_require__(66);
+  var _jade = __webpack_require__(74);
   
   var _jade2 = _interopRequireDefault(_jade);
   
-  var _frontMatter = __webpack_require__(67);
+  var _frontMatter = __webpack_require__(75);
   
   var _frontMatter2 = _interopRequireDefault(_frontMatter);
   
@@ -3701,28 +4210,28 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 64 */
+/* 73 */
 /***/ function(module, exports) {
 
   module.exports = require("fs");
 
 /***/ },
-/* 65 */
-/***/ function(module, exports) {
-
-  module.exports = require("bluebird");
-
-/***/ },
-/* 66 */
+/* 74 */
 /***/ function(module, exports) {
 
   module.exports = require("jade");
 
 /***/ },
-/* 67 */
+/* 75 */
 /***/ function(module, exports) {
 
   module.exports = require("front-matter");
+
+/***/ },
+/* 76 */
+/***/ function(module, exports) {
+
+  module.exports = require("jquery");
 
 /***/ }
 /******/ ]);

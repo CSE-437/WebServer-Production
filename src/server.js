@@ -27,6 +27,7 @@ server.use(express.static(path.join(__dirname, 'public')));
 //
 // Register API middleware
 // -----------------------------------------------------------------------------
+server.use('/api/todo', require('./api/todo'));
 server.use('/api/content', require('./api/content'));
 
 //
@@ -51,10 +52,11 @@ server.get('*', async (req, res, next) => {
 
     const html = ReactDOM.renderToStaticMarkup(<Html {...data} />);
     res.status(statusCode).send('<!doctype html>\n' + html);
-  } catch (err) { 
+  } catch (err) {
     next(err);
   }
 });
+
 
 //
 // Launch the server

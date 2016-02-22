@@ -13,6 +13,7 @@ import fetch from './core/fetch';
 import App from './components/App';
 import ContentPage from './components/ContentPage';
 import ContactPage from './components/ContactPage';
+import TodoPage from './components/TodoPage';
 import LoginPage from './components/LoginPage';
 import RegisterPage from './components/RegisterPage';
 import NotFoundPage from './components/NotFoundPage';
@@ -45,6 +46,8 @@ const router = new Router(on => {
   on('/login', async () => <LoginPage />);
   //show register page.
   on('/register', async () => <RegisterPage />);
+  //show todo page
+  on('/todo', async() => <TodoPage/>);
 
   on('*', async (state) => {
     //Gets the api info for that content
