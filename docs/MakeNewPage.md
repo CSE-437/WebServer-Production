@@ -43,95 +43,95 @@ TodoPage.scss
 
 TodoPage.js
 
-`/**
- * React Starter Kit (https://www.reactstarterkit.com/)
- *
- * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE.txt file in the root directory of this source tree.
- */
+  `/**
+   * React Starter Kit (https://www.reactstarterkit.com/)
+   *
+   * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.txt file in the root directory of this source tree.
+   */
 
 
-import React, { Component, PropTypes } from 'react';
-import withStyles from '../../decorators/withStyles'; //Applies custmo style
-import s from './TodoPage.scss'; //Import custom styles
-import TodoStore from '../../stores/TodoStore';
-import TodoActions from '../../actions/TodoActions';
-import Link from '../Link'
+  import React, { Component, PropTypes } from 'react';
+  import withStyles from '../../decorators/withStyles'; //Applies custmo style
+  import s from './TodoPage.scss'; //Import custom styles
+  import TodoStore from '../../stores/TodoStore';
+  import TodoActions from '../../actions/TodoActions';
+  import Link from '../Link'
 
-const title = 'Stuff Todo'; //page title
+  const title = 'Stuff Todo'; //page title
 
-@withStyles(s) //sets styles.
-class TodoPage extends Component {
+  @withStyles(s) //sets styles.
+  class TodoPage extends Component {
 
-  static contextTypes = {
-    onSetTitle: PropTypes.func.isRequired,
-  };
+    static contextTypes = {
+      onSetTitle: PropTypes.func.isRequired,
+    };
 
-  //Constroctor for class.
-  //REMEBER props and state are two different things.
-  //databinding uses props.
-  constructor(props){
-    super(props);
-    this.state = TodoStore.getState();
-    //need to use bind so that the this variable for onChange
-    //refers to this TodoPage object not the function
-    this.onChange = this.onChange.bind(this);
-  }
+    //Constroctor for class.
+    //REMEBER props and state are two different things.
+    //databinding uses props.
+    constructor(props){
+      super(props);
+      this.state = TodoStore.getState();
+      //need to use bind so that the this variable for onChange
+      //refers to this TodoPage object not the function
+      this.onChange = this.onChange.bind(this);
+    }
 
-  componentWillMount() {
-    this.context.onSetTitle(title);
-  }
+    componentWillMount() {
+      this.context.onSetTitle(title);
+    }
 
-  //Alwasy call
-  componentDidMount(){
-    //makes the TodoStore call the onchange function whenever it cnanges.
-    //This is why we had to use bind
-    TodoStore.listen(this.onChange);
-    //As soon as it is poling for data get data
-    TodoActions.getTodos();
-  }
+    //Alwasy call
+    componentDidMount(){
+      //makes the TodoStore call the onchange function whenever it cnanges.
+      //This is why we had to use bind
+      TodoStore.listen(this.onChange);
+      //As soon as it is poling for data get data
+      TodoActions.getTodos();
+    }
 
-  componentWillUnmount(){
-    //remove event listener
-    TodoStore.unlisten(this.onChange);
-  }
+    componentWillUnmount(){
+      //remove event listener
+      TodoStore.unlisten(this.onChange);
+    }
 
-  //simply sets the state whenever the todo store changes
-  onChange(state){
-    this.setState(state);
-    console.log(this.getState)
-  }
+    //simply sets the state whenever the todo store changes
+    onChange(state){
+      this.setState(state);
+      console.log(this.getState)
+    }
 
 
-  render() {
-    let todos = this.state.todos.map((todo) =>{
+    render() {
+      let todos = this.state.todos.map((todo) =>{
+        return (
+          <li key={todo.id}>
+            <a href={'/todo/'+todo.id} onClick={Link.handleClick}>{todo.name}</a>
+            <p>{todo.description}</p>
+          </li>
+        )
+      });
+      //Render component
       return (
-        <li key={todo.id}>
-          <a href={'/todo/'+todo.id} onClick={Link.handleClick}>{todo.name}</a>
-          <p>{todo.description}</p>
-        </li>
-      )
-    });
-    //Render component
-    return (
-      <div className={s.root}> //Sets the root class
-        <div className={s.container}> //sets the container style
-          <h1>{title}</h1> //one way databinding
-          //for loop to draw all of the todos
-          {todos}
-          <p>Try to complete the aboe todos</p>
+        <div className={s.root}> //Sets the root class
+          <div className={s.container}> //sets the container style
+            <h1>{title}</h1> //one way databinding
+            //for loop to draw all of the todos
+            {todos}
+            <p>Try to complete the aboe todos</p>
+          </div>
         </div>
-      </div>
-    );
+      );
+    }
+
   }
 
-}
+  export default TodoPage;
 
-export default TodoPage;
-
-`
+  `
 #Create enpoints for Todo.
 We now need to two things.
 1. Make sure our app is aware of the Todo page, and links to the Todo Page content.
@@ -140,15 +140,15 @@ We now need to two things.
 ##Register the Todo page.
 
 In the contnet folder, create a file called todo.jade, and post the following content.
-`---
-title: Stuff ToDo
-component: TodoJade
----
-div
+  `---
+  title: Stuff ToDo
+  component: TodoJade
+  ---
   div
-    h3 Welcome to TODO
+    div
+      h3 Welcome to TODO
 
-`
+  `
 The .jade is a templating engine. You can read more of it [here](http://jade-lang.com/tutorial/)
 
 The lines between the --- are front-matter. They define custom
@@ -157,49 +157,49 @@ endpoint /api/content reads.
 
 ##Register the Todo api.
 In server.js. post this line after the '/api/content'
-`server.use('/api/todo', require('./api/todo'));`
+  `server.use('/api/todo', require('./api/todo'));`
 
 ##Code the Todo api
 Make ./api/todo
 
-`//Register todos with aws dynammodb.
-import Promise from 'bluebird';
-import {Router} from 'express';
+  `//Register todos with aws dynammodb.
+  import Promise from 'bluebird';
+  import {Router} from 'express';
 
-var running_id = 0
-class Todo{
-  constructor(obj = {name: "default", description: "default"}){
-    this.name = obj.name;
-    this.description = obj.description;
-    this.id = running_id++;
-  }
-}
-
-const populateTodos = ()=>{
-  let t = [
-    {
-      name:"test1",
-      description: "Testing jade"
-    },
-    {
-      name:"test2",
-      description: "Testing node"
+  var running_id = 0
+  class Todo{
+    constructor(obj = {name: "default", description: "default"}){
+      this.name = obj.name;
+      this.description = obj.description;
+      this.id = running_id++;
     }
-  ]
-  return t.map((item)=>{return new Todo(item)})
-}
+  }
 
-var todos = populateTodos()
+  const populateTodos = ()=>{
+    let t = [
+      {
+        name:"test1",
+        description: "Testing jade"
+      },
+      {
+        name:"test2",
+        description: "Testing node"
+      }
+    ]
+    return t.map((item)=>{return new Todo(item)})
+  }
 
-const getAllTodos = ()=>{
-  return todos
-}
+  var todos = populateTodos()
 
-const router = new Router();
+  const getAllTodos = ()=>{
+    return todos
+  }
 
-router.get('/all', async(req, res,next)=>{
-  res.status(200).send(getAllTodos())
-});
+  const router = new Router();
 
-export default router;
-`
+  router.get('/all', async(req, res,next)=>{
+    res.status(200).send(getAllTodos())
+  });
+
+  export default router;
+  `

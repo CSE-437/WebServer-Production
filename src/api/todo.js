@@ -11,6 +11,7 @@ class Todo{
   }
 }
 
+//Might as well make it more complicated than it needs to be.
 const populateTodos = ()=>{
   let t = [
     {
