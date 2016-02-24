@@ -1,61 +1,47 @@
 import Promise from 'bluebird';
 import ObjectAssign from 'object-assign';
-var running_id = 0
-var users = []
+var dynamoose = require('dynamoose');
 
-class User{
-  //all users have a name, friends: array of ids, and decks: array of ids
-  constructor(obj = {name: "default", friends: [], decks: []}){
-    this.name = obj.name;
-    this.friends = obj.friends;
-    this.decks = obj.decks;
-    this.id = running_id++;
-  }
+var Schema = dynamoose.Schema;
 
-  update(obj){
-    let name = obj.name || this.name;
-    let friends = obj.friends || this.friends;
-    let decks = obj.decks || this.decks;
+var userSchema = new Schema({
+  id:{
+    type: Number,
+    validate: function(v) {return v > 0;},
+    hashKey: true//Alwasy have one
+  },
+  name: {
+    type: String,
+    rangeKey: true,
+    index: true // name: nameLocalIndex, ProjectionType: All
+  },
+  localEmail: String,
+  localPassword: String,
+  facebookId : String,
+  facebookToken : String,
+  facebookEmail : String,
+  facebookName : String,
+  twitterId : String,
+  twitterToken : String,
+  twitterDisplayName : String,
+  twitterUserName : String,
+  googleId : String,
+  googleToken : String,
+  googleEmail : String,
+  googleName : String
 
-    ObjectAssign(this, {name: name, friends: friends, decks: decks});
-  }
+})
 
-  delete(){
-    delete users[this.id]
-  }
+var User = dynamoose.model('User', userSchema);
 
-}
 
-const populateUsers = ()=>{
-  let t = [
-    {
-      name:"david",
-      friends: [1],
-      decks: [1,2,4]
-    },
-    {
-      name:"john",
-      friends: [],
-      decks: [3]
-    }
-  ]
-  return t.map((item)=>{return new User(item)})
-}
+export default User;
+export const UserUtil = {
+  generateHash: function(password){
+    return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
+  },
 
-users = populateUsers();
-
-class UserModel{
-  getAllUsers(){
-    console.log(users)
-    return users;
-  }
-
-  newUser(obj){
-    user = new User();
-    console.log("New User: ", user)
-    users.append(user)
-    return user;
+  validPassword: function(password){
+    return bcrypt.compareSync(password, this.local.password);
   }
 }
-
-export default new UserModel();

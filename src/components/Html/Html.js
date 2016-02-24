@@ -36,6 +36,7 @@ class Html extends Component {
     });
   }
 
+  //<!--TODO insert the req.flash in here -->
   render() {
     return (
       <html className="no-js" lang="">

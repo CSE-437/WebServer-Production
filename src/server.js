@@ -18,25 +18,63 @@ import Html from './components/Html';
 import assets from './assets';
 import { port } from './config';
 
+import passport from 'passport';
+import flash from 'connect-flash';
+
+import morgan from 'morgan';
+import cookieParser from 'cookie-parser';
+import bodyParser from 'body-parser';
+import session from 'express-session';
+
+var io = require('socket.io')(server);
+
+import AWS from 'aws-sdk';
+//Change region
+AWS.config.update({region:'us-west-2'});
+
+var DynamoDBStore = require('connect-dynamodb')({session: session});
 
 const server = global.server = express();
+
+//Configure passport
+require('./config/passport')(passport);
 
 //
 // Register Node.js middleware
 // -----------------------------------------------------------------------------
+server.use(morgan('dev'));//log every request to console
+server.use(cookieParser()); //read cookies for authentication
+
+//Connects to the sessions table of our database
+server.use(session({
+  store: new DynamoDBStore({
+    reapInterval:600000 //Expires every 10 minutes
+  }),
+  resave: true,
+  saveUninitialized: true,
+  secret:'ankiisloveankiislife'
+}));
+server.use(passport.initialize());
+server.use(passport.session()); //persistant login sessions
+//TODO: Figure out the best way to send req.flash() to pages
+server.use(flash());//use connect-flash for flash messages stored in session.
+
 server.use(express.static(path.join(__dirname, 'public')));
 
 //
 // Register API middleware
 // -----------------------------------------------------------------------------
-
+//pass passport to all api
 server.use('/api/user', require('./api/users/UserRouter'));
+server.use('/api/deck', require('./api/decks/DeckRouter'));
 server.use('/api/todo', require('./api/todo'));
 server.use('/api/content', require('./api/content'));
 
+require('./auth/auth')(server, passport);
 //
 // Register server-side rendering middleware
 // -----------------------------------------------------------------------------
+
 server.get('*', async (req, res, next) => {
   try {
     let statusCode = 200;
@@ -61,6 +99,18 @@ server.get('*', async (req, res, next) => {
   }
 });
 
+//Instantiate Socket IO
+var onlineUsers = 0;//TODO get rid of when done testing
+io.sockets.on('connection', function(socket){
+  onlineUsers++;
+
+  io.sockets.emit('onlineUsers', {onlineUsers: onlineUsers});
+
+  socket.on('disconnect', function(){
+    onlineUsers--;
+    io.sockets.emit('onlineUsers', {onlineUsers: onlineUsers});
+  });
+});
 
 //
 // Launch the server

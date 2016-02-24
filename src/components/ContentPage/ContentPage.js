@@ -19,7 +19,8 @@ class ContentPage extends Component {
     content: PropTypes.string.isRequired,
     title: PropTypes.string,
   };
-
+  //Context is a form of inheritence. Every react element within the App element
+  //has access to these 
   static contextTypes = {
     onSetTitle: PropTypes.func.isRequired,
   };

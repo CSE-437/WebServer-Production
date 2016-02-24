@@ -49,7 +49,7 @@ router.get('/', async (req, res, next) => {
       res.status(404).send({ error: `The page '${path}' is not found.` });
     } else {
       const source = await readFile(fileName, { encoding: 'utf8' });
-      const content = parseJade(path, source);
+      var content = parseJade(path, source);
       res.status(200).send(content);
     }
   } catch (err) {
