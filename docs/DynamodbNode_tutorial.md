@@ -4,7 +4,8 @@ In a javascript file, not the interpreter paste this code.
 It creates a table for movies with the year being the partition key and the
 title being the sort key. *You get movies based on the year they were made.*
 
-`var AWS = require("aws-sdk"); // ES6 import {{AWS}} from 'aws-sdk'//Don't forget to run npm install --save aws-sdk before hand
+```
+var AWS = require("aws-sdk"); // ES6 import {{AWS}} from 'aws-sdk'//Don't forget to run npm install --save aws-sdk before hand
 
 //shouldn't change in production code
 AWS.config.update({
@@ -38,13 +39,13 @@ dynamodb.createTable(params, function(err, data) {
         console.log("Created table. Table description JSON:", JSON.stringify(data, null, 2));
     }
 });
-`
+```
 
 #2. Lets get some sample data in there
 [http://docs.aws.amazon.com/amazondynamodb/latest/gettingstartedguide/samples/moviedata.zip](Download the movie data and extract the json file)
 
 Here's an example of the data
-`{
+```{
     "year" : 2013,
     "title" : "Turn Down for What!",
     "info" : {
@@ -69,10 +70,11 @@ Here's an example of the data
        ]
     }
 }
-`
+```
 
 In a separate file from the one running the server, create a Dynammo client, and load the data
-`import {AWS} from 'aws-sdk';
+```
+import {AWS} from 'aws-sdk';
 import {fs} from 'fs';
 
 AWS.config.update({
@@ -102,7 +104,8 @@ allMovies.forEach(function(movie){
            console.log("PutItem succeeded:", movie.title);
        }
     });
-  })`;
+  });
+  ```
 
 
 Once it's in the database we can do whatever

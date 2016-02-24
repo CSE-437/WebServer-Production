@@ -95,6 +95,9 @@ file. The documentation to the project is licensed under the
 
 ---
 Made with ♥ by Konstantin Tarkus ([@koistya](https://twitter.com/koistya)) and [contributors](https://github.com/kriasoft/react-starter-kit/graphs/contributors)
+<<<<<<< HEAD
 
 
 ##Make sure to extract Dynamodb runtime to Dynamodb folder on local
+=======
+>>>>>>> 1e8ed32e53283f24085c7443c13498c68ee11e20
