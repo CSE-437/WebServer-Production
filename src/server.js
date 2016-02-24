@@ -29,6 +29,8 @@ server.use(express.static(path.join(__dirname, 'public')));
 // -----------------------------------------------------------------------------
 server.use('/api/content', require('./api/content'));
 
+server.use('/api/Profile', require('./api/Profile'));
+
 //
 // Register server-side rendering middleware
 // -----------------------------------------------------------------------------
@@ -51,7 +53,7 @@ server.get('*', async (req, res, next) => {
 
     const html = ReactDOM.renderToStaticMarkup(<Html {...data} />);
     res.status(statusCode).send('<!doctype html>\n' + html);
-  } catch (err) { 
+  } catch (err) {
     next(err);
   }
 });

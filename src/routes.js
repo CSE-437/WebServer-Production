@@ -17,6 +17,7 @@ import LoginPage from './components/LoginPage';
 import RegisterPage from './components/RegisterPage';
 import NotFoundPage from './components/NotFoundPage';
 import ErrorPage from './components/ErrorPage';
+import ProfilePage from './components/ProfilePage';
 
 /*
 Use a router from react-routing project.
@@ -45,6 +46,7 @@ const router = new Router(on => {
   on('/login', async () => <LoginPage />);
   //show register page.
   on('/register', async () => <RegisterPage />);
+
 
   on('*', async (state) => {
     //Gets the api info for that content
