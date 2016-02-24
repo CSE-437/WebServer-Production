@@ -25,7 +25,15 @@ class DeckModel{
     });
 
   }
+  //TODO fill in
+  getDeckById(){
 
+  }
+
+  //TODO fill in
+  uploadDeck(){
+
+  }
 
 }
 

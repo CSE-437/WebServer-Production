@@ -50,6 +50,10 @@ router.route('/:deckid')
 //.put()
 //.delete()
 
+router.post('/', async(req, res, next)=>{
+  console.log(req)
+  res.status(200).send(req);
+})
 //TODO UPDATE PUT'/:userid'
 //TODO create PUT'/:userid'
 //TODO delete DELETE '/:userid'

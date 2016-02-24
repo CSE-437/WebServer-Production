@@ -4537,6 +4537,19 @@ module.exports =
   //.put()
   //.delete()
   
+  router.post('/', function callee$0$0(req, res, next) {
+    return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
+      while (1) switch (context$1$0.prev = context$1$0.next) {
+        case 0:
+          console.log(req);
+          res.status(200).send(req);
+  
+        case 2:
+        case 'end':
+          return context$1$0.stop();
+      }
+    }, null, _this);
+  });
   //TODO UPDATE PUT'/:userid'
   //TODO create PUT'/:userid'
   //TODO delete DELETE '/:userid'
@@ -4600,6 +4613,16 @@ module.exports =
           });
         });
       }
+  
+      //TODO fill in
+    }, {
+      key: 'getDeckById',
+      value: function getDeckById() {}
+  
+      //TODO fill in
+    }, {
+      key: 'uploadDeck',
+      value: function uploadDeck() {}
     }]);
   
     return DeckModel;
