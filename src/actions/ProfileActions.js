@@ -1,5 +1,5 @@
 import dispatcher from '../core/Dispatcher';
-import $ from 'jQuery'
+import $ from 'jquery'
 
 //Remember that this file runs on the client not the server
 class ProfileActions{

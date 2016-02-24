@@ -48,7 +48,7 @@ const router = new Router(on => {
   //show register page.
   on('/register', async () => <RegisterPage />);
   //show todo page
-  on('/todo', async() => <TodoPage/>);
+  on('/Profile', async() => <ProfilePage/>);
 
 
   on('*', async (state) => {
