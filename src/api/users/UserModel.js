@@ -13,14 +13,9 @@ if(process.env.NODE_ENV == 'development'){
 var Schema = dynamoose.Schema;
 
 var userSchema = new Schema({
-  id:{
-    type: Number,
-    validate: function(v) {return v > 0;},
-    hashKey: true//Alwasy have one
-  },
   username: {
     type: String,
-    rangeKey: true,
+    hashKey: true,
     index: true // name: nameLocalIndex, ProjectionType: All
   },
   decks:{
@@ -76,7 +71,6 @@ const UserMethods = {
   //TODO make sure no user of same name exist and password is decent. check email
   register : function(user, password, cb){
     user.localPassword = this.generateHash(password);
-    user.id = 2;
     console.log(user);
     User.create(user, function(err, u){
       cb(err, u);

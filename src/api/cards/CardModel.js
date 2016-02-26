@@ -16,7 +16,7 @@ var cardSchema = new Schema({
     hashKey: true//Alwasy have one
   },
   owner: {
-    type: Number,
+    type: String,
     rangeKey: true,
     index: true // name: nameLocalIndex, ProjectionType: All
   },
