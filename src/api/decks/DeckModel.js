@@ -1,7 +1,11 @@
 import Promise from 'bluebird';
 import ObjectAssign from 'object-assign';
 import AWS from 'aws-sdk';
+AWS.config = new AWS.Config();
+AWS.config.accessKeyId = "AKIAJVMHTIZFC3SZZWSA";
+AWS.config.secretAccessKey = "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";
 AWS.config.region = 'us-west-2';
+
 
 var s3 = new AWS.S3();
 

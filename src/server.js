@@ -70,6 +70,8 @@ server.use('/api/deck', require('./api/decks/DeckRouter'));
 server.use('/api/todo', require('./api/todo'));
 server.use('/api/content', require('./api/content'));
 
+server.use('/api/Profile', require('./api/Profile'));
+
 require('./auth/auth')(server, passport);
 //
 // Register server-side rendering middleware

@@ -83,56 +83,56 @@ module.exports =
   
   var _routes2 = _interopRequireDefault(_routes);
   
-  var _componentsHtml = __webpack_require__(69);
+  var _componentsHtml = __webpack_require__(74);
   
   var _componentsHtml2 = _interopRequireDefault(_componentsHtml);
   
-  var _assets = __webpack_require__(70);
+  var _assets = __webpack_require__(75);
   
   var _assets2 = _interopRequireDefault(_assets);
   
   var _config = __webpack_require__(14);
   
-  var _passport = __webpack_require__(71);
+  var _passport = __webpack_require__(76);
   
   var _passport2 = _interopRequireDefault(_passport);
   
-  var _connectFlash = __webpack_require__(72);
+  var _connectFlash = __webpack_require__(77);
   
   var _connectFlash2 = _interopRequireDefault(_connectFlash);
   
-  var _morgan = __webpack_require__(73);
+  var _morgan = __webpack_require__(78);
   
   var _morgan2 = _interopRequireDefault(_morgan);
   
-  var _cookieParser = __webpack_require__(74);
+  var _cookieParser = __webpack_require__(79);
   
   var _cookieParser2 = _interopRequireDefault(_cookieParser);
   
-  var _bodyParser = __webpack_require__(75);
+  var _bodyParser = __webpack_require__(80);
   
   var _bodyParser2 = _interopRequireDefault(_bodyParser);
   
-  var _expressSession = __webpack_require__(76);
+  var _expressSession = __webpack_require__(81);
   
   var _expressSession2 = _interopRequireDefault(_expressSession);
   
-  var _awsSdk = __webpack_require__(77);
+  var _awsSdk = __webpack_require__(82);
   
   var _awsSdk2 = _interopRequireDefault(_awsSdk);
   
   //Change region
   
-  var io = __webpack_require__(78)(server);
+  var io = __webpack_require__(83)(server);
   
   _awsSdk2['default'].config.update({ region: 'us-west-2' });
   
-  var DynamoDBStore = __webpack_require__(79)({ session: _expressSession2['default'] });
+  var DynamoDBStore = __webpack_require__(84)({ session: _expressSession2['default'] });
   
   var server = global.server = (0, _express2['default'])();
   
   //Configure passport
-  __webpack_require__(80)(_passport2['default']);
+  __webpack_require__(85)(_passport2['default']);
   
   //
   // Register Node.js middleware
@@ -160,12 +160,14 @@ module.exports =
   // Register API middleware
   // -----------------------------------------------------------------------------
   //pass passport to all api
-  server.use('/api/user', __webpack_require__(86));
-  server.use('/api/deck', __webpack_require__(87));
-  server.use('/api/todo', __webpack_require__(91));
-  server.use('/api/content', __webpack_require__(92));
+  server.use('/api/user', __webpack_require__(91));
+  server.use('/api/deck', __webpack_require__(92));
+  server.use('/api/todo', __webpack_require__(96));
+  server.use('/api/content', __webpack_require__(97));
   
-  __webpack_require__(96)(server, _passport2['default']);
+  server.use('/api/Profile', __webpack_require__(101));
+  
+  __webpack_require__(102)(server, _passport2['default']);
   //
   // Register server-side rendering middleware
   // -----------------------------------------------------------------------------
@@ -353,6 +355,10 @@ module.exports =
   
   var _componentsErrorPage2 = _interopRequireDefault(_componentsErrorPage);
   
+  var _componentsProfilePage = __webpack_require__(69);
+  
+  var _componentsProfilePage2 = _interopRequireDefault(_componentsProfilePage);
+  
   /*
   Use a router from react-routing project.
   https://github.com/kriasoft/react-routing
@@ -423,11 +429,11 @@ module.exports =
       }, null, _this);
     });
     //show todo page
-    on('/todo', function callee$1$0() {
+    on('/Profile', function callee$1$0() {
       return regeneratorRuntime.async(function callee$1$0$(context$2$0) {
         while (1) switch (context$2$0.prev = context$2$0.next) {
           case 0:
-            return context$2$0.abrupt('return', _react2['default'].createElement(_componentsTodoPage2['default'], null));
+            return context$2$0.abrupt('return', _react2['default'].createElement(_componentsProfilePage2['default'], null));
   
           case 1:
           case 'end':
@@ -3997,6 +4003,309 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
+  var _ProfilePageScss = __webpack_require__(70);
+  
+  var _ProfilePageScss2 = _interopRequireDefault(_ProfilePageScss);
+  
+  var _decoratorsWithStyles = __webpack_require__(24);
+  
+  var _decoratorsWithStyles2 = _interopRequireDefault(_decoratorsWithStyles);
+  
+  var _storesProfileStore = __webpack_require__(72);
+  
+  var _storesProfileStore2 = _interopRequireDefault(_storesProfileStore);
+  
+  var _actionsProfileActions = __webpack_require__(73);
+  
+  var _actionsProfileActions2 = _interopRequireDefault(_actionsProfileActions);
+  
+  var _Link = __webpack_require__(25);
+  
+  var _Link2 = _interopRequireDefault(_Link);
+  
+  var title = 'Profile';
+  
+  var ProfilePage = (function (_Component) {
+    _inherits(ProfilePage, _Component);
+  
+    _createClass(ProfilePage, null, [{
+      key: 'contextTypes',
+      value: {
+        onSetTitle: _react.PropTypes.func.isRequired
+      },
+      enumerable: true
+    }]);
+  
+    function ProfilePage(props) {
+      _classCallCheck(this, _ProfilePage);
+  
+      _get(Object.getPrototypeOf(_ProfilePage.prototype), 'constructor', this).call(this, props);
+      this.state = _storesProfileStore2['default'].getState();
+      this.onChange = this.onChange.bind(this);
+    }
+  
+    _createClass(ProfilePage, [{
+      key: 'componentWillMount',
+      value: function componentWillMount() {
+        this.context.onSetTitle(title);
+      }
+    }, {
+      key: 'componentDidMount',
+      value: function componentDidMount() {
+        _storesProfileStore2['default'].listen(this.onChange);
+        _actionsProfileActions2['default'].getDecks();
+      }
+    }, {
+      key: 'componentWillUnmount',
+      value: function componentWillUnmount() {
+        _storesProfileStore2['default'].unlisten(this.onChange);
+      }
+    }, {
+      key: 'onChange',
+      value: function onChange(state) {
+        this.setState(state);
+      }
+    }, {
+      key: 'render',
+      value: function render() {
+        var decks = this.state.decks.map(function (deck) {
+          return _react2['default'].createElement(
+            'li',
+            { key: deck.id },
+            _react2['default'].createElement(
+              'a',
+              { href: '/profile/' + deck.id, onClick: _Link2['default'].handleClick },
+              deck.name
+            ),
+            _react2['default'].createElement(
+              'p',
+              null,
+              deck.description
+            )
+          );
+        });
+        return _react2['default'].createElement(
+          'div',
+          { className: _ProfilePageScss2['default'].root },
+          _react2['default'].createElement(
+            'div',
+            { className: _ProfilePageScss2['default'].container },
+            _react2['default'].createElement(
+              'h1',
+              null,
+              title
+            ),
+            decks
+          )
+        );
+      }
+    }]);
+  
+    var _ProfilePage = ProfilePage;
+    ProfilePage = (0, _decoratorsWithStyles2['default'])(_ProfilePageScss2['default'])(ProfilePage) || ProfilePage;
+    return ProfilePage;
+  })(_react.Component);
+  
+  exports['default'] = ProfilePage;
+  module.exports = exports['default'];
+
+/***/ },
+/* 70 */
+/***/ function(module, exports, __webpack_require__) {
+
+  
+      var content = __webpack_require__(71);
+      var insertCss = __webpack_require__(20);
+  
+      if (typeof content === 'string') {
+        content = [[module.id, content, '']];
+      }
+  
+      module.exports = content.locals || {};
+      module.exports._getCss = function() { return content.toString(); };
+      module.exports._insertCss = insertCss.bind(null, content);
+    
+      var removeCss = function() {};
+  
+      // Hot Module Replacement
+      // https://webpack.github.io/docs/hot-module-replacement
+      if (false) {
+        module.hot.accept("!!./../../../node_modules/css-loader/index.js?sourceMap&modules&localIdentName=[name]_[local]_[hash:base64:3]!./../../../node_modules/postcss-loader/index.js!./ProfilePage.scss", function() {
+          var newContent = require("!!./../../../node_modules/css-loader/index.js?sourceMap&modules&localIdentName=[name]_[local]_[hash:base64:3]!./../../../node_modules/postcss-loader/index.js!./ProfilePage.scss");
+          if (typeof newContent === 'string') {
+            newContent = [[module.id, content, '']];
+          }
+          removeCss = insertCss(newContent, { replace: true });
+        });
+        module.hot.dispose(function() { removeCss(); });
+      }
+    
+
+/***/ },
+/* 71 */
+/***/ function(module, exports, __webpack_require__) {
+
+  exports = module.exports = __webpack_require__(19)();
+  // imports
+  
+  
+  // module
+  exports.push([module.id, "/**\n * React Starter Kit (https://www.reactstarterkit.com/)\n *\n * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE.txt file in the root directory of this source tree.\n */\n\n/*\r\n * Colors\r\n * ========================================================================== */ /* #222 */   /* #404040 */ /* #555 */ /* #777 */ /* #eee */\r\n\r\n/*\r\n * Typography\r\n * ========================================================================== */\r\n\r\n/*\r\n * Layout\r\n * ========================================================================== */\r\n\r\n/*\r\n * Media queries breakpoints\r\n * ========================================================================== */  /* Extra small screen / phone */  /* Small screen / tablet */  /* Medium screen / desktop */ /* Large screen / wide desktop */\r\n\r\n/*\r\n * Animations\r\n * ========================================================================== */\n\n.ProfilePage_root_3NI {\n\n}\n\n.ProfilePage_container_37d {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: 1000px;\n}\n", "", {"version":3,"sources":["/./src/components/ProfilePage/ProfilePage.scss","/./src/components/variables.scss"],"names":[],"mappings":"AAAA;;;;;;;GAOG;;ACPH;;gFAEgF,CAGxB,UAAU,GACV,aAAa,CACb,UAAU,CACV,UAAU,CACV,UAAU;;AAElE;;gFAEgF;;AAIhF;;gFAEgF;;AAIhF;;gFAEgF,EAEhD,gCAAgC,EAChC,2BAA2B,EAC3B,6BAA6B,CAC7B,iCAAiC;;AAEjE;;gFAEgF;;ADvBhF;;CAEC;;AAED;EACE,eAAe;EACf,kBAAkB;EAClB,kBAA8B;CAC/B","file":"ProfilePage.scss","sourcesContent":["/**\n * React Starter Kit (https://www.reactstarterkit.com/)\n *\n * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE.txt file in the root directory of this source tree.\n */\n\n@import '../variables.scss';\n\n.root {\n\n}\n\n.container {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: $max-content-width;\n}\n","/*\r\n * Colors\r\n * ========================================================================== */\r\n\r\n$white-base:            hsl(255, 255, 255);\r\n$gray-darker:           color(black lightness(+13.5%)); /* #222 */\r\n$gray-dark:             color(black lightness(+25%));   /* #404040 */\r\n$gray:                  color(black lightness(+33.5%)); /* #555 */\r\n$gray-light:            color(black lightness(+46.7%)); /* #777 */\r\n$gray-lighter:          color(black lightness(+93.5%)); /* #eee */\r\n\r\n/*\r\n * Typography\r\n * ========================================================================== */\r\n\r\n$font-family-base:      'Segoe UI', 'HelveticaNeue-Light', sans-serif;\r\n\r\n/*\r\n * Layout\r\n * ========================================================================== */\r\n\r\n$max-content-width:     1000px;\r\n\r\n/*\r\n * Media queries breakpoints\r\n * ========================================================================== */\r\n\r\n$screen-xs-min:         480px;  /* Extra small screen / phone */\r\n$screen-sm-min:         768px;  /* Small screen / tablet */\r\n$screen-md-min:         992px;  /* Medium screen / desktop */\r\n$screen-lg-min:         1200px; /* Large screen / wide desktop */\r\n\r\n/*\r\n * Animations\r\n * ========================================================================== */\r\n\r\n$animation-swift-out:   .45s cubic-bezier(0.3, 1, 0.4, 1) 0s;\r\n"],"sourceRoot":"webpack://"}]);
+  
+  // exports
+  exports.locals = {
+  	"root": "ProfilePage_root_3NI",
+  	"container": "ProfilePage_container_37d"
+  };
+
+/***/ },
+/* 72 */
+/***/ function(module, exports, __webpack_require__) {
+
+  'use strict';
+  
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  
+  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+  
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+  
+  var _coreDispatcher = __webpack_require__(53);
+  
+  var _coreDispatcher2 = _interopRequireDefault(_coreDispatcher);
+  
+  var _actionsProfileActions = __webpack_require__(73);
+  
+  var _actionsProfileActions2 = _interopRequireDefault(_actionsProfileActions);
+  
+  //Remember that ever component gets it's own store
+  
+  var ProfileStore = (function () {
+    function ProfileStore() {
+      _classCallCheck(this, ProfileStore);
+  
+      this.bindActions(_actionsProfileActions2['default']);
+      this.decks = [];
+    }
+  
+    //Notice the naming scheme. Alt expects hte functions to be named on
+    //followed by Actions
+  
+    _createClass(ProfileStore, [{
+      key: 'onGetDecksSuccess',
+      value: function onGetDecksSuccess(data) {
+        this.decks = data;
+      }
+    }, {
+      key: 'onGetDecksFail',
+      value: function onGetDecksFail(err) {
+        //use toastr library to have popup error
+        toastr.error(data.message);
+      }
+    }]);
+  
+    return ProfileStore;
+  })();
+  
+  exports['default'] = _coreDispatcher2['default'].createStore(ProfileStore);
+  module.exports = exports['default'];
+
+/***/ },
+/* 73 */
+/***/ function(module, exports, __webpack_require__) {
+
+  'use strict';
+  
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  
+  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+  
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+  
+  var _coreDispatcher = __webpack_require__(53);
+  
+  var _coreDispatcher2 = _interopRequireDefault(_coreDispatcher);
+  
+  var _jquery = __webpack_require__(56);
+  
+  var _jquery2 = _interopRequireDefault(_jquery);
+  
+  //Remember that this file runs on the client not the server
+  
+  var ProfileActions = (function () {
+    function ProfileActions() {
+      _classCallCheck(this, ProfileActions);
+  
+      //Each of these actiosn will become a function
+      this.generateActions('getDecksSuccess', 'getDecksFail');
+      console.log(this);
+    }
+  
+    //Directly callled by TodoPage
+    //R
+  
+    _createClass(ProfileActions, [{
+      key: 'getDecks',
+      value: function getDecks() {
+        var _this = this;
+  
+        //Get all todos
+        console.log(this);
+        _jquery2['default'].ajax({ url: '/api/Profile/all' }).done(function (data) {
+          _this.getDecksSuccess(data);
+        }).fail(function (err) {
+          _this.getDecksFail(err);
+        });
+      }
+    }]);
+  
+    return ProfileActions;
+  })();
+  
+  exports['default'] = _coreDispatcher2['default'].createActions(ProfileActions);
+  module.exports = exports['default'];
+
+/***/ },
+/* 74 */
+/***/ function(module, exports, __webpack_require__) {
+
+  /**
+   * React Starter Kit (https://www.reactstarterkit.com/)
+   *
+   * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.txt file in the root directory of this source tree.
+   */
+  
+  'use strict';
+  
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  
+  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+  
+  var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+  
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+  
+  function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+  
+  var _react = __webpack_require__(4);
+  
+  var _react2 = _interopRequireDefault(_react);
+  
   var _config = __webpack_require__(14);
   
   var Html = (function (_Component) {
@@ -4072,67 +4381,67 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 70 */
+/* 75 */
 /***/ function(module, exports) {
 
   module.exports = require("./assets");
 
 /***/ },
-/* 71 */
+/* 76 */
 /***/ function(module, exports) {
 
   module.exports = require("passport");
 
 /***/ },
-/* 72 */
+/* 77 */
 /***/ function(module, exports) {
 
   module.exports = require("connect-flash");
 
 /***/ },
-/* 73 */
+/* 78 */
 /***/ function(module, exports) {
 
   module.exports = require("morgan");
 
 /***/ },
-/* 74 */
+/* 79 */
 /***/ function(module, exports) {
 
   module.exports = require("cookie-parser");
 
 /***/ },
-/* 75 */
+/* 80 */
 /***/ function(module, exports) {
 
   module.exports = require("body-parser");
 
 /***/ },
-/* 76 */
+/* 81 */
 /***/ function(module, exports) {
 
   module.exports = require("express-session");
 
 /***/ },
-/* 77 */
+/* 82 */
 /***/ function(module, exports) {
 
   module.exports = require("aws-sdk");
 
 /***/ },
-/* 78 */
+/* 83 */
 /***/ function(module, exports) {
 
   module.exports = require("socket.io");
 
 /***/ },
-/* 79 */
+/* 84 */
 /***/ function(module, exports) {
 
   module.exports = require("connect-dynamodb");
 
 /***/ },
-/* 80 */
+/* 85 */
 /***/ function(module, exports, __webpack_require__) {
 
   //everything for auth locally
@@ -4144,9 +4453,9 @@ module.exports =
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
-  var _passportLocal = __webpack_require__(81);
+  var _passportLocal = __webpack_require__(86);
   
-  var _apiUsersUserModel = __webpack_require__(82);
+  var _apiUsersUserModel = __webpack_require__(87);
   
   var _apiUsersUserModel2 = _interopRequireDefault(_apiUsersUserModel);
   
@@ -4243,13 +4552,13 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 81 */
+/* 86 */
 /***/ function(module, exports) {
 
   module.exports = require("passport-local");
 
 /***/ },
-/* 82 */
+/* 87 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -4260,15 +4569,15 @@ module.exports =
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
-  var _bluebird = __webpack_require__(83);
+  var _bluebird = __webpack_require__(88);
   
   var _bluebird2 = _interopRequireDefault(_bluebird);
   
-  var _objectAssign = __webpack_require__(84);
+  var _objectAssign = __webpack_require__(89);
   
   var _objectAssign2 = _interopRequireDefault(_objectAssign);
   
-  var dynamoose = __webpack_require__(85);
+  var dynamoose = __webpack_require__(90);
   
   var Schema = dynamoose.Schema;
   
@@ -4317,25 +4626,25 @@ module.exports =
   exports.UserUtil = UserUtil;
 
 /***/ },
-/* 83 */
+/* 88 */
 /***/ function(module, exports) {
 
   module.exports = require("bluebird");
 
 /***/ },
-/* 84 */
+/* 89 */
 /***/ function(module, exports) {
 
   module.exports = require("object-assign");
 
 /***/ },
-/* 85 */
+/* 90 */
 /***/ function(module, exports) {
 
   module.exports = require("dynamoose");
 
 /***/ },
-/* 86 */
+/* 91 */
 /***/ function(module, exports, __webpack_require__) {
 
   //Register todos with aws dynammodb.
@@ -4349,13 +4658,13 @@ module.exports =
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
-  var _bluebird = __webpack_require__(83);
+  var _bluebird = __webpack_require__(88);
   
   var _bluebird2 = _interopRequireDefault(_bluebird);
   
   var _express = __webpack_require__(3);
   
-  var _UserModel = __webpack_require__(82);
+  var _UserModel = __webpack_require__(87);
   
   var _UserModel2 = _interopRequireDefault(_UserModel);
   
@@ -4441,7 +4750,7 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 87 */
+/* 92 */
 /***/ function(module, exports, __webpack_require__) {
 
   //Register todos with aws dynammodb.
@@ -4456,18 +4765,18 @@ module.exports =
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
-  var _bluebird = __webpack_require__(83);
+  var _bluebird = __webpack_require__(88);
   
   var _bluebird2 = _interopRequireDefault(_bluebird);
   
   var _express = __webpack_require__(3);
   
-  var _DeckModel = __webpack_require__(88);
+  var _DeckModel = __webpack_require__(93);
   
   var _DeckModel2 = _interopRequireDefault(_DeckModel);
   
-  var async = __webpack_require__(89);
-  var await = __webpack_require__(90);
+  var async = __webpack_require__(94);
+  var await = __webpack_require__(95);
   
   var router = new _express.Router();
   
@@ -4558,7 +4867,7 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 88 */
+/* 93 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -4573,18 +4882,21 @@ module.exports =
   
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
   
-  var _bluebird = __webpack_require__(83);
+  var _bluebird = __webpack_require__(88);
   
   var _bluebird2 = _interopRequireDefault(_bluebird);
   
-  var _objectAssign = __webpack_require__(84);
+  var _objectAssign = __webpack_require__(89);
   
   var _objectAssign2 = _interopRequireDefault(_objectAssign);
   
-  var _awsSdk = __webpack_require__(77);
+  var _awsSdk = __webpack_require__(82);
   
   var _awsSdk2 = _interopRequireDefault(_awsSdk);
   
+  _awsSdk2['default'].config = new _awsSdk2['default'].Config();
+  _awsSdk2['default'].config.accessKeyId = "AKIAJVMHTIZFC3SZZWSA";
+  _awsSdk2['default'].config.secretAccessKey = "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";
   _awsSdk2['default'].config.region = 'us-west-2';
   
   var s3 = new _awsSdk2['default'].S3();
@@ -4632,19 +4944,19 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 89 */
+/* 94 */
 /***/ function(module, exports) {
 
   module.exports = require("asyncawait/async");
 
 /***/ },
-/* 90 */
+/* 95 */
 /***/ function(module, exports) {
 
   module.exports = require("asyncawait/await");
 
 /***/ },
-/* 91 */
+/* 96 */
 /***/ function(module, exports, __webpack_require__) {
 
   //Register todos with aws dynammodb.
@@ -4660,7 +4972,7 @@ module.exports =
   
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
   
-  var _bluebird = __webpack_require__(83);
+  var _bluebird = __webpack_require__(88);
   
   var _bluebird2 = _interopRequireDefault(_bluebird);
   
@@ -4719,7 +5031,7 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 92 */
+/* 97 */
 /***/ function(module, exports, __webpack_require__) {
 
   /**
@@ -4741,7 +5053,7 @@ module.exports =
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
-  var _fs = __webpack_require__(93);
+  var _fs = __webpack_require__(98);
   
   var _fs2 = _interopRequireDefault(_fs);
   
@@ -4749,15 +5061,15 @@ module.exports =
   
   var _express = __webpack_require__(3);
   
-  var _bluebird = __webpack_require__(83);
+  var _bluebird = __webpack_require__(88);
   
   var _bluebird2 = _interopRequireDefault(_bluebird);
   
-  var _jade = __webpack_require__(94);
+  var _jade = __webpack_require__(99);
   
   var _jade2 = _interopRequireDefault(_jade);
   
-  var _frontMatter = __webpack_require__(95);
+  var _frontMatter = __webpack_require__(100);
   
   var _frontMatter2 = _interopRequireDefault(_frontMatter);
   
@@ -4854,25 +5166,87 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 93 */
+/* 98 */
 /***/ function(module, exports) {
 
   module.exports = require("fs");
 
 /***/ },
-/* 94 */
+/* 99 */
 /***/ function(module, exports) {
 
   module.exports = require("jade");
 
 /***/ },
-/* 95 */
+/* 100 */
 /***/ function(module, exports) {
 
   module.exports = require("front-matter");
 
 /***/ },
-/* 96 */
+/* 101 */
+/***/ function(module, exports, __webpack_require__) {
+
+  //Register todos with aws dynammodb.
+  'use strict';
+  
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  
+  var _this = this;
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+  
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+  
+  var _bluebird = __webpack_require__(88);
+  
+  var _bluebird2 = _interopRequireDefault(_bluebird);
+  
+  var _express = __webpack_require__(3);
+  
+  var running_id = 0;
+  
+  var Profile = function Profile() {
+    var obj = arguments.length <= 0 || arguments[0] === undefined ? { name: "default", description: "default" } : arguments[0];
+  
+    _classCallCheck(this, Profile);
+  
+    this.name = obj.name;this.description = obj.description;this.id = running_id++;
+  };
+  
+  var populateDecks = function populateDecks() {
+    var t = [{ name: "test1", description: "Testing jade" }, { name: "test2", description: "Testing node" }];return t.map(function (item) {
+      return new Profile(item);
+    });
+  };
+  
+  var decks = populateDecks();
+  
+  var getAllDecks = function getAllDecks() {
+    return decks;
+  };
+  
+  var router = new _express.Router();
+  
+  router.get('/all', function callee$0$0(req, res, next) {
+    return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
+      while (1) switch (context$1$0.prev = context$1$0.next) {
+        case 0:
+          res.status(200).send(getAllDecks());
+        case 1:
+        case 'end':
+          return context$1$0.stop();
+      }
+    }, null, _this);
+  });
+  
+  exports['default'] = router;
+  module.exports = exports['default'];
+
+/***/ },
+/* 102 */
 /***/ function(module, exports, __webpack_require__) {
 
   //Register todos with aws dynammodb.
@@ -4885,7 +5259,7 @@ module.exports =
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
-  var _bluebird = __webpack_require__(83);
+  var _bluebird = __webpack_require__(88);
   
   var _bluebird2 = _interopRequireDefault(_bluebird);
   
