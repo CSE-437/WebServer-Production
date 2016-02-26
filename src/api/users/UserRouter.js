@@ -5,17 +5,6 @@ import UserModel from './UserModel';
 
 const router = new Router();
 
-//Authentication middleware
-router.use( async(req,res,next)=>{
-
-  //TODO replace this with user authentication
-  if(true){
-    next()
-  }else{
-    res.status(403).send({error:"Not authenticated"});
-  }
-});
-
 
 router.get('/all', async(req, res,next)=>{
   var users;

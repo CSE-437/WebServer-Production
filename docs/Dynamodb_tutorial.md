@@ -1,12 +1,14 @@
 Local Instructions (Adapted from AWS docs)
 
+App will crash without a local version of dynammodb. You have to download
+and extract the directory. I don't upload it to github.
+
 To run Dynamodb locally use the command.
-<pre>java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb</pre>
+<pre>java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb -port 8989</pre>
 
-Note: DynamoDB uses port 8000 by default. Try to keep this port open or use the
--port operation
+Note: DynamoDB uses port 8989 by default.
 
-A built-in JavaScript shell should open on http://localhost:8000/shell
+A built-in JavaScript shell should open on http://localhost:8989/shell
 
 #1. Creating A Table
 Type the following code into the browsers Javascript shell

@@ -7,6 +7,9 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
+//Stuff for passport
+
+//Stuff for running node
 export const port = process.env.PORT || 5000;
 export const host = process.env.WEBSITE_HOSTNAME || `localhost:${port}`;
 //TODO get googleAnalyticsId

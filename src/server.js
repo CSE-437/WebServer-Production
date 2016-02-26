@@ -29,9 +29,12 @@ import session from 'express-session';
 var io = require('socket.io')(server);
 
 import AWS from 'aws-sdk';
-//Change region
-AWS.config.update({region:'us-west-2'});
 
+if(process.env.NODE_ENV == 'development'){
+  AWS.config.update({
+    endpoint:"http://localhost:8989"//TODO check if this line can replace dyanamoose config
+  });
+}
 var DynamoDBStore = require('connect-dynamodb')({session: session});
 
 const server = global.server = express();
@@ -44,10 +47,12 @@ require('./config/passport')(passport);
 // -----------------------------------------------------------------------------
 server.use(morgan('dev'));//log every request to console
 server.use(cookieParser()); //read cookies for authentication
-
+server.use(bodyParser.json());
+server.use(bodyParser.urlencoded({extended: false}));
 //Connects to the sessions table of our database
 server.use(session({
   store: new DynamoDBStore({
+    client: new AWS.DynamoDB(),
     reapInterval:600000 //Expires every 10 minutes
   }),
   resave: true,
@@ -61,18 +66,26 @@ server.use(flash());//use connect-flash for flash messages stored in session.
 
 server.use(express.static(path.join(__dirname, 'public')));
 
+//SETUP Authentication
+
+server.use('/auth', require('./auth/authRoutes'));
+
+import {UserUtil} from './api/users/UserModel';
+passport.use(UserUtil.LocalStrategy);
+passport.serializeUser(UserUtil.serializeUser);
+passport.deserializeUser(UserUtil.deserializeUser);
+
 //
 // Register API middleware
 // -----------------------------------------------------------------------------
 //pass passport to all api
 server.use('/api/user', require('./api/users/UserRouter'));
 server.use('/api/deck', require('./api/decks/DeckRouter'));
+server.use('/api/card', require('./api/cards/CardRouter'));
 server.use('/api/todo', require('./api/todo'));
 server.use('/api/content', require('./api/content'));
 
-server.use('/api/Profile', require('./api/Profile'));
 
-require('./auth/auth')(server, passport);
 //
 // Register server-side rendering middleware
 // -----------------------------------------------------------------------------

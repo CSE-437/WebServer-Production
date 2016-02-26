@@ -121,28 +121,33 @@ module.exports =
   
   var _awsSdk2 = _interopRequireDefault(_awsSdk);
   
-  //Change region
+  var _apiUsersUserModel = __webpack_require__(83);
   
-  var io = __webpack_require__(83)(server);
+  var io = __webpack_require__(89)(server);
   
-  _awsSdk2['default'].config.update({ region: 'us-west-2' });
-  
-  var DynamoDBStore = __webpack_require__(84)({ session: _expressSession2['default'] });
+  if (true) {
+    _awsSdk2['default'].config.update({
+      endpoint: "http://localhost:8989" //TODO check if this line can replace dyanamoose config
+    });
+  }
+  var DynamoDBStore = __webpack_require__(90)({ session: _expressSession2['default'] });
   
   var server = global.server = (0, _express2['default'])();
   
   //Configure passport
-  __webpack_require__(85)(_passport2['default']);
+  __webpack_require__(91)(_passport2['default']);
   
   //
   // Register Node.js middleware
   // -----------------------------------------------------------------------------
   server.use((0, _morgan2['default'])('dev')); //log every request to console
   server.use((0, _cookieParser2['default'])()); //read cookies for authentication
-  
+  server.use(_bodyParser2['default'].json());
+  server.use(_bodyParser2['default'].urlencoded({ extended: false }));
   //Connects to the sessions table of our database
   server.use((0, _expressSession2['default'])({
     store: new DynamoDBStore({
+      client: new _awsSdk2['default'].DynamoDB(),
       reapInterval: 600000 //Expires every 10 minutes
     }),
     resave: true,
@@ -156,18 +161,24 @@ module.exports =
   
   server.use(_express2['default']['static'](_path2['default'].join(__dirname, 'public')));
   
+  //SETUP Authentication
+  
+  server.use('/auth', __webpack_require__(92));
+  
+  _passport2['default'].use(_apiUsersUserModel.UserUtil.LocalStrategy);
+  _passport2['default'].serializeUser(_apiUsersUserModel.UserUtil.serializeUser);
+  _passport2['default'].deserializeUser(_apiUsersUserModel.UserUtil.deserializeUser);
+  
   //
   // Register API middleware
   // -----------------------------------------------------------------------------
   //pass passport to all api
-  server.use('/api/user', __webpack_require__(91));
-  server.use('/api/deck', __webpack_require__(92));
-  server.use('/api/todo', __webpack_require__(96));
-  server.use('/api/content', __webpack_require__(97));
+  server.use('/api/user', __webpack_require__(93));
+  server.use('/api/deck', __webpack_require__(94));
+  server.use('/api/card', __webpack_require__(96));
+  server.use('/api/todo', __webpack_require__(98));
+  server.use('/api/content', __webpack_require__(99));
   
-  server.use('/api/Profile', __webpack_require__(101));
-  
-  __webpack_require__(102)(server, _passport2['default']);
   //
   // Register server-side rendering middleware
   // -----------------------------------------------------------------------------
@@ -1395,6 +1406,9 @@ module.exports =
    * LICENSE.txt file in the root directory of this source tree.
    */
   
+  //Stuff for passport
+  
+  //Stuff for running node
   'use strict';
   
   Object.defineProperty(exports, '__esModule', {
@@ -4430,18 +4444,162 @@ module.exports =
 
 /***/ },
 /* 83 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-  module.exports = require("socket.io");
+  'use strict';
+  
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+  
+  var _bluebird = __webpack_require__(84);
+  
+  var _bluebird2 = _interopRequireDefault(_bluebird);
+  
+  var _objectAssign = __webpack_require__(85);
+  
+  var _objectAssign2 = _interopRequireDefault(_objectAssign);
+  
+  var _bcryptNodejs = __webpack_require__(86);
+  
+  var _bcryptNodejs2 = _interopRequireDefault(_bcryptNodejs);
+  
+  var LocalStrategy = __webpack_require__(87).Strategy;
+  
+  var dynamoose = __webpack_require__(88);
+  
+  if (true) {
+    console.log("Using local database Usermodel");
+    dynamoose.local('http://localhost:8989');
+  }
+  
+  var Schema = dynamoose.Schema;
+  
+  var userSchema = new Schema({
+    id: {
+      type: Number,
+      validate: function validate(v) {
+        return v > 0;
+      },
+      hashKey: true //Alwasy have one
+    },
+    username: {
+      type: String,
+      rangeKey: true,
+      index: true // name: nameLocalIndex, ProjectionType: All
+    },
+    decks: {
+      type: [String],
+      required: false
+    },
+    //everything below this is authentication
+    localEmail: String,
+    localPassword: String
+  
+  });
+  
+  var User = dynamoose.model('User', userSchema);
+  //Required for passport to serialize user
+  var UserMethods = {
+    serializeUser: function serializeUser(user, done) {
+      console.log('IN User.serializeUser: ' + arguments);
+      done(null, user.id);
+    },
+  
+    deserializeUser: function deserializeUser(id, done) {
+      console.log('IN User.deserializeUser: ' + arguments);
+      User.get({ id: id }, function (err, user) {
+        done(err, user);
+      });
+    },
+  
+    LocalStrategy: new LocalStrategy(function (email, pass, done) {
+      console.log('IN User.LocalStrategy: ' + arguments);
+      User.get({ localEmail: email }, function (err, user) {
+        if (err) {
+          return done(err);
+        } else {
+          if (user && UserMethods.validPassword(pass, user.localPassword)) {
+            return done(null, user);
+          } else {
+            return done(null, false, {
+              message: 'Login Invalid'
+            });
+          }
+        }
+      });
+    }),
+  
+    generateHash: function generateHash(pass) {
+      return _bcryptNodejs2['default'].hashSync(pass, _bcryptNodejs2['default'].genSaltSync(8), null);
+    },
+  
+    validPassword: function validPassword(pass, compare) {
+      _bcryptNodejs2['default'].compareSync(pass, compare);
+    },
+    //UserUtil.register(new User({username : req.body.username, localEmail: req.body.email}), req.body.password, function(err, user){
+    //TODO make sure no user of same name exist and password is decent. check email
+    register: function register(user, password, cb) {
+      user.localPassword = this.generateHash(password);
+      user.id = 2;
+      console.log(user);
+      User.create(user, function (err, u) {
+        cb(err, u);
+      });
+    }
+  
+  };
+  
+  exports['default'] = User;
+  var UserUtil = UserMethods;
+  exports.UserUtil = UserUtil;
 
 /***/ },
 /* 84 */
 /***/ function(module, exports) {
 
-  module.exports = require("connect-dynamodb");
+  module.exports = require("bluebird");
 
 /***/ },
 /* 85 */
+/***/ function(module, exports) {
+
+  module.exports = require("object-assign");
+
+/***/ },
+/* 86 */
+/***/ function(module, exports) {
+
+  module.exports = require("bcrypt-nodejs");
+
+/***/ },
+/* 87 */
+/***/ function(module, exports) {
+
+  module.exports = require("passport-local");
+
+/***/ },
+/* 88 */
+/***/ function(module, exports) {
+
+  module.exports = require("dynamoose");
+
+/***/ },
+/* 89 */
+/***/ function(module, exports) {
+
+  module.exports = require("socket.io");
+
+/***/ },
+/* 90 */
+/***/ function(module, exports) {
+
+  module.exports = require("connect-dynamodb");
+
+/***/ },
+/* 91 */
 /***/ function(module, exports, __webpack_require__) {
 
   //everything for auth locally
@@ -4453,9 +4611,9 @@ module.exports =
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
-  var _passportLocal = __webpack_require__(86);
+  var _passportLocal = __webpack_require__(87);
   
-  var _apiUsersUserModel = __webpack_require__(87);
+  var _apiUsersUserModel = __webpack_require__(83);
   
   var _apiUsersUserModel2 = _interopRequireDefault(_apiUsersUserModel);
   
@@ -4552,15 +4710,10 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 86 */
-/***/ function(module, exports) {
-
-  module.exports = require("passport-local");
-
-/***/ },
-/* 87 */
+/* 92 */
 /***/ function(module, exports, __webpack_require__) {
 
+  //Register todos with aws dynammodb.
   'use strict';
   
   Object.defineProperty(exports, '__esModule', {
@@ -4569,82 +4722,47 @@ module.exports =
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
-  var _bluebird = __webpack_require__(88);
+  var _bluebird = __webpack_require__(84);
   
   var _bluebird2 = _interopRequireDefault(_bluebird);
   
-  var _objectAssign = __webpack_require__(89);
+  var _express = __webpack_require__(3);
   
-  var _objectAssign2 = _interopRequireDefault(_objectAssign);
+  var _passport = __webpack_require__(76);
   
-  var dynamoose = __webpack_require__(90);
+  var _passport2 = _interopRequireDefault(_passport);
   
-  var Schema = dynamoose.Schema;
+  var _apiUsersUserModel = __webpack_require__(83);
   
-  var userSchema = new Schema({
-    id: {
-      type: Number,
-      validate: function validate(v) {
-        return v > 0;
-      },
-      hashKey: true //Alwasy have one
-    },
-    name: {
-      type: String,
-      rangeKey: true,
-      index: true // name: nameLocalIndex, ProjectionType: All
-    },
-    localEmail: String,
-    localPassword: String,
-    facebookId: String,
-    facebookToken: String,
-    facebookEmail: String,
-    facebookName: String,
-    twitterId: String,
-    twitterToken: String,
-    twitterDisplayName: String,
-    twitterUserName: String,
-    googleId: String,
-    googleToken: String,
-    googleEmail: String,
-    googleName: String
+  var _apiUsersUserModel2 = _interopRequireDefault(_apiUsersUserModel);
   
+  var router = new _express.Router();
+  
+  router.post('/register', function (req, res) {
+    _apiUsersUserModel.UserUtil.register({ username: req.body.username, localEmail: req.body.email }, req.body.password, function (err, user) {
+      if (err) {
+        return res.status(500).send(err);
+      }
+  
+      _passport2['default'].authenticate('local')(req, res, function () {
+        res.status(200).send('authenticated');
+      });
+    });
   });
   
-  var User = dynamoose.model('User', userSchema);
+  router.post('/login', _passport2['default'].authenticate('local'), function (req, res) {
+    res.status(200).send('authenticated');
+  });
   
-  exports['default'] = User;
-  var UserUtil = {
-    generateHash: function generateHash(password) {
-      return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
-    },
-  
-    validPassword: function validPassword(password) {
-      return bcrypt.compareSync(password, this.local.password);
-    }
-  };
-  exports.UserUtil = UserUtil;
+  router.get('/logout', function (req, res) {
+    req.logout();
+    res.status(200).send('logged out');
+  });
+  exports['default'] = router;
+  module.exports = exports['default'];
 
 /***/ },
-/* 88 */
-/***/ function(module, exports) {
-
-  module.exports = require("bluebird");
-
-/***/ },
-/* 89 */
-/***/ function(module, exports) {
-
-  module.exports = require("object-assign");
-
-/***/ },
-/* 90 */
-/***/ function(module, exports) {
-
-  module.exports = require("dynamoose");
-
-/***/ },
-/* 91 */
+/* 93 */
 /***/ function(module, exports, __webpack_require__) {
 
   //Register todos with aws dynammodb.
@@ -4658,37 +4776,17 @@ module.exports =
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
-  var _bluebird = __webpack_require__(88);
+  var _bluebird = __webpack_require__(84);
   
   var _bluebird2 = _interopRequireDefault(_bluebird);
   
   var _express = __webpack_require__(3);
   
-  var _UserModel = __webpack_require__(87);
+  var _UserModel = __webpack_require__(83);
   
   var _UserModel2 = _interopRequireDefault(_UserModel);
   
   var router = new _express.Router();
-  
-  //Authentication middleware
-  router.use(function callee$0$0(req, res, next) {
-    return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
-      while (1) switch (context$1$0.prev = context$1$0.next) {
-        case 0:
-  
-          //TODO replace this with user authentication
-          if (true) {
-            next();
-          } else {
-            res.status(403).send({ error: "Not authenticated" });
-          }
-  
-        case 1:
-        case 'end':
-          return context$1$0.stop();
-      }
-    }, null, _this);
-  });
   
   router.get('/all', function callee$0$0(req, res, next) {
     var users;
@@ -4750,7 +4848,7 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 92 */
+/* 94 */
 /***/ function(module, exports, __webpack_require__) {
 
   //Register todos with aws dynammodb.
@@ -4765,18 +4863,15 @@ module.exports =
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
-  var _bluebird = __webpack_require__(88);
+  var _bluebird = __webpack_require__(84);
   
   var _bluebird2 = _interopRequireDefault(_bluebird);
   
   var _express = __webpack_require__(3);
   
-  var _DeckModel = __webpack_require__(93);
+  var _DeckModel = __webpack_require__(95);
   
   var _DeckModel2 = _interopRequireDefault(_DeckModel);
-  
-  var async = __webpack_require__(94);
-  var await = __webpack_require__(95);
   
   var router = new _express.Router();
   
@@ -4800,15 +4895,22 @@ module.exports =
     }, null, _this);
   });
   
-  router.get('/all', function callee$0$0(req, res, next) {
+  router.get('*', function callee$0$0(req, res, next) {
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
         case 0:
-          _DeckModel2['default'].getAllDecks().then(function (success, err) {
-            res.status(200).send(success);
-          }, function (err) {
-            res.status(500).send(err);
-          });
+          res.status(200).send("hi");
+  
+        case 1:
+        case 'end':
+          return context$1$0.stop();
+      }
+    }, null, _this);
+  }).post('*', function callee$0$0(req, res, next) {
+    return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
+      while (1) switch (context$1$0.prev = context$1$0.next) {
+        case 0:
+          res.status(200).send("hi");
   
         case 1:
         case 'end':
@@ -4817,27 +4919,178 @@ module.exports =
     }, null, _this);
   });
   
-  router.param('deckid', function (req, res, next, id) {
-    req.deckid = id;
+  router.param('did', function (req, res, next, id) {
+    req.did = did;
     next();
   });
   
   //TODO: Get user by id
-  router.route('/:deckid').get(function callee$0$0(req, res, next) {
-    var userid;
+  router.route('/:cid').get(function callee$0$0(req, res, next) {
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
         case 0:
-          try {
-            userid = req.userid;
+          res.status(200).send({ message: "Hi" });
   
-            res.status(200).send({ message: "Hi" });
-          } catch (err) {
-            next(err);
+        case 1:
+        case 'end':
+          return context$1$0.stop();
+      }
+    }, null, _this);
+  });
+  
+  exports['default'] = router;
+  module.exports = exports['default'];
+
+/***/ },
+/* 95 */
+/***/ function(module, exports, __webpack_require__) {
+
+  'use strict';
+  
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+  
+  var _bluebird = __webpack_require__(84);
+  
+  var _bluebird2 = _interopRequireDefault(_bluebird);
+  
+  var _objectAssign = __webpack_require__(85);
+  
+  var _objectAssign2 = _interopRequireDefault(_objectAssign);
+  
+  var dynamoose = __webpack_require__(88);
+  
+  if (true) {
+    console.log("Using local database deck model");
+    dynamoose.local('http://localhost:8989');
+  }
+  //https://app.apiary.io/ankihub/editor
+  var Schema = dynamoose.Schema;
+  
+  var deckSchema = new Schema({
+    did: {
+      type: Number,
+      validate: function validate(v) {
+        return v > 0;
+      },
+      hashKey: true //Alwasy have one
+    },
+    owner: {
+      type: Number,
+      rangeKey: true,
+      index: true // name: nameLocalIndex, ProjectionType: All
+    },
+    //everything below this is deck info
+    desc: String,
+    name: String,
+    cards: [String],
+    owner: Number,
+    children: [String],
+    subscribers: [Number],
+    subscriptions: [String],
+    transactions: [Object]
+  });
+  
+  var Deck = dynamoose.model('Deck', deckSchema);
+  
+  exports['default'] = Deck;
+  var DeckUtil = {
+    GetTransactions: function GetTransactions(did, cb) {
+      Deck.get({ did: did }, function (err, deck) {
+        cb(err, deck.transactions);
+      });
+    }
+  };
+  exports.DeckUtil = DeckUtil;
+
+/***/ },
+/* 96 */
+/***/ function(module, exports, __webpack_require__) {
+
+  //Register todos with aws dynammodb.
+  //https://github.com/yortus/asyncawait
+  'use strict';
+  
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  
+  var _this = this;
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+  
+  var _bluebird = __webpack_require__(84);
+  
+  var _bluebird2 = _interopRequireDefault(_bluebird);
+  
+  var _express = __webpack_require__(3);
+  
+  var _CardModel = __webpack_require__(97);
+  
+  var _CardModel2 = _interopRequireDefault(_CardModel);
+  
+  var router = new _express.Router();
+  
+  //Authentication middleware
+  router.use(function callee$0$0(req, res, next) {
+    return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
+      while (1) switch (context$1$0.prev = context$1$0.next) {
+        case 0:
+  
+          //TODO replace this with user authentication
+          if (true) {
+            next();
+          } else {
+            res.status(403).send({ error: "Not authenticated" });
           }
-          return context$1$0.abrupt('return');
   
-        case 2:
+        case 1:
+        case 'end':
+          return context$1$0.stop();
+      }
+    }, null, _this);
+  });
+  
+  router.get('*', function callee$0$0(req, res, next) {
+    return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
+      while (1) switch (context$1$0.prev = context$1$0.next) {
+        case 0:
+          res.status(200).send("hi");
+  
+        case 1:
+        case 'end':
+          return context$1$0.stop();
+      }
+    }, null, _this);
+  }).post('*', function callee$0$0(req, res, next) {
+    return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
+      while (1) switch (context$1$0.prev = context$1$0.next) {
+        case 0:
+          res.status(200).send("hi");
+  
+        case 1:
+        case 'end':
+          return context$1$0.stop();
+      }
+    }, null, _this);
+  });
+  
+  router.param('cid', function (req, res, next, id) {
+    req.cid = id;
+    next();
+  });
+  
+  //TODO: Get user by id
+  router.route('/:cid').get(function callee$0$0(req, res, next) {
+    return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
+      while (1) switch (context$1$0.prev = context$1$0.next) {
+        case 0:
+          res.status(200).send({ message: "Hi" });
+  
+        case 1:
         case 'end':
           return context$1$0.stop();
       }
@@ -4867,7 +5120,7 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 93 */
+/* 97 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -4876,87 +5129,70 @@ module.exports =
     value: true
   });
   
-  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-  
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
-  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
-  var _bluebird = __webpack_require__(88);
+  var _bluebird = __webpack_require__(84);
   
   var _bluebird2 = _interopRequireDefault(_bluebird);
   
-  var _objectAssign = __webpack_require__(89);
+  var _objectAssign = __webpack_require__(85);
   
   var _objectAssign2 = _interopRequireDefault(_objectAssign);
   
-  var _awsSdk = __webpack_require__(82);
+  var dynamoose = __webpack_require__(88);
   
-  var _awsSdk2 = _interopRequireDefault(_awsSdk);
+  if (true) {
+    console.log("Using local database cardmodel");
+    dynamoose.local('http://localhost:8989');
+  }
+  //https://app.apiary.io/ankihub/editor
+  var Schema = dynamoose.Schema;
   
-  _awsSdk2['default'].config = new _awsSdk2['default'].Config();
-  _awsSdk2['default'].config.accessKeyId = "AKIAJVMHTIZFC3SZZWSA";
-  _awsSdk2['default'].config.secretAccessKey = "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";
-  _awsSdk2['default'].config.region = 'us-west-2';
+  var cardSchema = new Schema({
+    cid: {
+      type: Number,
+      validate: function validate(v) {
+        return v > 0;
+      },
+      hashKey: true //Alwasy have one
+    },
+    owner: {
+      type: Number,
+      rangeKey: true,
+      index: true // name: nameLocalIndex, ProjectionType: All
+    },
+    did: {
+      type: Number,
+      index: {
+        global: true,
+        rangeKey: 'owner',
+        name: 'deckIndex',
+        project: true }
+    },
+    //ProjectionType: ALL
+    //everything below this is deck info
+    front: String,
+    back: String,
+    tags: [String],
+    notes: [String],
+    transactions: [Object]
   
-  var s3 = new _awsSdk2['default'].S3();
+  });
   
-  var DeckModel = (function () {
-    function DeckModel() {
-      _classCallCheck(this, DeckModel);
+  var Card = dynamoose.model('Card', cardSchema);
+  
+  exports['default'] = Card;
+  var CardUtil = {
+    GetTransactions: function GetTransactions(cid, cb) {
+      Card.get({ cid: cid }, function (err, card) {
+        cb(err, card.transactions);
+      });
     }
-  
-    _createClass(DeckModel, [{
-      key: 'getAllDecks',
-      value: function getAllDecks() {
-        return new _bluebird2['default'](function (resolve, reject) {
-          s3.listBuckets(function (err, data) {
-            if (err) {
-              console.log("Error:");
-              reject({ error: err });
-            } else {
-              for (var index in data.Buckets) {
-                var bucket = data.Buckets[index];
-                console.log("Bucket: ", bucket.Name, ':', bucket.CreationDate);
-              }
-              console.log("should resolve");
-              resolve(data);
-            }
-          });
-        });
-      }
-  
-      //TODO fill in
-    }, {
-      key: 'getDeckById',
-      value: function getDeckById() {}
-  
-      //TODO fill in
-    }, {
-      key: 'uploadDeck',
-      value: function uploadDeck() {}
-    }]);
-  
-    return DeckModel;
-  })();
-  
-  exports['default'] = new DeckModel();
-  module.exports = exports['default'];
+  };
+  exports.CardUtil = CardUtil;
 
 /***/ },
-/* 94 */
-/***/ function(module, exports) {
-
-  module.exports = require("asyncawait/async");
-
-/***/ },
-/* 95 */
-/***/ function(module, exports) {
-
-  module.exports = require("asyncawait/await");
-
-/***/ },
-/* 96 */
+/* 98 */
 /***/ function(module, exports, __webpack_require__) {
 
   //Register todos with aws dynammodb.
@@ -4972,7 +5208,7 @@ module.exports =
   
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
   
-  var _bluebird = __webpack_require__(88);
+  var _bluebird = __webpack_require__(84);
   
   var _bluebird2 = _interopRequireDefault(_bluebird);
   
@@ -5031,7 +5267,7 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 97 */
+/* 99 */
 /***/ function(module, exports, __webpack_require__) {
 
   /**
@@ -5053,7 +5289,7 @@ module.exports =
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
-  var _fs = __webpack_require__(98);
+  var _fs = __webpack_require__(100);
   
   var _fs2 = _interopRequireDefault(_fs);
   
@@ -5061,15 +5297,15 @@ module.exports =
   
   var _express = __webpack_require__(3);
   
-  var _bluebird = __webpack_require__(88);
+  var _bluebird = __webpack_require__(84);
   
   var _bluebird2 = _interopRequireDefault(_bluebird);
   
-  var _jade = __webpack_require__(99);
+  var _jade = __webpack_require__(101);
   
   var _jade2 = _interopRequireDefault(_jade);
   
-  var _frontMatter = __webpack_require__(100);
+  var _frontMatter = __webpack_require__(102);
   
   var _frontMatter2 = _interopRequireDefault(_frontMatter);
   
@@ -5080,6 +5316,7 @@ module.exports =
   var parseJade = function parseJade(path, jadeContent) {
     var fmContent = (0, _frontMatter2['default'])(jadeContent);
     var htmlContent = _jade2['default'].render(fmContent.body);
+    //combines objects into one.
     return Object.assign({ path: path, content: htmlContent }, fmContent.attributes);
   };
   
@@ -5143,6 +5380,7 @@ module.exports =
           source = context$1$0.sent;
           content = parseJade(path, source);
   
+          //Passed to routes.js.
           res.status(200).send(content);
   
         case 21:
@@ -5166,124 +5404,22 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 98 */
+/* 100 */
 /***/ function(module, exports) {
 
   module.exports = require("fs");
 
 /***/ },
-/* 99 */
+/* 101 */
 /***/ function(module, exports) {
 
   module.exports = require("jade");
 
 /***/ },
-/* 100 */
+/* 102 */
 /***/ function(module, exports) {
 
   module.exports = require("front-matter");
-
-/***/ },
-/* 101 */
-/***/ function(module, exports, __webpack_require__) {
-
-  //Register todos with aws dynammodb.
-  'use strict';
-  
-  Object.defineProperty(exports, '__esModule', {
-    value: true
-  });
-  
-  var _this = this;
-  
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
-  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
-  var _bluebird = __webpack_require__(88);
-  
-  var _bluebird2 = _interopRequireDefault(_bluebird);
-  
-  var _express = __webpack_require__(3);
-  
-  var running_id = 0;
-  
-  var Profile = function Profile() {
-    var obj = arguments.length <= 0 || arguments[0] === undefined ? { name: "default", description: "default" } : arguments[0];
-  
-    _classCallCheck(this, Profile);
-  
-    this.name = obj.name;this.description = obj.description;this.id = running_id++;
-  };
-  
-  var populateDecks = function populateDecks() {
-    var t = [{ name: "test1", description: "Testing jade" }, { name: "test2", description: "Testing node" }];return t.map(function (item) {
-      return new Profile(item);
-    });
-  };
-  
-  var decks = populateDecks();
-  
-  var getAllDecks = function getAllDecks() {
-    return decks;
-  };
-  
-  var router = new _express.Router();
-  
-  router.get('/all', function callee$0$0(req, res, next) {
-    return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
-      while (1) switch (context$1$0.prev = context$1$0.next) {
-        case 0:
-          res.status(200).send(getAllDecks());
-        case 1:
-        case 'end':
-          return context$1$0.stop();
-      }
-    }, null, _this);
-  });
-  
-  exports['default'] = router;
-  module.exports = exports['default'];
-
-/***/ },
-/* 102 */
-/***/ function(module, exports, __webpack_require__) {
-
-  //Register todos with aws dynammodb.
-  //https://github.com/yortus/asyncawait
-  'use strict';
-  
-  Object.defineProperty(exports, '__esModule', {
-    value: true
-  });
-  
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
-  var _bluebird = __webpack_require__(88);
-  
-  var _bluebird2 = _interopRequireDefault(_bluebird);
-  
-  var _express = __webpack_require__(3);
-  
-  var router = new _express.Router();
-  
-  exports['default'] = function (server, passport) {
-  
-    router.post('/signup', passport.authenticate('local-signup', {
-      successRedirect: '/profile',
-      failureRedirect: '/signup',
-      failureFlash: true // allow flash messages
-    }));
-  
-    router.post('/login', passport.authenticate('local-login', {
-      successRedirect: '/profile',
-      failureRedirect: '/login',
-      failureFlash: true
-    }));
-    server.use('/auth', router);
-  };
-  
-  module.exports = exports['default'];
 
 /***/ }
 /******/ ]);

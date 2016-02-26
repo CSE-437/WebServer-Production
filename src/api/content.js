@@ -21,6 +21,7 @@ const CONTENT_DIR = join(__dirname, './content');
 const parseJade = (path, jadeContent) => {
   const fmContent = fm(jadeContent);
   const htmlContent = jade.render(fmContent.body);
+  //combines objects into one. 
   return Object.assign({ path, content: htmlContent }, fmContent.attributes);
 };
 
@@ -50,6 +51,7 @@ router.get('/', async (req, res, next) => {
     } else {
       const source = await readFile(fileName, { encoding: 'utf8' });
       var content = parseJade(path, source);
+      //Passed to routes.js.
       res.status(200).send(content);
     }
   } catch (err) {
