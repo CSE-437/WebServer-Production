@@ -1,19 +1,10 @@
 //Register todos with aws dynammodb.
 import Promise from 'bluebird';
 import {Router} from 'express';
-import UserModel from './UserModel';
 
 const router = new Router();
 
 
-router.get('/all', async(req, res,next)=>{
-  var users;
-  console.log(UserModel)
-  users = await UserModel.getAllUsers()
-  console.log(users)
-  res.status(200).send(users)
-  return;
-});
 
 router.param('userid', function(req, res,next,id){
   req.userid = id;

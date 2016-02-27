@@ -2,7 +2,6 @@
 //https://github.com/yortus/asyncawait
 import Promise from 'bluebird';
 import {Router} from 'express';
-import Card, {CardUtil} from './CardModel';
 
 const router = new Router();
 

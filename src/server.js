@@ -18,8 +18,6 @@ import Html from './components/Html';
 import assets from './assets';
 import { port } from './config';
 
-import passport from 'passport';
-import flash from 'connect-flash';
 
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
@@ -28,19 +26,9 @@ import session from 'express-session';
 
 var io = require('socket.io')(server);
 
-import AWS from 'aws-sdk';
-
-if(process.env.NODE_ENV == 'development'){
-  AWS.config.update({
-    endpoint:"http://localhost:8989"//TODO check if this line can replace dyanamoose config
-  });
-}
-var DynamoDBStore = require('connect-dynamodb')({session: session});
-
 const server = global.server = express();
 
 //Configure passport
-require('./config/passport')(passport);
 
 //
 // Register Node.js middleware
@@ -50,30 +38,9 @@ server.use(cookieParser()); //read cookies for authentication
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({extended: false}));
 //Connects to the sessions table of our database
-server.use(session({
-  store: new DynamoDBStore({
-    client: new AWS.DynamoDB(),
-    reapInterval:600000 //Expires every 10 minutes
-  }),
-  resave: true,
-  saveUninitialized: true,
-  secret:'ankiisloveankiislife'
-}));
-server.use(passport.initialize());
-server.use(passport.session()); //persistant login sessions
-//TODO: Figure out the best way to send req.flash() to pages
-server.use(flash());//use connect-flash for flash messages stored in session.
-
 server.use(express.static(path.join(__dirname, 'public')));
 
 //SETUP Authentication
-
-server.use('/auth', require('./auth/authRoutes'));
-
-import {UserUtil} from './api/users/UserModel';
-passport.use(UserUtil.LocalStrategy);
-passport.serializeUser(UserUtil.serializeUser);
-passport.deserializeUser(UserUtil.deserializeUser);
 
 //
 // Register API middleware

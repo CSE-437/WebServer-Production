@@ -93,49 +93,27 @@ module.exports =
   
   var _config = __webpack_require__(14);
   
-  var _passport = __webpack_require__(76);
-  
-  var _passport2 = _interopRequireDefault(_passport);
-  
-  var _connectFlash = __webpack_require__(77);
-  
-  var _connectFlash2 = _interopRequireDefault(_connectFlash);
-  
-  var _morgan = __webpack_require__(78);
+  var _morgan = __webpack_require__(76);
   
   var _morgan2 = _interopRequireDefault(_morgan);
   
-  var _cookieParser = __webpack_require__(79);
+  var _cookieParser = __webpack_require__(77);
   
   var _cookieParser2 = _interopRequireDefault(_cookieParser);
   
-  var _bodyParser = __webpack_require__(80);
+  var _bodyParser = __webpack_require__(78);
   
   var _bodyParser2 = _interopRequireDefault(_bodyParser);
   
-  var _expressSession = __webpack_require__(81);
+  var _expressSession = __webpack_require__(79);
   
   var _expressSession2 = _interopRequireDefault(_expressSession);
   
-  var _awsSdk = __webpack_require__(82);
-  
-  var _awsSdk2 = _interopRequireDefault(_awsSdk);
-  
-  var _apiUsersUserModel = __webpack_require__(83);
-  
-  var io = __webpack_require__(89)(server);
-  
-  if (true) {
-    _awsSdk2['default'].config.update({
-      endpoint: "http://localhost:8989" //TODO check if this line can replace dyanamoose config
-    });
-  }
-  var DynamoDBStore = __webpack_require__(90)({ session: _expressSession2['default'] });
+  var io = __webpack_require__(83)(server);
   
   var server = global.server = (0, _express2['default'])();
   
   //Configure passport
-  __webpack_require__(91)(_passport2['default']);
   
   //
   // Register Node.js middleware
@@ -145,39 +123,19 @@ module.exports =
   server.use(_bodyParser2['default'].json());
   server.use(_bodyParser2['default'].urlencoded({ extended: false }));
   //Connects to the sessions table of our database
-  server.use((0, _expressSession2['default'])({
-    store: new DynamoDBStore({
-      client: new _awsSdk2['default'].DynamoDB(),
-      reapInterval: 600000 //Expires every 10 minutes
-    }),
-    resave: true,
-    saveUninitialized: true,
-    secret: 'ankiisloveankiislife'
-  }));
-  server.use(_passport2['default'].initialize());
-  server.use(_passport2['default'].session()); //persistant login sessions
-  //TODO: Figure out the best way to send req.flash() to pages
-  server.use((0, _connectFlash2['default'])()); //use connect-flash for flash messages stored in session.
-  
   server.use(_express2['default']['static'](_path2['default'].join(__dirname, 'public')));
   
   //SETUP Authentication
-  
-  server.use('/auth', __webpack_require__(92));
-  
-  _passport2['default'].use(_apiUsersUserModel.UserUtil.LocalStrategy);
-  _passport2['default'].serializeUser(_apiUsersUserModel.UserUtil.serializeUser);
-  _passport2['default'].deserializeUser(_apiUsersUserModel.UserUtil.deserializeUser);
   
   //
   // Register API middleware
   // -----------------------------------------------------------------------------
   //pass passport to all api
-  server.use('/api/user', __webpack_require__(93));
-  server.use('/api/deck', __webpack_require__(94));
-  server.use('/api/card', __webpack_require__(96));
-  server.use('/api/todo', __webpack_require__(98));
-  server.use('/api/content', __webpack_require__(99));
+  server.use('/api/user', __webpack_require__(88));
+  server.use('/api/deck', __webpack_require__(89));
+  server.use('/api/card', __webpack_require__(90));
+  server.use('/api/todo', __webpack_require__(91));
+  server.use('/api/content', __webpack_require__(92));
   
   //
   // Register server-side rendering middleware
@@ -4404,365 +4362,46 @@ module.exports =
 /* 76 */
 /***/ function(module, exports) {
 
-  module.exports = require("passport");
+  module.exports = require("morgan");
 
 /***/ },
 /* 77 */
 /***/ function(module, exports) {
 
-  module.exports = require("connect-flash");
+  module.exports = require("cookie-parser");
 
 /***/ },
 /* 78 */
 /***/ function(module, exports) {
 
-  module.exports = require("morgan");
+  module.exports = require("body-parser");
 
 /***/ },
 /* 79 */
 /***/ function(module, exports) {
 
-  module.exports = require("cookie-parser");
-
-/***/ },
-/* 80 */
-/***/ function(module, exports) {
-
-  module.exports = require("body-parser");
-
-/***/ },
-/* 81 */
-/***/ function(module, exports) {
-
   module.exports = require("express-session");
 
 /***/ },
-/* 82 */
-/***/ function(module, exports) {
-
-  module.exports = require("aws-sdk");
-
-/***/ },
-/* 83 */
-/***/ function(module, exports, __webpack_require__) {
-
-  'use strict';
-  
-  Object.defineProperty(exports, '__esModule', {
-    value: true
-  });
-  
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
-  var _bluebird = __webpack_require__(84);
-  
-  var _bluebird2 = _interopRequireDefault(_bluebird);
-  
-  var _objectAssign = __webpack_require__(85);
-  
-  var _objectAssign2 = _interopRequireDefault(_objectAssign);
-  
-  var _bcryptNodejs = __webpack_require__(86);
-  
-  var _bcryptNodejs2 = _interopRequireDefault(_bcryptNodejs);
-  
-  var LocalStrategy = __webpack_require__(87).Strategy;
-  
-  var dynamoose = __webpack_require__(88);
-  
-  if (true) {
-    console.log("Using local database Usermodel");
-    dynamoose.local('http://localhost:8989');
-  }
-  
-  var Schema = dynamoose.Schema;
-  
-  var userSchema = new Schema({
-    id: {
-      type: Number,
-      validate: function validate(v) {
-        return v > 0;
-      },
-      hashKey: true //Alwasy have one
-    },
-    username: {
-      type: String,
-      rangeKey: true,
-      index: true // name: nameLocalIndex, ProjectionType: All
-    },
-    decks: {
-      type: [String],
-      required: false
-    },
-    //everything below this is authentication
-    localEmail: String,
-    localPassword: String
-  
-  });
-  
-  var User = dynamoose.model('User', userSchema);
-  //Required for passport to serialize user
-  var UserMethods = {
-    serializeUser: function serializeUser(user, done) {
-      console.log('IN User.serializeUser: ' + arguments);
-      done(null, user.id);
-    },
-  
-    deserializeUser: function deserializeUser(id, done) {
-      console.log('IN User.deserializeUser: ' + arguments);
-      User.get({ id: id }, function (err, user) {
-        done(err, user);
-      });
-    },
-  
-    LocalStrategy: new LocalStrategy(function (email, pass, done) {
-      console.log('IN User.LocalStrategy: ' + arguments);
-      User.get({ localEmail: email }, function (err, user) {
-        if (err) {
-          return done(err);
-        } else {
-          if (user && UserMethods.validPassword(pass, user.localPassword)) {
-            return done(null, user);
-          } else {
-            return done(null, false, {
-              message: 'Login Invalid'
-            });
-          }
-        }
-      });
-    }),
-  
-    generateHash: function generateHash(pass) {
-      return _bcryptNodejs2['default'].hashSync(pass, _bcryptNodejs2['default'].genSaltSync(8), null);
-    },
-  
-    validPassword: function validPassword(pass, compare) {
-      _bcryptNodejs2['default'].compareSync(pass, compare);
-    },
-    //UserUtil.register(new User({username : req.body.username, localEmail: req.body.email}), req.body.password, function(err, user){
-    //TODO make sure no user of same name exist and password is decent. check email
-    register: function register(user, password, cb) {
-      user.localPassword = this.generateHash(password);
-      user.id = 2;
-      console.log(user);
-      User.create(user, function (err, u) {
-        cb(err, u);
-      });
-    }
-  
-  };
-  
-  exports['default'] = User;
-  var UserUtil = UserMethods;
-  exports.UserUtil = UserUtil;
-
-/***/ },
-/* 84 */
+/* 80 */,
+/* 81 */
 /***/ function(module, exports) {
 
   module.exports = require("bluebird");
 
 /***/ },
-/* 85 */
-/***/ function(module, exports) {
-
-  module.exports = require("object-assign");
-
-/***/ },
-/* 86 */
-/***/ function(module, exports) {
-
-  module.exports = require("bcrypt-nodejs");
-
-/***/ },
-/* 87 */
-/***/ function(module, exports) {
-
-  module.exports = require("passport-local");
-
-/***/ },
-/* 88 */
-/***/ function(module, exports) {
-
-  module.exports = require("dynamoose");
-
-/***/ },
-/* 89 */
+/* 82 */,
+/* 83 */
 /***/ function(module, exports) {
 
   module.exports = require("socket.io");
 
 /***/ },
-/* 90 */
-/***/ function(module, exports) {
-
-  module.exports = require("connect-dynamodb");
-
-/***/ },
-/* 91 */
-/***/ function(module, exports, __webpack_require__) {
-
-  //everything for auth locally
-  'use strict';
-  
-  Object.defineProperty(exports, '__esModule', {
-    value: true
-  });
-  
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
-  var _passportLocal = __webpack_require__(87);
-  
-  var _apiUsersUserModel = __webpack_require__(83);
-  
-  var _apiUsersUserModel2 = _interopRequireDefault(_apiUsersUserModel);
-  
-  exports['default'] = function (passport) {
-    // =========================================================================
-    // passport session setup ==================================================
-    // =========================================================================
-    // required for persistent login sessions
-    // passport needs ability to serialize and unserialize users out of session
-  
-    // used to serialize the user for the session
-    passport.serializeUser(function (user, done) {
-      done(null, user.id);
-    });
-  
-    //Deserialize user
-    passport.deserializeUser(function (id, user) {
-      UserModel.findById(id, function (err, user) {
-        done(err, user);
-      });
-    });
-  
-    // =========================================================================
-    // LOCAL SIGNUP ============================================================
-    // =========================================================================
-    // we are using named strategies since we have one for login and one for signup
-    // by default, if there was no name, it would just be called 'local'
-  
-    passport.use('local-signup', new _passportLocal.Strategy({
-      // by default, local strategy uses username and password
-      usernameField: 'email',
-      passwordField: 'password',
-      passReqToCallback: true
-    }, function (req, email, password, done) {
-      //asynchrounous
-      //User.findOne wont fire unless data is sent back.
-  
-      process.nextTick(function () {
-  
-        //Find a suer whose email is the same as forms email.
-        _apiUsersUserModel2['default'].get({ 'localEmail': email }, function (err, user) {
-          // return on error
-          if (err) return done(err);
-  
-          //check to see if there's already a user with that email.
-          if (user) {
-            return done(null, false, req.flash('signupMessage', 'That email is already taken.'));
-          } else {
-  
-            //if no user with that email
-            //set users local credentials.
-            password = _apiUsersUserModel.UserUtil.generateHash(password);
-  
-            _apiUsersUserModel2['default'].create({
-              localImail: email,
-              localPassword: password
-            }, function (err, user) {
-              if (err) throw err;
-              return done(null, user);
-            });
-          }
-        });
-      });
-    }));
-  
-    // =========================================================================
-    // LOCAL LOGIN =============================================================
-    // =========================================================================
-    // we are using named strategies since we have one for login and one for signup
-    // by default, if there was no name, it would just be called 'local'
-  
-    passport.use('local-login', new _passportLocal.Strategy({
-      usernameField: 'email',
-      passwordField: 'password',
-      passReqToCallback: true
-    }, function (req, email, password, done) {
-      // find a user whose email is the same as the forms email
-      //We are checking to see if the user trying to login already exists.
-      _apiUsersUserModel2['default'].get({ 'localEmail': email }, function (err, user) {
-        if (err) return done(err);
-  
-        //return message if no user is found.
-        if (!user) return done(null, false, req.flash('loginMessage', 'No user found'));
-  
-        //if the user is found but password is wrong
-        if (!user.validPassword(password)) return done(null, false, req.flash('loginMessage', 'Oops! Wrong password.'));
-  
-        return done(null, user);
-      });
-    }));
-  };
-  
-  ;
-  module.exports = exports['default'];
-
-/***/ },
-/* 92 */
-/***/ function(module, exports, __webpack_require__) {
-
-  //Register todos with aws dynammodb.
-  'use strict';
-  
-  Object.defineProperty(exports, '__esModule', {
-    value: true
-  });
-  
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
-  var _bluebird = __webpack_require__(84);
-  
-  var _bluebird2 = _interopRequireDefault(_bluebird);
-  
-  var _express = __webpack_require__(3);
-  
-  var _passport = __webpack_require__(76);
-  
-  var _passport2 = _interopRequireDefault(_passport);
-  
-  var _apiUsersUserModel = __webpack_require__(83);
-  
-  var _apiUsersUserModel2 = _interopRequireDefault(_apiUsersUserModel);
-  
-  var router = new _express.Router();
-  
-  router.post('/register', function (req, res) {
-    _apiUsersUserModel.UserUtil.register({ username: req.body.username, localEmail: req.body.email }, req.body.password, function (err, user) {
-      if (err) {
-        return res.status(500).send(err);
-      }
-  
-      _passport2['default'].authenticate('local')(req, res, function () {
-        res.status(200).send('authenticated');
-      });
-    });
-  });
-  
-  router.post('/login', _passport2['default'].authenticate('local'), function (req, res) {
-    res.status(200).send('authenticated');
-  });
-  
-  router.get('/logout', function (req, res) {
-    req.logout();
-    res.status(200).send('logged out');
-  });
-  exports['default'] = router;
-  module.exports = exports['default'];
-
-/***/ },
-/* 93 */
+/* 84 */,
+/* 85 */,
+/* 86 */,
+/* 87 */,
+/* 88 */
 /***/ function(module, exports, __webpack_require__) {
 
   //Register todos with aws dynammodb.
@@ -4776,40 +4415,13 @@ module.exports =
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
-  var _bluebird = __webpack_require__(84);
+  var _bluebird = __webpack_require__(81);
   
   var _bluebird2 = _interopRequireDefault(_bluebird);
   
   var _express = __webpack_require__(3);
   
-  var _UserModel = __webpack_require__(83);
-  
-  var _UserModel2 = _interopRequireDefault(_UserModel);
-  
   var router = new _express.Router();
-  
-  router.get('/all', function callee$0$0(req, res, next) {
-    var users;
-    return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
-      while (1) switch (context$1$0.prev = context$1$0.next) {
-        case 0:
-          console.log(_UserModel2['default']);
-          context$1$0.next = 3;
-          return regeneratorRuntime.awrap(_UserModel2['default'].getAllUsers());
-  
-        case 3:
-          users = context$1$0.sent;
-  
-          console.log(users);
-          res.status(200).send(users);
-          return context$1$0.abrupt('return');
-  
-        case 7:
-        case 'end':
-          return context$1$0.stop();
-      }
-    }, null, _this);
-  });
   
   router.param('userid', function (req, res, next, id) {
     req.userid = id;
@@ -4848,7 +4460,7 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 94 */
+/* 89 */
 /***/ function(module, exports, __webpack_require__) {
 
   //Register todos with aws dynammodb.
@@ -4863,15 +4475,11 @@ module.exports =
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
-  var _bluebird = __webpack_require__(84);
+  var _bluebird = __webpack_require__(81);
   
   var _bluebird2 = _interopRequireDefault(_bluebird);
   
   var _express = __webpack_require__(3);
-  
-  var _DeckModel = __webpack_require__(95);
-  
-  var _DeckModel2 = _interopRequireDefault(_DeckModel);
   
   var router = new _express.Router();
   
@@ -4942,72 +4550,7 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 95 */
-/***/ function(module, exports, __webpack_require__) {
-
-  'use strict';
-  
-  Object.defineProperty(exports, '__esModule', {
-    value: true
-  });
-  
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
-  var _bluebird = __webpack_require__(84);
-  
-  var _bluebird2 = _interopRequireDefault(_bluebird);
-  
-  var _objectAssign = __webpack_require__(85);
-  
-  var _objectAssign2 = _interopRequireDefault(_objectAssign);
-  
-  var dynamoose = __webpack_require__(88);
-  
-  if (true) {
-    console.log("Using local database deck model");
-    dynamoose.local('http://localhost:8989');
-  }
-  //https://app.apiary.io/ankihub/editor
-  var Schema = dynamoose.Schema;
-  
-  var deckSchema = new Schema({
-    did: {
-      type: Number,
-      validate: function validate(v) {
-        return v > 0;
-      },
-      hashKey: true //Alwasy have one
-    },
-    owner: {
-      type: Number,
-      rangeKey: true,
-      index: true // name: nameLocalIndex, ProjectionType: All
-    },
-    //everything below this is deck info
-    desc: String,
-    name: String,
-    cards: [String],
-    owner: Number,
-    children: [String],
-    subscribers: [Number],
-    subscriptions: [String],
-    transactions: [Object]
-  });
-  
-  var Deck = dynamoose.model('Deck', deckSchema);
-  
-  exports['default'] = Deck;
-  var DeckUtil = {
-    GetTransactions: function GetTransactions(did, cb) {
-      Deck.get({ did: did }, function (err, deck) {
-        cb(err, deck.transactions);
-      });
-    }
-  };
-  exports.DeckUtil = DeckUtil;
-
-/***/ },
-/* 96 */
+/* 90 */
 /***/ function(module, exports, __webpack_require__) {
 
   //Register todos with aws dynammodb.
@@ -5022,15 +4565,11 @@ module.exports =
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
-  var _bluebird = __webpack_require__(84);
+  var _bluebird = __webpack_require__(81);
   
   var _bluebird2 = _interopRequireDefault(_bluebird);
   
   var _express = __webpack_require__(3);
-  
-  var _CardModel = __webpack_require__(97);
-  
-  var _CardModel2 = _interopRequireDefault(_CardModel);
   
   var router = new _express.Router();
   
@@ -5120,79 +4659,7 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 97 */
-/***/ function(module, exports, __webpack_require__) {
-
-  'use strict';
-  
-  Object.defineProperty(exports, '__esModule', {
-    value: true
-  });
-  
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
-  var _bluebird = __webpack_require__(84);
-  
-  var _bluebird2 = _interopRequireDefault(_bluebird);
-  
-  var _objectAssign = __webpack_require__(85);
-  
-  var _objectAssign2 = _interopRequireDefault(_objectAssign);
-  
-  var dynamoose = __webpack_require__(88);
-  
-  if (true) {
-    console.log("Using local database cardmodel");
-    dynamoose.local('http://localhost:8989');
-  }
-  //https://app.apiary.io/ankihub/editor
-  var Schema = dynamoose.Schema;
-  
-  var cardSchema = new Schema({
-    cid: {
-      type: Number,
-      validate: function validate(v) {
-        return v > 0;
-      },
-      hashKey: true //Alwasy have one
-    },
-    owner: {
-      type: Number,
-      rangeKey: true,
-      index: true // name: nameLocalIndex, ProjectionType: All
-    },
-    did: {
-      type: Number,
-      index: {
-        global: true,
-        rangeKey: 'owner',
-        name: 'deckIndex',
-        project: true }
-    },
-    //ProjectionType: ALL
-    //everything below this is deck info
-    front: String,
-    back: String,
-    tags: [String],
-    notes: [String],
-    transactions: [Object]
-  
-  });
-  
-  var Card = dynamoose.model('Card', cardSchema);
-  
-  exports['default'] = Card;
-  var CardUtil = {
-    GetTransactions: function GetTransactions(cid, cb) {
-      Card.get({ cid: cid }, function (err, card) {
-        cb(err, card.transactions);
-      });
-    }
-  };
-  exports.CardUtil = CardUtil;
-
-/***/ },
-/* 98 */
+/* 91 */
 /***/ function(module, exports, __webpack_require__) {
 
   //Register todos with aws dynammodb.
@@ -5208,7 +4675,7 @@ module.exports =
   
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
   
-  var _bluebird = __webpack_require__(84);
+  var _bluebird = __webpack_require__(81);
   
   var _bluebird2 = _interopRequireDefault(_bluebird);
   
@@ -5267,7 +4734,7 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 99 */
+/* 92 */
 /***/ function(module, exports, __webpack_require__) {
 
   /**
@@ -5289,7 +4756,7 @@ module.exports =
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
-  var _fs = __webpack_require__(100);
+  var _fs = __webpack_require__(93);
   
   var _fs2 = _interopRequireDefault(_fs);
   
@@ -5297,15 +4764,15 @@ module.exports =
   
   var _express = __webpack_require__(3);
   
-  var _bluebird = __webpack_require__(84);
+  var _bluebird = __webpack_require__(81);
   
   var _bluebird2 = _interopRequireDefault(_bluebird);
   
-  var _jade = __webpack_require__(101);
+  var _jade = __webpack_require__(94);
   
   var _jade2 = _interopRequireDefault(_jade);
   
-  var _frontMatter = __webpack_require__(102);
+  var _frontMatter = __webpack_require__(95);
   
   var _frontMatter2 = _interopRequireDefault(_frontMatter);
   
@@ -5404,19 +4871,19 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 100 */
+/* 93 */
 /***/ function(module, exports) {
 
   module.exports = require("fs");
 
 /***/ },
-/* 101 */
+/* 94 */
 /***/ function(module, exports) {
 
   module.exports = require("jade");
 
 /***/ },
-/* 102 */
+/* 95 */
 /***/ function(module, exports) {
 
   module.exports = require("front-matter");

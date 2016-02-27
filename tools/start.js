@@ -16,7 +16,6 @@ import runServer from './runServer';
 import webpackConfig from './webpack.config';
 import clean from './clean';
 import copy from './copy';
-import startDB from './startDB'
 /**
  * Launches a development web server with "live reload" functionality -
  * synchronizing URLs, interactions and code changes across multiple devices.
@@ -24,9 +23,6 @@ import startDB from './startDB'
 async function start() {
   await run(clean);
   await run(copy.bind(undefined, { watch: true }));
-  if(!process.argv.includes('--release')){
-    await run(startDB);
-  }
   await new Promise(resolve => {
     // Patch the client-side bundle configurations
     // to enable Hot Module Replacement (HMR) and React Transform
