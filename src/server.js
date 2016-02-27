@@ -21,15 +21,17 @@ import { port } from './config';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
-import session from 'express-session';
+import cookieSession from 'cookie-session';
 
-var Parse = require('parse/node');
+import Parse from 'parse/node';
+Parse.initialize('AnkiHubParse')
+Parse.serverURL = 'https://ankihubparse.herokuapp.com/parse'
 
 var io = require('socket.io')(server);
 
 const server = global.server = express();
 
-//Configure passport
+//Configure sessions
 
 //
 // Register Node.js middleware
@@ -39,18 +41,16 @@ server.use(cookieParser()); //read cookies for authentication
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({extended: false}));
 //Connects to the sessions table of our database
+
 server.use(express.static(path.join(__dirname, 'public')));
 
-//SETUP Parse
-Parse.initialize("ankihubparse");
-Parse.serverURL = 'ankihubparse.herokuapp.com';
+
 //
 // Register API middleware
 // -----------------------------------------------------------------------------
-//pass passport to all api
-server.use('/api/user', require('./api/users/UserRouter'));
-server.use('/api/deck', require('./api/decks/DeckRouter'));
-server.use('/api/card', require('./api/cards/CardRouter'));
+server.use('/api/users', require('./api/users/UserRouter'));
+server.use('/api/decks', require('./api/decks/DeckRouter'));
+server.use('/api/cards', require('./api/cards/CardRouter'));
 server.use('/api/todo', require('./api/todo'));
 server.use('/api/content', require('./api/content'));
 

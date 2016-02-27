@@ -21,7 +21,7 @@ const CONTENT_DIR = join(__dirname, './content');
 const parseJade = (path, jadeContent) => {
   const fmContent = fm(jadeContent);
   const htmlContent = jade.render(fmContent.body);
-  //combines objects into one. 
+  //combines objects into one.
   return Object.assign({ path, content: htmlContent }, fmContent.attributes);
 };
 
@@ -35,17 +35,17 @@ const router = new Router();
 router.get('/', async (req, res, next) => {
   try {
     const path = req.query.path;
-
+    console.log(path)
     if (!path || path === 'undefined') {
       res.status(400).send({ error: `The 'path' query parameter cannot be empty.` });
       return;
     }
 
     let fileName = join(CONTENT_DIR, (path === '/' ? '/index' : path) + '.jade');
+    console.log(fileName)
     if (!(await fileExists(fileName))) {
       fileName = join(CONTENT_DIR, path + '/index.jade');
     }
-
     if (!(await fileExists(fileName))) {
       res.status(404).send({ error: `The page '${path}' is not found.` });
     } else {
