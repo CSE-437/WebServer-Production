@@ -109,7 +109,9 @@ module.exports =
   
   var _expressSession2 = _interopRequireDefault(_expressSession);
   
-  var io = __webpack_require__(83)(server);
+  var Parse = __webpack_require__(80);
+  
+  var io = __webpack_require__(81)(server);
   
   var server = global.server = (0, _express2['default'])();
   
@@ -125,17 +127,18 @@ module.exports =
   //Connects to the sessions table of our database
   server.use(_express2['default']['static'](_path2['default'].join(__dirname, 'public')));
   
-  //SETUP Authentication
-  
+  //SETUP Parse
+  Parse.initialize("ankihubparse");
+  Parse.serverURL = 'ankihubparse.herokuapp.com';
   //
   // Register API middleware
   // -----------------------------------------------------------------------------
   //pass passport to all api
-  server.use('/api/user', __webpack_require__(88));
-  server.use('/api/deck', __webpack_require__(89));
-  server.use('/api/card', __webpack_require__(90));
-  server.use('/api/todo', __webpack_require__(91));
-  server.use('/api/content', __webpack_require__(92));
+  server.use('/api/user', __webpack_require__(82));
+  server.use('/api/deck', __webpack_require__(84));
+  server.use('/api/card', __webpack_require__(85));
+  server.use('/api/todo', __webpack_require__(86));
+  server.use('/api/content', __webpack_require__(87));
   
   //
   // Register server-side rendering middleware
@@ -4383,25 +4386,19 @@ module.exports =
   module.exports = require("express-session");
 
 /***/ },
-/* 80 */,
-/* 81 */
+/* 80 */
 /***/ function(module, exports) {
 
-  module.exports = require("bluebird");
+  module.exports = require("parse/node");
 
 /***/ },
-/* 82 */,
-/* 83 */
+/* 81 */
 /***/ function(module, exports) {
 
   module.exports = require("socket.io");
 
 /***/ },
-/* 84 */,
-/* 85 */,
-/* 86 */,
-/* 87 */,
-/* 88 */
+/* 82 */
 /***/ function(module, exports, __webpack_require__) {
 
   //Register todos with aws dynammodb.
@@ -4415,7 +4412,7 @@ module.exports =
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
-  var _bluebird = __webpack_require__(81);
+  var _bluebird = __webpack_require__(83);
   
   var _bluebird2 = _interopRequireDefault(_bluebird);
   
@@ -4460,7 +4457,13 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 89 */
+/* 83 */
+/***/ function(module, exports) {
+
+  module.exports = require("bluebird");
+
+/***/ },
+/* 84 */
 /***/ function(module, exports, __webpack_require__) {
 
   //Register todos with aws dynammodb.
@@ -4475,7 +4478,7 @@ module.exports =
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
-  var _bluebird = __webpack_require__(81);
+  var _bluebird = __webpack_require__(83);
   
   var _bluebird2 = _interopRequireDefault(_bluebird);
   
@@ -4550,7 +4553,7 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 90 */
+/* 85 */
 /***/ function(module, exports, __webpack_require__) {
 
   //Register todos with aws dynammodb.
@@ -4565,7 +4568,7 @@ module.exports =
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
-  var _bluebird = __webpack_require__(81);
+  var _bluebird = __webpack_require__(83);
   
   var _bluebird2 = _interopRequireDefault(_bluebird);
   
@@ -4659,7 +4662,7 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 91 */
+/* 86 */
 /***/ function(module, exports, __webpack_require__) {
 
   //Register todos with aws dynammodb.
@@ -4675,7 +4678,7 @@ module.exports =
   
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
   
-  var _bluebird = __webpack_require__(81);
+  var _bluebird = __webpack_require__(83);
   
   var _bluebird2 = _interopRequireDefault(_bluebird);
   
@@ -4734,7 +4737,7 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 92 */
+/* 87 */
 /***/ function(module, exports, __webpack_require__) {
 
   /**
@@ -4756,7 +4759,7 @@ module.exports =
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
-  var _fs = __webpack_require__(93);
+  var _fs = __webpack_require__(88);
   
   var _fs2 = _interopRequireDefault(_fs);
   
@@ -4764,15 +4767,15 @@ module.exports =
   
   var _express = __webpack_require__(3);
   
-  var _bluebird = __webpack_require__(81);
+  var _bluebird = __webpack_require__(83);
   
   var _bluebird2 = _interopRequireDefault(_bluebird);
   
-  var _jade = __webpack_require__(94);
+  var _jade = __webpack_require__(89);
   
   var _jade2 = _interopRequireDefault(_jade);
   
-  var _frontMatter = __webpack_require__(95);
+  var _frontMatter = __webpack_require__(90);
   
   var _frontMatter2 = _interopRequireDefault(_frontMatter);
   
@@ -4871,19 +4874,19 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 93 */
+/* 88 */
 /***/ function(module, exports) {
 
   module.exports = require("fs");
 
 /***/ },
-/* 94 */
+/* 89 */
 /***/ function(module, exports) {
 
   module.exports = require("jade");
 
 /***/ },
-/* 95 */
+/* 90 */
 /***/ function(module, exports) {
 
   module.exports = require("front-matter");

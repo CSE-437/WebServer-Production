@@ -18,11 +18,12 @@ import Html from './components/Html';
 import assets from './assets';
 import { port } from './config';
 
-
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import session from 'express-session';
+
+var Parse = require('parse/node');
 
 var io = require('socket.io')(server);
 
@@ -40,8 +41,9 @@ server.use(bodyParser.urlencoded({extended: false}));
 //Connects to the sessions table of our database
 server.use(express.static(path.join(__dirname, 'public')));
 
-//SETUP Authentication
-
+//SETUP Parse
+Parse.initialize("ankihubparse");
+Parse.serverURL = 'ankihubparse.herokuapp.com';
 //
 // Register API middleware
 // -----------------------------------------------------------------------------
