@@ -24,9 +24,9 @@ import bodyParser from 'body-parser';
 import cookieSession from 'cookie-session';
 
 import Parse from 'parse/node';
-Parse.initialize('AnkiHubParse')
-Parse.serverURL = 'https://ankihubparse.herokuapp.com/parse'
-
+Parse.initialize(process.env.APP_ID);
+Parse.serverURL = process.env.SERVER_URL;
+console.log("SERVER URL",process.env.SERVER_URL)
 var io = require('socket.io')(server);
 
 const server = global.server = express();
