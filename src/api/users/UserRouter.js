@@ -11,8 +11,6 @@ const router = new Router();
 
 router.get('/', async (req,res,next) =>{
   //console.log("IN get all decks")
-  console.log(req.session)
-  console.log("sesson Token:", req.session.sessionToken)
   var query = new Parse.Query(Parse.User);
   if(req.query.username){
 
@@ -20,18 +18,17 @@ router.get('/', async (req,res,next) =>{
   }
   query.find({
     success: function(results){
-      console.log("Succssfully retrieved ", results);
+      //console.log("Succssfully retrieved ", results);
       return res.status(200).send(results);
     },
     error: function(err){
-      console.log("Failed to get decks ", err);
+      //console.log("Failed to get decks ", err);
       return res.status(400).send(err)
     },
     sessionToken: req.session.sessionToken
   });
 });
 router.post('/signup', async (req,res,next) => {
-  console.log("here")
     var username = req.body.username;
     var password = req.body.password;
 
@@ -81,6 +78,11 @@ router.post('/login', async (req,res,next) => {
     }
 
 });
+
+router.post('/logout', async (req,res,next) => {
+  req.session.destroy();
+  res.status(200).send("Logged out");
+});
 router.param('username', async (req, res, next, username) =>{
   req.username = username;
   next()
@@ -102,19 +104,16 @@ router.get('/:username', async (req, res, next) => {
 //Expects [transactions] TODO deal with Fork
 
 //Expects [transactions] TODO deal with Fork
+//TODO make stransaction method
 router.post('/:username', async (req, res, next) =>{
   var current_id = req.username
   if (!req.body.isArray && !(req.body.length>0)){
     return res.status(400).send({err:"Must send array of transactions"})
   }
-  console.log("here1")
   var transactions = req.body.map(function(body){
-    console.log("here2")
     var t = new Parse.Object("Transaction");
-    console.log("here3", body)
     return TransactionUtil.fromRequestBody(t, body);
   });
-  console.log("here4")
   var parsedTransactions = []
   transactions.forEach(function(t){
     console.log("here5")

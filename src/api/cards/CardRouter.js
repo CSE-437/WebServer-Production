@@ -27,6 +27,10 @@
     if (req.params.username){
       query.equalTo("cid", req.query.username)
     }
+
+    if (req.params.gid){
+      query.equalTo("gid", req.query.gid)
+    }
     console.log(query)
     query.find({
       success: function(results){

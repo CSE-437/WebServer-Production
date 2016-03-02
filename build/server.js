@@ -141,6 +141,36 @@ module.exports =
     saveUninitialized: true
   }));
   
+  server.use(function (req, res, next) {
+    if (!req.session.user || !req.session.sessionToken) {
+      _parseNode2['default'].User.logIn("Fluffluff", "password", {
+        success: function success(user) {
+          console.log('loged in');
+          req.session.user = user;
+          req.session.sessionToken = user.get("sessionToken");
+  
+          next();
+        }, error: function error(u, _error) {
+          var user = new _parseNode2['default'].User();
+          user.set("username", "Fluffluff");
+          user.set("password", "password");
+  
+          user.signUp(null, {
+            success: function success(user) {
+              req.session.user = user;
+              req.session.sessionToken = user.get("sessionToken");
+              next();
+            }
+          });
+        }
+  
+      });
+    } else {
+      console.log;
+      next();
+    }
+  });
+  
   server.use(_express2['default']['static'](_path2['default'].join(__dirname, 'public')));
   
   //
@@ -4812,9 +4842,6 @@ module.exports =
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
         case 0:
-          //console.log("IN get all decks")
-          console.log(req.session);
-          console.log("sesson Token:", req.session.sessionToken);
           query = new _parseNode2['default'].Query(_parseNode2['default'].User);
   
           if (req.query.username) {
@@ -4823,17 +4850,17 @@ module.exports =
           }
           query.find({
             success: function success(results) {
-              console.log("Succssfully retrieved ", results);
+              //console.log("Succssfully retrieved ", results);
               return res.status(200).send(results);
             },
             error: function error(err) {
-              console.log("Failed to get decks ", err);
+              //console.log("Failed to get decks ", err);
               return res.status(400).send(err);
             },
             sessionToken: req.session.sessionToken
           });
   
-        case 5:
+        case 3:
         case 'end':
           return context$1$0.stop();
       }
@@ -4844,12 +4871,11 @@ module.exports =
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
         case 0:
-          console.log("here");
           username = req.body.username;
           password = req.body.password;
   
           if (!(username && password)) {
-            context$1$0.next = 11;
+            context$1$0.next = 10;
             break;
           }
   
@@ -4870,13 +4896,13 @@ module.exports =
             },
             sessionToken: req.session.sessionToken
           });
-          context$1$0.next = 12;
+          context$1$0.next = 11;
           break;
   
-        case 11:
+        case 10:
           return context$1$0.abrupt('return', res.status(400).send({ err: { msg: "Need username and password" } }));
   
-        case 12:
+        case 11:
         case 'end':
           return context$1$0.stop();
       }
@@ -4917,6 +4943,20 @@ module.exports =
           return context$1$0.abrupt('return', res.status(400).send({ err: { msg: "Need username and password" } }));
   
         case 7:
+        case 'end':
+          return context$1$0.stop();
+      }
+    }, null, _this);
+  });
+  
+  router.post('/logout', function callee$0$0(req, res, next) {
+    return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
+      while (1) switch (context$1$0.prev = context$1$0.next) {
+        case 0:
+          req.session.destroy();
+          res.status(200).send("Logged out");
+  
+        case 2:
         case 'end':
           return context$1$0.stop();
       }
@@ -4963,6 +5003,7 @@ module.exports =
   //Expects [transactions] TODO deal with Fork
   
   //Expects [transactions] TODO deal with Fork
+  //TODO make stransaction method
   router.post('/:username', function callee$0$0(req, res, next) {
     var current_id, transactions, parsedTransactions;
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
@@ -4978,15 +5019,10 @@ module.exports =
           return context$1$0.abrupt('return', res.status(400).send({ err: "Must send array of transactions" }));
   
         case 3:
-          console.log("here1");
           transactions = req.body.map(function (body) {
-            console.log("here2");
             var t = new _parseNode2['default'].Object("Transaction");
-            console.log("here3", body);
             return TransactionUtil.fromRequestBody(t, body);
           });
-  
-          console.log("here4");
           parsedTransactions = [];
   
           transactions.forEach(function (t) {
@@ -5012,7 +5048,7 @@ module.exports =
             });
           });
   
-        case 8:
+        case 6:
         case 'end':
           return context$1$0.stop();
       }
@@ -5020,6 +5056,8 @@ module.exports =
   });
   exports['default'] = router;
   module.exports = exports['default'];
+
+  //console.log("IN get all decks")
 
 /***/ },
 /* 89 */
@@ -5109,17 +5147,20 @@ module.exports =
           if (req.query.cids) {
             query.containsAll("cids", req.query.cids);
           }
-          if (req.params.user) {
+          if (req.query.owner) {
             query.equalTo("owner", req.query.user);
           }
-          console.log(query);
+          if (req.query.owner) {
+            query.equalTo("gid", req.query.gid);
+          }
+          //console.log(query)
           query.find({
             success: function success(results) {
-              console.log("Succssfully retrieved ", results);
+              //  console.log("Succssfully retrieved ", results);
               return res.status(200).send(results);
             },
             error: function error(err) {
-              console.log("Failed to get decks ", err);
+              //console.log("Failed to get decks ", err);
               return res.status(400).send(err);
             },
             sessionToken: req.session.sessionToken
@@ -5131,7 +5172,7 @@ module.exports =
       }
     }, null, _this);
   });
-  //Todo check for username
+  //If deck exist update it. Uses session names
   router.post('/', function callee$0$0(req, res, next) {
     var query;
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
@@ -5149,26 +5190,28 @@ module.exports =
         case 3:
           if (req.body.gid) {
             query.equalTo("gid", req.body.gid);
+          } else if (req.body.did) {
+            query.equalTo("gid", req.session.user.get("username") + req.body.did);
           }
-          if (req.body.did) {
-            query.equalTo("did", req.body.did);
-          }
-          console.log("here1");
           query.find({
             success: function success(results) {
   
-              console.log("here2");
+              //console.log("here2")
               var newDeck = results[0] || new Parse.Object("Deck");
-              console.log("here4", results);
+              //console.log("here4", results)
               newDeck = _DeckModel.DeckUtil.fromRequestBody(newDeck, req.body);
+              var gid = req.body.gid || req.session.user.get("username") + ":" + req.body.did;
+              var did = Number(gid.split(":")[1]);
+              newDeck.set("gid", gid);
+              newDeck.set("did", did);
               newDeck.save(null, {
                 success: function success(deck) {
   
-                  console.log("here3");
+                  //    console.log("here3")
                   return res.status(200).send(deck);
                 },
                 error: function error(deck, _error) {
-                  console.log(newDeck);
+                  //  console.log(newDeck);
                   return res.status(400).send({ err: _error, deck: deck });
                 },
                 sessionToken: req.session.sessionToken
@@ -5176,12 +5219,12 @@ module.exports =
             },
             error: function error(err) {
   
-              return res.status(400).send({ err: err, deck: {} });
+              return res.status(500).send({ err: err, deck: {} });
             },
             sessionToken: req.session.sessionToken
           });
   
-        case 7:
+        case 5:
         case 'end':
           return context$1$0.stop();
       }
@@ -5241,23 +5284,19 @@ module.exports =
           return context$1$0.abrupt('return', res.status(400).send({ err: "Must send array of transactions" }));
   
         case 3:
-          console.log("here1");
           transactions = req.body.map(function (body) {
-            console.log("here2");
             var t = new Parse.Object("Transaction");
-            console.log("here3");
             return _transactionsTransactionModel.TransactionUtil.fromRequestBody(t, body);
           });
-  
-          console.log("here4");
           parsedTransactions = [];
   
-          transactions.forEach(function (t) {
-            console.log("here5");
+          transactions.forEach(function (t, index) {
             t.set("on", current_id);
+            t.set("owner", req.session.get("username"));
+            t.set("localIndex", index);
             t.save(null, {
               success: function success(trans) {
-                //TODO maintain order
+                //TODO maintain order or not
   
                 parsedTransactions.push({ transaction: trans, error: null });
                 if (parsedTransactions.length == transactions.length) {
@@ -5275,7 +5314,7 @@ module.exports =
             });
           });
   
-        case 8:
+        case 6:
         case 'end':
           return context$1$0.stop();
       }
@@ -5383,6 +5422,10 @@ module.exports =
           if (req.params.username) {
             query.equalTo("cid", req.query.username);
           }
+  
+          if (req.params.gid) {
+            query.equalTo("gid", req.query.gid);
+          }
           console.log(query);
           query.find({
             success: function success(results) {
@@ -5396,7 +5439,7 @@ module.exports =
             sessionToken: req.session.sessionToken
           });
   
-        case 7:
+        case 8:
         case 'end':
           return context$1$0.stop();
       }
