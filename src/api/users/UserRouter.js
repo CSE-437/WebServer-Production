@@ -36,7 +36,7 @@ router.post('/signup', async (req,res,next) => {
       var newUser = new Parse.User();
       newUser.set("username", username);
       newUser.set("password", password);
-      newUser.set("subscriptions", []);
+      newUser.set("subscriptions", ["superaarthi:5", "superaarthi:6"]);
       newUser.signUp(null,{
         success: function(user){
           console.log(user.get("sessionToken"))
