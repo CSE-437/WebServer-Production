@@ -4,8 +4,8 @@ import $ from 'jquery'
 class DeckActions{
   constructor(){
     this.generateActions(
-      'getAllDecksSuccess',
       'getAllDecksFail',
+	  'getAllDecksSuccess',
       'uploadDeckSuccess',
       'uploadDeckFail',
       'getDeckSuccess',
@@ -14,40 +14,46 @@ class DeckActions{
       'postTransactionsFail'
     )
   }
+ 
   getAllDecks(){
+	  var self = this
     $.get('/api/decks')
       .done((data)=>{
-        this.actions.getAllDecksSuccess(data)
+		  console.log(self)
+        self.getAllDecksSuccess(data)
       })
       .fail((data)=>{
-        this.actions.getAllDecksFail(data)
+        self.getAllDecksFail(data)
       });
   }
   uploadDeck(deck){
+	  var self = this;
     $.post('/api/decks', decks)
       .done((data)=>{
-        this.actions.uploadDeckSuccess(data)
+        self.uploadDeckSuccess(data)
       })
       .fail((data)=>{
-        this.actions.uploadDeckFail(data)
+        self.uploadDeckFail(data)
       });
   }
   getDeck(did){
+	  var self = this;
     $.get(`/api/decks/${did}`, )
       .done((data)=>{
-        this.actions.getDeckSuccess(data)
+        self.getDeckSuccess(data)
       })
       .fail((data)=>{
-        this.actions.getDeckFail(data)
+        self.getDeckFail(data)
       });
   }
   postTransactions(did, transactions){
+	  var self = this;
     $.post(`/api/decks/${did}`, transactions)
       .done((data)=>{
-        this.actions.postTransactionsSuccess(data)
+        self.postTransactionsSuccess(data)
       })
       .fail((data)=>{
-        this.actions.postTransactionsFail(data)
+        self.postTransactionsFail(data)
       });
   }
 }

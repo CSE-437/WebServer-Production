@@ -49,7 +49,7 @@ const router = new Router(on => {
   //show register page.
   on('/register', async () => <RegisterPage />);
   //show register page.
-  on('/decks', async () => <DeckPage />);
+  on('/decks', async () => <ProfilePage/>);
   //show todo page
   on('/Profile', async() => <ProfilePage/>);
 
