@@ -3,11 +3,13 @@ import DeckActions from '../actions/DeckActions';
 
 class DeckStore{
   constructor(){
-    this.bindActions(DeckActions, this.handleDeckActions);
+    this.bindListeners({
+      handleDecks: DeckActions.getAllDecksSuccess
+    });
     this.decks = [];
     this.transactions = [];
   }
-  handleDeckActions(decks){
+  handleDecks(decks){
 	  console.log("New decks", decks)
     this.decks = decks;
   }

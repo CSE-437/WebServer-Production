@@ -17,7 +17,7 @@ import Link from '../Link';
 
 // tutorial10.js
 var DeckList = React.createClass({
-	
+
     render: function() {
         var deckNodes = this.props.data.map(function(deck) {
             return (
@@ -33,14 +33,14 @@ var DeckList = React.createClass({
                 <Deck
                 did = {deck.did}
                 name = {deck.name}
-                keywords = {deck.keywords}
-                desc = {deck.desc}
+                //keywords = {deck.keywords}
+                //desc = {deck.desc}
                 //cids = {deck.cids}
-                newCards = {deck.newCards}
+                //newCards = {deck.newCards}
                 owner ={deck.owner}
-                ispublic = {deck.ispublic}
-                children = {deck.children}
-                subscribers = {deck.subscribers}
+                //ispublic = {deck.ispublic}
+                //children = {deck.children}
+                //subscribers = {deck.subscribers}
                 >
                 </Deck>
             );
@@ -100,36 +100,11 @@ var Deck = React.createClass({
     render: function() {
         return (
             <div className="deck">
-                // <div className="name">
-                // {this.props.name}
-                // </div>
-                //
-                // <div className="description">
-                // {this.props.desc}
-                // </div>
-                //
-                // <div className="owner">
-                // Owner: {this.props.owner}
-                // </div>
-                //
-                // <div className="cids">
-                // {this.props.cids.length} cards
-                // </div>
-                //
-                // <div className="children">
-                // {this.props.children.length} subdecks
-                // </div>
-                <div className="name">
+                  <div className="name">
                 Name: {this.props.name}
                 </div>
 
-                <div className="description">
-                {this.props.desc}
-                </div>
 
-                <div className="children">
-                {this.props.children.length} subdecks
-                </div>
 
                 <div className="owner">
                 Owner: {this.props.owner}
@@ -158,7 +133,7 @@ var Nav = React.createClass({
 
 // tutorial14.js
 class DeckBox extends Component{
-	
+
 	static contextTypes = {
 		onSetTitle: PropTypes.func.isRequired,
 	};
@@ -173,7 +148,7 @@ class DeckBox extends Component{
 	   //refers to this DeckPage object not the function
 	   this.onChange = this.onChange.bind(this);
 	 }
-	 
+
 	 componentWillMount() {
 		this.context.onSetTitle("Profile Page");
 	}
@@ -245,13 +220,13 @@ class DeckBox extends Component{
             }.bind(this)
         });
     }
-    
+
 	render() {
 		console.log(this.state.decks)
         return (
             <div className="commentBox">
 
-                
+
 
                 <DeckList data={this.state.decks} />
 

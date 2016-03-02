@@ -5,7 +5,7 @@ class DeckActions{
   constructor(){
     this.generateActions(
       'getAllDecksFail',
-	  'getAllDecksSuccess',
+	    // 'getAllDecksSuccess',
       'uploadDeckSuccess',
       'uploadDeckFail',
       'getDeckSuccess',
@@ -14,12 +14,14 @@ class DeckActions{
       'postTransactionsFail'
     )
   }
- 
+  getAllDecksSuccess(data){
+    return data;
+  }
   getAllDecks(){
 	  var self = this
     $.get('/api/decks')
       .done((data)=>{
-		  console.log(self)
+		  console.log("NEw data", self, data)
         self.getAllDecksSuccess(data)
       })
       .fail((data)=>{
