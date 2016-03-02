@@ -34,23 +34,52 @@ router.get('/', async (req,res,next) =>{
     error: function(err){
       console.log("Failed to get decks ", err);
       return res.status(400).send(err)
-    }
+    },
+    sessionToken: req.session.sessionToken
   });
 });
+//Todo check for username
 router.post('/', async (req,res,next) => {
 
-    var newDeck = new Parse.Object("Deck")
-    newDeck = DeckUtil.fromRequestBody(newDeck, req.body);
+    var query = new Parse.Query(DeckObject);
+    if(!req.body.gid && !req.body.did){
 
-    newDeck.save({owner : req.body["owner"], did:req.body["did"], name:req.body["name"]}, {
-        success: function(deck){
-          return res.status(200).send(deck)
-        },
-        error: function(deck, error){
-          console.log(newDeck);
-          return res.status(400).send({err: error, deck: deck});
-        }
-      });
+      return res.status(400).send({err: "Must have a did or gid"});
+    }
+    if (req.body.gid){
+      query.equalTo("gid", req.body.gid);
+    }
+    if (req.body.did){
+      query.equalTo("did", req.body.did);
+    }
+    console.log("here1")
+    query.find({
+      success: function(results){
+
+        console.log("here2")
+        var newDeck = results[0] || new Parse.Object("Deck");
+        console.log("here4", results)
+        newDeck = DeckUtil.fromRequestBody(newDeck, req.body);
+        newDeck.save(null, {
+            success: function(deck){
+
+              console.log("here3")
+              return res.status(200).send(deck)
+            },
+            error: function(deck, error){
+              console.log(newDeck);
+              return res.status(400).send({err: error, deck: deck});
+            },
+            sessionToken: req.session.sessionToken
+          });
+      },
+      error: function(err){
+
+        return res.status(400).send({err: err, deck: {}});
+      },
+      sessionToken: req.session.sessionToken
+    })
+
 });
 router.param('gid', async (req, res, next, gid) =>{
   req.gid = gid;
@@ -66,7 +95,8 @@ router.get('/:gid', async (req, res, next) => {
     },
     error: function(deck, error){
       return res.status(400).send({err: error, deck: deck});
-    }
+    },
+    sessionToken: req.session.sessionToken
   });
 });
 //Expects [transactions] TODO deal with Fork
@@ -102,7 +132,8 @@ router.post('/:gid', async (req, res, next) =>{
         if(parsedTransactions.length == transactions.length){
           res.status(400).send(parsedTransactions)
         }
-      }
+      },
+      sessionToken: req.session.sessionToken
     });
   });
 });

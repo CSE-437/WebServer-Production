@@ -21,12 +21,13 @@ import { port } from './config';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
-import cookieSession from 'cookie-session';
+import session from 'express-session';
+var ParseStore = require('connect-parse')(session);
 
 import Parse from 'parse/node';
 Parse.initialize(process.env.APP_ID);
 Parse.serverURL = process.env.SERVER_URL;
-console.log("SERVER URL",process.env.SERVER_URL)
+
 var io = require('socket.io')(server);
 
 const server = global.server = express();
@@ -41,6 +42,14 @@ server.use(cookieParser()); //read cookies for authentication
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({extended: false}));
 //Connects to the sessions table of our database
+server.use(session({
+  secret:process.env.SESSION_SECRET || 'ankilove',
+  store: new ParseStore({
+    client: Parse
+  }),
+  resave: true,
+  saveUninitialized: true
+}));
 
 server.use(express.static(path.join(__dirname, 'public')));
 

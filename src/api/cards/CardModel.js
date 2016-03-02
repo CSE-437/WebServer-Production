@@ -6,8 +6,11 @@ var Card = Parse.Object.extend("Card",{
     return(true) //Handled parse side
   }
 },{//class methods
-  fromRequestBody: function(body){
-    var card = new Card();
+
+});
+export default Card;
+export const CardUtil = {
+  fromRequestBody: function(card, body){
     card.set("cid", body.cid);
     card.set("did", body.did);
     card.set("front", body.front);
@@ -19,5 +22,4 @@ var Card = Parse.Object.extend("Card",{
 
     return card;
   }
-});
-export default Card;
+}

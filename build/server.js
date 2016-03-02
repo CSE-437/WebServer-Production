@@ -105,18 +105,20 @@ module.exports =
   
   var _bodyParser2 = _interopRequireDefault(_bodyParser);
   
-  var _cookieSession = __webpack_require__(84);
+  var _expressSession = __webpack_require__(84);
   
-  var _cookieSession2 = _interopRequireDefault(_cookieSession);
+  var _expressSession2 = _interopRequireDefault(_expressSession);
   
   var _parseNode = __webpack_require__(85);
   
   var _parseNode2 = _interopRequireDefault(_parseNode);
   
+  var ParseStore = __webpack_require__(86)(_expressSession2['default']);
+  
   _parseNode2['default'].initialize(process.env.APP_ID);
   _parseNode2['default'].serverURL = process.env.SERVER_URL;
-  console.log("SERVER URL", process.env.SERVER_URL);
-  var io = __webpack_require__(86)(server);
+  
+  var io = __webpack_require__(87)(server);
   
   var server = global.server = (0, _express2['default'])();
   
@@ -130,17 +132,25 @@ module.exports =
   server.use(_bodyParser2['default'].json());
   server.use(_bodyParser2['default'].urlencoded({ extended: false }));
   //Connects to the sessions table of our database
+  server.use((0, _expressSession2['default'])({
+    secret: process.env.SESSION_SECRET || 'ankilove',
+    store: new ParseStore({
+      client: _parseNode2['default']
+    }),
+    resave: true,
+    saveUninitialized: true
+  }));
   
   server.use(_express2['default']['static'](_path2['default'].join(__dirname, 'public')));
   
   //
   // Register API middleware
   // -----------------------------------------------------------------------------
-  server.use('/api/users', __webpack_require__(87));
-  server.use('/api/decks', __webpack_require__(90));
-  server.use('/api/cards', __webpack_require__(92));
-  server.use('/api/todo', __webpack_require__(94));
-  server.use('/api/content', __webpack_require__(95));
+  server.use('/api/users', __webpack_require__(88));
+  server.use('/api/decks', __webpack_require__(91));
+  server.use('/api/cards', __webpack_require__(93));
+  server.use('/api/todo', __webpack_require__(95));
+  server.use('/api/content', __webpack_require__(96));
   
   //
   // Register server-side rendering middleware
@@ -4745,7 +4755,7 @@ module.exports =
 /* 84 */
 /***/ function(module, exports) {
 
-  module.exports = require("cookie-session");
+  module.exports = require("express-session");
 
 /***/ },
 /* 85 */
@@ -4757,10 +4767,16 @@ module.exports =
 /* 86 */
 /***/ function(module, exports) {
 
-  module.exports = require("socket.io");
+  module.exports = require("connect-parse");
 
 /***/ },
 /* 87 */
+/***/ function(module, exports) {
+
+  module.exports = require("socket.io");
+
+/***/ },
+/* 88 */
 /***/ function(module, exports, __webpack_require__) {
 
   //Register todos with aws dynammodb.
@@ -4775,7 +4791,7 @@ module.exports =
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
-  var _bluebird = __webpack_require__(88);
+  var _bluebird = __webpack_require__(89);
   
   var _bluebird2 = _interopRequireDefault(_bluebird);
   
@@ -4785,7 +4801,7 @@ module.exports =
   
   var _parseNode2 = _interopRequireDefault(_parseNode);
   
-  var _transactionsTransactionModel = __webpack_require__(89);
+  var _transactionsTransactionModel = __webpack_require__(90);
   
   var _transactionsTransactionModel2 = _interopRequireDefault(_transactionsTransactionModel);
   
@@ -4796,7 +4812,10 @@ module.exports =
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
         case 0:
-          query = new _parseNode2['default'].Query(UserObject);
+          //console.log("IN get all decks")
+          console.log(req.session);
+          console.log("sesson Token:", req.session.sessionToken);
+          query = new _parseNode2['default'].Query(_parseNode2['default'].User);
   
           if (req.query.username) {
   
@@ -4810,10 +4829,11 @@ module.exports =
             error: function error(err) {
               console.log("Failed to get decks ", err);
               return res.status(400).send(err);
-            }
+            },
+            sessionToken: req.session.sessionToken
           });
   
-        case 3:
+        case 5:
         case 'end':
           return context$1$0.stop();
       }
@@ -4824,11 +4844,12 @@ module.exports =
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
         case 0:
+          console.log("here");
           username = req.body.username;
           password = req.body.password;
   
           if (!(username && password)) {
-            context$1$0.next = 10;
+            context$1$0.next = 11;
             break;
           }
   
@@ -4837,22 +4858,25 @@ module.exports =
           newUser.set("username", username);
           newUser.set("password", password);
           newUser.set("subscriptions", []);
-  
           newUser.signUp(null, {
             success: function success(user) {
+              console.log(user.get("sessionToken"));
+              req.session.user = user;
+              req.session.sessionToken = user.get("sessionToken");
               res.status(200).send({ err: null, user: user });
             },
             error: function error(user, _error) {
               res.status(400).send({ err: _error, user: user });
-            }
+            },
+            sessionToken: req.session.sessionToken
           });
-          context$1$0.next = 11;
+          context$1$0.next = 12;
           break;
   
-        case 10:
+        case 11:
           return context$1$0.abrupt('return', res.status(400).send({ err: { msg: "Need username and password" } }));
   
-        case 11:
+        case 12:
         case 'end':
           return context$1$0.stop();
       }
@@ -4872,13 +4896,19 @@ module.exports =
             break;
           }
   
-          _parseNode2['default'].User.logIn(null, {
+          _parseNode2['default'].User.logIn(username, password, {
             success: function success(user) {
+              console.log(user.get("sessionToken"));
+              req.session.user = user;
+              req.session.sessionToken = user.get("sessionToken");
+  
               res.status(200).send({ err: null, user: user });
             },
             error: function error(user, _error2) {
+              console.log("here");
               res.status(400).send({ err: _error2, user: user });
-            }
+            },
+            sessionToken: req.session.sessionToken
           });
           context$1$0.next = 7;
           break;
@@ -4920,7 +4950,8 @@ module.exports =
             },
             error: function error(deck, _error3) {
               return res.status(400).send({ err: _error3, deck: deck });
-            }
+            },
+            sessionToken: req.session.sessionToken
           });
   
         case 3:
@@ -4930,57 +4961,74 @@ module.exports =
     }, null, _this);
   });
   //Expects [transactions] TODO deal with Fork
+  
+  //Expects [transactions] TODO deal with Fork
   router.post('/:username', function callee$0$0(req, res, next) {
-    var current_id, parsedTransaction, t, transaction;
+    var current_id, transactions, parsedTransactions;
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
         case 0:
           current_id = req.username;
-          parsedTransaction = [];
-          context$1$0.t0 = regeneratorRuntime.keys(req.body);
   
-        case 3:
-          if ((context$1$0.t1 = context$1$0.t0()).done) {
-            context$1$0.next = 11;
+          if (!(!req.body.isArray && !(req.body.length > 0))) {
+            context$1$0.next = 3;
             break;
           }
   
-          t = context$1$0.t1.value;
-          transaction = _transactionsTransactionModel2['default'].fromRequestBody(req.body);
+          return context$1$0.abrupt('return', res.status(400).send({ err: "Must send array of transactions" }));
   
-          transaction.set("on", current_id);
-          transaction.save(null, {
-            success: function success(trans) {
-              //TODO maintain order
-              parsedTransaction.push(trans);
-            },
-            error: function error(trans, _error4) {
-              return res.status(400).send({ err: _error4, "parsedTransactions": parsedTransactions, "failingTransaction": trans });
-            }
+        case 3:
+          console.log("here1");
+          transactions = req.body.map(function (body) {
+            console.log("here2");
+            var t = new _parseNode2['default'].Object("Transaction");
+            console.log("here3", body);
+            return TransactionUtil.fromRequestBody(t, body);
           });
   
-          return context$1$0.abrupt('return', res.status(200).send(transactions));
+          console.log("here4");
+          parsedTransactions = [];
   
-        case 11:
+          transactions.forEach(function (t) {
+            console.log("here5");
+            t.set("on", current_id);
+            t.save(null, {
+              success: function success(trans) {
+                //TODO maintain order
+  
+                parsedTransactions.push({ transaction: trans, error: null });
+                if (parsedTransactions.length == transactions.length) {
+                  res.status(200).send(parsedTransactions);
+                }
+              },
+              error: function error(trans, _error4) {
+  
+                parsedTransactions.push({ transaction: trans, error: _error4 });
+                if (parsedTransactions.length == transactions.length) {
+                  res.status(400).send(parsedTransactions);
+                }
+              },
+              sessionToken: req.session.sessionToken
+            });
+          });
+  
+        case 8:
         case 'end':
           return context$1$0.stop();
       }
     }, null, _this);
   });
-  
   exports['default'] = router;
   module.exports = exports['default'];
 
-  //console.log("IN get all decks")
-
 /***/ },
-/* 88 */
+/* 89 */
 /***/ function(module, exports) {
 
   module.exports = require("bluebird");
 
 /***/ },
-/* 89 */
+/* 90 */
 /***/ function(module, exports, __webpack_require__) {
 
   "use strict";
@@ -5005,14 +5053,14 @@ module.exports =
   var TransactionUtil = {
     fromRequestBody: function fromRequestBody(t, body) {
       t.set("query", body.query);
-      t.set("data", body.data);
+      t.set("data", body.data || {});
   
       return t;
     } };
   exports.TransactionUtil = TransactionUtil;
 
 /***/ },
-/* 90 */
+/* 91 */
 /***/ function(module, exports, __webpack_require__) {
 
   //Register todos with aws dynammodb.
@@ -5027,17 +5075,17 @@ module.exports =
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
-  var _bluebird = __webpack_require__(88);
+  var _bluebird = __webpack_require__(89);
   
   var _bluebird2 = _interopRequireDefault(_bluebird);
   
   var _express = __webpack_require__(3);
   
-  var _DeckModel = __webpack_require__(91);
+  var _DeckModel = __webpack_require__(92);
   
   var _DeckModel2 = _interopRequireDefault(_DeckModel);
   
-  var _transactionsTransactionModel = __webpack_require__(89);
+  var _transactionsTransactionModel = __webpack_require__(90);
   
   var _transactionsTransactionModel2 = _interopRequireDefault(_transactionsTransactionModel);
   
@@ -5073,7 +5121,8 @@ module.exports =
             error: function error(err) {
               console.log("Failed to get decks ", err);
               return res.status(400).send(err);
-            }
+            },
+            sessionToken: req.session.sessionToken
           });
   
         case 7:
@@ -5082,26 +5131,57 @@ module.exports =
       }
     }, null, _this);
   });
+  //Todo check for username
   router.post('/', function callee$0$0(req, res, next) {
-    var newDeck;
+    var query;
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
         case 0:
-          newDeck = new Parse.Object("Deck");
+          query = new Parse.Query(_DeckModel2['default']);
   
-          newDeck = _DeckModel.DeckUtil.fromRequestBody(newDeck, req.body);
+          if (!(!req.body.gid && !req.body.did)) {
+            context$1$0.next = 3;
+            break;
+          }
   
-          newDeck.save({ owner: req.body["owner"], did: req.body["did"], name: req.body["name"] }, {
-            success: function success(deck) {
-              return res.status(200).send(deck);
-            },
-            error: function error(deck, _error) {
-              console.log(newDeck);
-              return res.status(400).send({ err: _error, deck: deck });
-            }
-          });
+          return context$1$0.abrupt('return', res.status(400).send({ err: "Must have a did or gid" }));
   
         case 3:
+          if (req.body.gid) {
+            query.equalTo("gid", req.body.gid);
+          }
+          if (req.body.did) {
+            query.equalTo("did", req.body.did);
+          }
+          console.log("here1");
+          query.find({
+            success: function success(results) {
+  
+              console.log("here2");
+              var newDeck = results[0] || new Parse.Object("Deck");
+              console.log("here4", results);
+              newDeck = _DeckModel.DeckUtil.fromRequestBody(newDeck, req.body);
+              newDeck.save(null, {
+                success: function success(deck) {
+  
+                  console.log("here3");
+                  return res.status(200).send(deck);
+                },
+                error: function error(deck, _error) {
+                  console.log(newDeck);
+                  return res.status(400).send({ err: _error, deck: deck });
+                },
+                sessionToken: req.session.sessionToken
+              });
+            },
+            error: function error(err) {
+  
+              return res.status(400).send({ err: err, deck: {} });
+            },
+            sessionToken: req.session.sessionToken
+          });
+  
+        case 7:
         case 'end':
           return context$1$0.stop();
       }
@@ -5135,7 +5215,8 @@ module.exports =
             },
             error: function error(deck, _error2) {
               return res.status(400).send({ err: _error2, deck: deck });
-            }
+            },
+            sessionToken: req.session.sessionToken
           });
   
         case 3:
@@ -5189,7 +5270,8 @@ module.exports =
                 if (parsedTransactions.length == transactions.length) {
                   res.status(400).send(parsedTransactions);
                 }
-              }
+              },
+              sessionToken: req.session.sessionToken
             });
           });
   
@@ -5206,7 +5288,7 @@ module.exports =
   //console.log("IN get all decks")
 
 /***/ },
-/* 91 */
+/* 92 */
 /***/ function(module, exports, __webpack_require__) {
 
   "use strict";
@@ -5249,11 +5331,9 @@ module.exports =
   exports.DeckUtil = DeckUtil;
 
 /***/ },
-/* 92 */
+/* 93 */
 /***/ function(module, exports, __webpack_require__) {
 
-  //Register todos with aws dynammodb.
-  //https://github.com/yortus/asyncawait
   'use strict';
   
   Object.defineProperty(exports, '__esModule', {
@@ -5264,57 +5344,56 @@ module.exports =
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
-  var _bluebird = __webpack_require__(88);
+  var _bluebird = __webpack_require__(89);
   
   var _bluebird2 = _interopRequireDefault(_bluebird);
   
   var _express = __webpack_require__(3);
   
-  var _parseNode = __webpack_require__(85);
-  
-  var _parseNode2 = _interopRequireDefault(_parseNode);
-  
-  var _CardModel = __webpack_require__(93);
+  var _CardModel = __webpack_require__(94);
   
   var _CardModel2 = _interopRequireDefault(_CardModel);
   
-  var _transactionsTransactionModel = __webpack_require__(89);
+  var _transactionsTransactionModel = __webpack_require__(90);
   
   var _transactionsTransactionModel2 = _interopRequireDefault(_transactionsTransactionModel);
+  
+  var Parse = __webpack_require__(85);
   
   var router = new _express.Router();
   
   router.get('/', function callee$0$0(req, res, next) {
-    var query;
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
         case 0:
-          query = new _parseNode2['default'].Query(_CardModel2['default']);
-  
+          //console.log("IN get all Cards")
           if (req.query.keywords) {
             query.containsAll("keywords", req.query.keywords);
           }
           if (req.query.tags) {
-            query.containsAll("keywords", req.query.tags);
+            query.contains("tags", req.query.tags);
           }
           if (req.query.notes) {
-            query.containsAll("keywords", req.query.notes);
+            query.containsAll("notes", req.query.notes);
           }
-          if (req.query.did) {
-            query.contains("cid", req.query.did);
+          if (req.params.cid) {
+            query.equalTo("cid", req.query.cid);
           }
-          if (req.query.username) {
-            query.contains("cid", req.query.username);
+  
+          if (req.params.username) {
+            query.equalTo("cid", req.query.username);
           }
+          console.log(query);
           query.find({
             success: function success(results) {
               console.log("Succssfully retrieved ", results);
               return res.status(200).send(results);
             },
             error: function error(err) {
-              console.log("Failed to get cards ", err);
+              console.log("Failed to get Cards ", err);
               return res.status(400).send(err);
-            }
+            },
+            sessionToken: req.session.sessionToken
           });
   
         case 7:
@@ -5323,33 +5402,67 @@ module.exports =
       }
     }, null, _this);
   });
+  //Todo check for username
   router.post('/', function callee$0$0(req, res, next) {
-    var card;
+    var query;
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
         case 0:
-          card = _CardModel2['default'].fromRequestBody(req.body);
+          query = new Parse.Query(_CardModel2['default']);
   
-          card.save(null, {
-            success: function success(newCard) {
-              return res.status(200).send(newCard);
+          if (!(!req.body.gid && !req.body.did)) {
+            context$1$0.next = 3;
+            break;
+          }
+  
+          return context$1$0.abrupt('return', res.status(400).send({ err: "Must have a did or gid" }));
+  
+        case 3:
+          if (req.body.gid) {
+            query.equalTo("gid", req.body.gid);
+          }
+          if (req.body.did) {
+            query.equalTo("did", req.body.did);
+          }
+          console.log("here1");
+          query.find({
+            success: function success(results) {
+  
+              console.log("here2");
+              var newCard = results[0] || new Parse.Object("Card");
+              console.log("here4", results);
+              newCard = _CardModel.CardUtil.fromRequestBody(newCard, req.body);
+              newCard.save(null, {
+                success: function success(Card) {
+  
+                  console.log("here3");
+                  return res.status(200).send(Card);
+                },
+                error: function error(Card, _error) {
+                  console.log(newCard);
+                  return res.status(400).send({ err: _error, Card: Card });
+                },
+                sessionToken: req.session.sessionToken
+              });
             },
-            error: function error(newCard, _error) {
-              return res.status(400).send({ err: _error, card: newCard });
-            }
+            error: function error(err) {
+  
+              return res.status(400).send({ err: err, Card: {} });
+            },
+            sessionToken: req.session.sessionToken
           });
   
-        case 2:
+        case 7:
         case 'end':
           return context$1$0.stop();
       }
     }, null, _this);
   });
-  router.param('cid', function callee$0$0(req, res, next, did) {
+  router.param('gid', function callee$0$0(req, res, next, gid) {
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
         case 0:
-          req.cid = cid;
+          req.gid = gid;
           next();
   
         case 2:
@@ -5358,21 +5471,23 @@ module.exports =
       }
     }, null, _this);
   });
-  router.get('/:cid', function callee$0$0(req, res, next) {
+  
+  router.get('/:gid', function callee$0$0(req, res, next) {
     var query;
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
         case 0:
-          query = new _parseNode2['default'].Query(_CardModel2['default']);
+          query = new Parse.Query(_CardModel2['default']);
   
-          query.equalTo("cid", req.cid);
+          query.equalTo("gid", req.gid);
           query.find({
             success: function success(results) {
               return res.status(200).send(results);
             },
-            error: function error(card, _error2) {
-              return res.status(400).send({ err: _error2, card: card });
-            }
+            error: function error(Card, _error2) {
+              return res.status(400).send({ err: _error2, Card: Card });
+            },
+            sessionToken: req.session.sessionToken
           });
   
         case 3:
@@ -5382,38 +5497,56 @@ module.exports =
     }, null, _this);
   });
   //Expects [transactions] TODO deal with Fork
-  router.post('/:cid', function callee$0$0(req, res, next) {
-    var current_id, parsedTransaction, t, transaction;
+  router.post('/:gid', function callee$0$0(req, res, next) {
+    var current_id, transactions, parsedTransactions;
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
         case 0:
-          current_id = req.cid;
-          parsedTransaction = [];
-          context$1$0.t0 = regeneratorRuntime.keys(req.body);
+          current_id = req.gid;
   
-        case 3:
-          if ((context$1$0.t1 = context$1$0.t0()).done) {
-            context$1$0.next = 11;
+          if (!(!req.body.isArray && !(req.body.length > 0))) {
+            context$1$0.next = 3;
             break;
           }
   
-          t = context$1$0.t1.value;
-          transaction = _transactionsTransactionModel2['default'].fromRequestBody(req.body);
+          return context$1$0.abrupt('return', res.status(400).send({ err: "Must send array of transactions" }));
   
-          transaction.set("on", current_id);
-          transaction.save(null, {
-            success: function success(trans) {
-              //TODO maintain order
-              parsedTransaction.push(trans);
-            },
-            error: function error(trans, _error3) {
-              return res.status(400).send({ err: _error3, "parsedTransactions": parsedTransactions, "failingTransaction": trans });
-            }
+        case 3:
+          console.log("here1");
+          transactions = req.body.map(function (body) {
+            console.log("here2");
+            var t = new Parse.Object("Transaction");
+            console.log("here3");
+            return _transactionsTransactionModel.TransactionUtil.fromRequestBody(t, body);
           });
   
-          return context$1$0.abrupt('return', res.status(200).send(transactions));
+          console.log("here4");
+          parsedTransactions = [];
   
-        case 11:
+          transactions.forEach(function (t) {
+            console.log("here5");
+            t.set("on", current_id);
+            t.save(null, {
+              success: function success(trans) {
+                //TODO maintain order
+  
+                parsedTransactions.push({ transaction: trans, error: null });
+                if (parsedTransactions.length == transactions.length) {
+                  res.status(200).send(parsedTransactions);
+                }
+              },
+              error: function error(trans, _error3) {
+  
+                parsedTransactions.push({ transaction: trans, error: _error3 });
+                if (parsedTransactions.length == transactions.length) {
+                  res.status(400).send(parsedTransactions);
+                }
+              },
+              sessionToken: req.session.sessionToken
+            });
+          });
+  
+        case 8:
         case 'end':
           return context$1$0.stop();
       }
@@ -5423,10 +5556,8 @@ module.exports =
   exports['default'] = router;
   module.exports = exports['default'];
 
-  //console.log("IN get all decks")
-
 /***/ },
-/* 93 */
+/* 94 */
 /***/ function(module, exports, __webpack_require__) {
 
   "use strict";
@@ -5445,9 +5576,12 @@ module.exports =
     validate: function validate() {
       return true; //Handled parse side
     }
-  }, { //class methods
-    fromRequestBody: function fromRequestBody(body) {
-      var card = new Card();
+  }, {//class methods
+  
+  });
+  exports["default"] = Card;
+  var CardUtil = {
+    fromRequestBody: function fromRequestBody(card, body) {
       card.set("cid", body.cid);
       card.set("did", body.did);
       card.set("front", body.front);
@@ -5459,12 +5593,11 @@ module.exports =
   
       return card;
     }
-  });
-  exports["default"] = Card;
-  module.exports = exports["default"];
+  };
+  exports.CardUtil = CardUtil;
 
 /***/ },
-/* 94 */
+/* 95 */
 /***/ function(module, exports, __webpack_require__) {
 
   //Register todos with aws dynammodb.
@@ -5480,7 +5613,7 @@ module.exports =
   
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
   
-  var _bluebird = __webpack_require__(88);
+  var _bluebird = __webpack_require__(89);
   
   var _bluebird2 = _interopRequireDefault(_bluebird);
   
@@ -5539,7 +5672,7 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 95 */
+/* 96 */
 /***/ function(module, exports, __webpack_require__) {
 
   /**
@@ -5561,7 +5694,7 @@ module.exports =
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
-  var _fs = __webpack_require__(96);
+  var _fs = __webpack_require__(97);
   
   var _fs2 = _interopRequireDefault(_fs);
   
@@ -5569,15 +5702,15 @@ module.exports =
   
   var _express = __webpack_require__(3);
   
-  var _bluebird = __webpack_require__(88);
+  var _bluebird = __webpack_require__(89);
   
   var _bluebird2 = _interopRequireDefault(_bluebird);
   
-  var _jade = __webpack_require__(97);
+  var _jade = __webpack_require__(98);
   
   var _jade2 = _interopRequireDefault(_jade);
   
-  var _frontMatter = __webpack_require__(98);
+  var _frontMatter = __webpack_require__(99);
   
   var _frontMatter2 = _interopRequireDefault(_frontMatter);
   
@@ -5680,19 +5813,19 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 96 */
+/* 97 */
 /***/ function(module, exports) {
 
   module.exports = require("fs");
 
 /***/ },
-/* 97 */
+/* 98 */
 /***/ function(module, exports) {
 
   module.exports = require("jade");
 
 /***/ },
-/* 98 */
+/* 99 */
 /***/ function(module, exports) {
 
   module.exports = require("front-matter");
