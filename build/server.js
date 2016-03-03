@@ -4950,7 +4950,7 @@ module.exports =
   
           newUser.set("username", username);
           newUser.set("password", password);
-          newUser.set("subscriptions", ["superaarthi:5", "superaarthi:6"]);
+          newUser.set("subscriptions", []);
           newUser.signUp(null, {
             success: function success(user) {
               console.log(user.get("sessionToken"));

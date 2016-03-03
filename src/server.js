@@ -39,8 +39,8 @@ const server = global.server = express();
 // -----------------------------------------------------------------------------
 server.use(morgan('dev'));//log every request to console
 server.use(cookieParser()); //read cookies for authentication
-server.use(bodyParser.json());
-server.use(bodyParser.urlencoded({extended: false}));
+server.use(bodyParser.json({limit: '50mb'}));
+server.use(bodyParser.urlencoded({limit:'50mb',extended: true}));
 //Connects to the sessions table of our database
 server.use(session({
   secret:process.env.SESSION_SECRET || 'ankilove',
