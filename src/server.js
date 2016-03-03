@@ -25,8 +25,8 @@ import session from 'express-session';
 var ParseStore = require('connect-parse')(session);
 
 import Parse from 'parse/node';
-Parse.initialize(process.env.APP_ID);
-Parse.serverURL = process.env.SERVER_URL;
+Parse.initialize(process.env.APP_ID || "AnkiHubParse");
+Parse.serverURL = process.env.SERVER_URL || "https://ankihubparse.herokuapp.com/parse";
 
 var io = require('socket.io')(server);
 

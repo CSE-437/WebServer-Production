@@ -115,8 +115,8 @@ module.exports =
   
   var ParseStore = __webpack_require__(84)(_expressSession2['default']);
   
-  _parseNode2['default'].initialize(process.env.APP_ID);
-  _parseNode2['default'].serverURL = process.env.SERVER_URL;
+  _parseNode2['default'].initialize(process.env.APP_ID || "AnkiHubParse");
+  _parseNode2['default'].serverURL = process.env.SERVER_URL || "https://ankihubparse.herokuapp.com/parse";
   
   var io = __webpack_require__(85)(server);
   
@@ -129,8 +129,8 @@ module.exports =
   // -----------------------------------------------------------------------------
   server.use((0, _morgan2['default'])('dev')); //log every request to console
   server.use((0, _cookieParser2['default'])()); //read cookies for authentication
-  server.use(_bodyParser2['default'].json());
-  server.use(_bodyParser2['default'].urlencoded({ extended: false }));
+  server.use(_bodyParser2['default'].json({ limit: '50mb' }));
+  server.use(_bodyParser2['default'].urlencoded({ limit: '50mb', extended: true }));
   //Connects to the sessions table of our database
   server.use((0, _expressSession2['default'])({
     secret: process.env.SESSION_SECRET || 'ankilove',
@@ -5420,17 +5420,13 @@ module.exports =
   var DeckUtil = {
     fromRequestBody: function fromRequestBody(deck, body) {
   
-      deck.set("did", body.did);
       deck.set("name", body.name);
       deck.set("keywords", body.keywords);
       deck.set("desc", body.desc);
-      deck.set("cids", body.cids);
       deck.set("newCards", body.newCards);
-      deck.set("owner", body.owner);
       deck.set("ispublic", body.ispublic);
       deck.set("children", body.children);
       deck.set("subscribers", body.subscribers);
-      console.log(deck.get('did'));
       return deck;
     }
   };
