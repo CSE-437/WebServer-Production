@@ -211,7 +211,8 @@ class DeckBox extends Component{
             dataType: 'json',
             type: 'POST',
             data: comment,
-            success: function(data) {
+            success: function(data)
+            {
                 this.setState({data: data});
             }.bind(this),
             error: function(xhr, status, err) {
@@ -225,11 +226,8 @@ class DeckBox extends Component{
 		console.log(this.state.decks)
         return (
             <div className="commentBox">
-
-
-
+            these are some decks from profilepage.js omg!!!!
                 <DeckList data={this.state.decks} />
-
             </div>
         );
     }

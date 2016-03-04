@@ -20,7 +20,7 @@ class ContentPage extends Component {
     title: PropTypes.string,
   };
   //Context is a form of inheritence. Every react element within the App element
-  //has access to these 
+  //has access to these
   static contextTypes = {
     onSetTitle: PropTypes.func.isRequired,
   };
@@ -32,6 +32,8 @@ class ContentPage extends Component {
         <div className={s.container}>
           {this.props.path === '/' ? null : <h1>{this.props.title}</h1>}
           <div dangerouslySetInnerHTML={{ __html: this.props.content || '' }} />
+        i am from contentpage.js omg!!!
+        this.props.content, the stuff you see above, is set in index.jade wow!!!!
         </div>
       </div>
     );

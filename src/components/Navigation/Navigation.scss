@@ -8,7 +8,7 @@
  */
 
 .root {
-
+color: rgb(185, 185, 185);
 }
 
 .link {
@@ -21,25 +21,25 @@
 .link,
 .link:active,
 .link:visited {
-  color: rgba(255, 255, 255, .6);
+  color: rgb(185, 185, 185);
 }
 
 .link:hover {
-  color: rgba(255, 255, 255, 1);
+  color: rgb(153, 153, 153);
 }
 
 .highlight {
   margin-right: 8px;
   margin-left: 8px;
   border-radius: 3px;
-  background: rgba(0, 0, 0, .15);
-  color: #fff;
+  background: rgba(134, 215, 203, 0.15);
+  color: rgb(153, 153, 153);
 }
 
 .highlight:hover {
-  background: rgba(0, 0, 0, .3);
+  background: rgba(25, 101, 90, 0.33);
 }
 
 .spacer {
-  color: rgba(255, 255, 255, .3);
+  color: rgb(185, 185, 185);
 }
