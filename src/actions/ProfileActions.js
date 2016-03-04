@@ -7,22 +7,33 @@ class ProfileActions{
     //Each of these actiosn will become a function
     this.generateActions(
       'getDecksSuccess',
-      'getDecksFail'
+      'getDecksFail',
+      'signUpSuccess',
+      'logInSuccess',
     );
-    console.log(this)
   }
 
   //Directly callled by TodoPage
   //R
   getDecks(){
     //Get all todos
-    console.log(this)
     $.ajax({url: '/api/Profile/all'})
       .done((data)=>{
         this.getDecksSuccess(data)
       })
       .fail((err)=>{
         this.getDecksFail(err)
+      });
+  }
+
+  signUp(info){
+    var self = this;
+    $.post('/api/users/signup', info)
+      .done((data)=>{
+        self.signUpSuccess(data)
+      })
+      .fail((data)=>{
+        self.signUpFail(data)
       });
   }
 }

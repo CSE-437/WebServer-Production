@@ -9,6 +9,7 @@
 
 import React, { Component, PropTypes } from 'react';
 import emptyFunction from 'fbjs/lib/emptyFunction';
+//import bs from  '../../../node_modules/bootstrap/dist/css/bootstrap.css';
 import s from './App.scss';
 import Header from '../Header';
 import Feedback from '../Feedback';
@@ -45,6 +46,7 @@ class App extends Component {
   }
 
   componentWillMount() {
+    //this.context.insertCss(bs);
     this.removeCss = this.props.context.insertCss(s);
   }
 

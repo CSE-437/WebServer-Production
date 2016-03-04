@@ -5,17 +5,19 @@ import ProfileActions from '../actions/ProfileActions';
 class ProfileStore{
   constructor(){
     this.bindActions(ProfileActions)
+    this.bindListeners({
+      handleSignUp: ProfileActions.signUpSuccess,
+      handleLogIn: ProfileActions.logInSuccess
+      loginFail: ProfileActions.loginFail
+    });
     this.decks = []
+    this.user = {}
   }
-  //Notice the naming scheme. Alt expects hte functions to be named on
-  //followed by Actions
-  onGetDecksSuccess(data){
-    this.decks = data
+  handleSignUp(user){
+    this.user = suser
   }
+  loginFail(err){
 
-  onGetDecksFail(err){
-    //use toastr library to have popup error
-    toastr.error(data.message)
   }
 }
 
