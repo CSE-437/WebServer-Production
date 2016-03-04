@@ -21,6 +21,7 @@ import RegisterPage from './components/RegisterPage';
 import NotFoundPage from './components/NotFoundPage';
 import ErrorPage from './components/ErrorPage';
 import ProfilePage from './components/ProfilePage';
+import HomePage from './components/HomePage.js';
 /*
 Use a router from react-routing project.
 https://github.com/kriasoft/react-routing
@@ -52,6 +53,8 @@ const router = new Router(on => {
   on('/decks', async () => <ProfilePage/>);
   //show todo page
   on('/Profile', async() => <ProfilePage/>);
+  //
+  on('/home', async() => <HomePage/>);
 
 
   on('*', async (state) => {
