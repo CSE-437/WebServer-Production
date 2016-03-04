@@ -6,7 +6,7 @@ import withStyles from '../../decorators/withStyles'; //Applies custmo style
 import s from './HomePage.scss'; //Import custom styles
 import Link from '../Link'
 
-//import DeckList from '../DeckLib/DeckList';
+import DeckList from '../DeckLib/DeckList';
 
 const title = 'Welcome to AnkiHub'; //page title
 
@@ -49,7 +49,9 @@ class HomePage extends Component {
 
    //Render component
    return (
-     <h1>Hello</h1>
+     <div>
+     <DeckList/>
+     </div>
    );
  }
 

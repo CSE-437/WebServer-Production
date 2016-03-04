@@ -3,7 +3,7 @@ import DeckActions from '../../actions/DeckActions';
 import DeckStore from '../../stores/DeckStore';
 
 import {ListGroup} from 'react-bootstrap';
-import {ListGroupItem} from 'react-bootstrap';
+import DeckListItem from './DeckListItem';
 
 class DeckList extends Component{
   constructor(props){
@@ -25,15 +25,11 @@ class DeckList extends Component{
   onChange(state){
     this.setState(state);
   }
-}
+
 render(){
-  var deckNodes = this.state.decks.map(function(deck) {
+  let deckNodes = this.state.decks.map(function(deck) {
       return (
-          <ListGroupItem>
-            <h1>{deck.name}</h1>
-            <h3>{deck.owner}</h3>
-            <span>{deck.gid}</span>
-          </ListGroupItem>
+        <DeckListItem deck={deck}/>
       );
   });
   return (
@@ -42,3 +38,5 @@ render(){
     </div>
   );
 }
+}
+export default DeckList;

@@ -20,8 +20,9 @@ class Header extends Component {
         return (
             <div className={s.root}>
             <div className={s.container}>
-            sexy header omg!!! check out the nav bar under me
-            <Navigation className={s.nav} />
+            <Navigation >
+              <span>sexy header omg!!! check out the nav bar under me</span>
+            </Navigation>
             </div>
             </div>
         );

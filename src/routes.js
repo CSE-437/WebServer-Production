@@ -21,7 +21,7 @@ import RegisterPage from './components/RegisterPage';
 import NotFoundPage from './components/NotFoundPage';
 import ErrorPage from './components/ErrorPage';
 import ProfilePage from './components/ProfilePage';
-import HomePage from './components/HomePage.js';
+import HomePage from './components/HomePage/HomePage.js';
 /*
 Use a router from react-routing project.
 https://github.com/kriasoft/react-routing

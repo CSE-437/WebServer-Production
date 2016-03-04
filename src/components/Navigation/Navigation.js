@@ -13,6 +13,8 @@ import s from './Navigation.scss';
 import withStyles from '../../decorators/withStyles';
 import Link from '../Link';
 
+import {Navbar, Nav, NavItem, NavDropDown,MenuItem} from 'react-bootstrap';
+
 @withStyles(s)
 class Navigation extends Component {
 
@@ -22,11 +24,23 @@ class Navigation extends Component {
 
   render() {
     return (
-      <div className={cx(s.root, this.props.className)} role="navigation">
-        <a className={s.link} href="/profile" onClick={Link.handleClick}>profile</a>
-        <span className={s.spacer}> | </span>
-        <a className={cx(s.link, s.highlight)} href="/register" onClick={Link.handleClick}>Sign up</a>
-      </div>
+      <Navbar inverse>
+        <Navbar.Header>
+          <Navbar.Brand>
+            <a className={s.link} href="/" onClick={Link.handleClick}>AnkiHub</a>
+          </Navbar.Brand>
+          <Navbar.Toggle/>
+        </Navbar.Header>
+        <Navbar.Collapse>
+          <Nav>
+            <NavItem>{this.props.children}</NavItem>
+          </Nav>
+          <Nav pullRight>
+            <NavItem><a className={s.link} href="/profile" onClick={Link.handleClick}>profile</a></NavItem>
+            <NavItem><a className={s.link} href="/home" onClick={Link.handleClick}>home</a></NavItem>
+          </Nav>
+        </Navbar.Collapse>
+      </Navbar>
     );
   }
 
