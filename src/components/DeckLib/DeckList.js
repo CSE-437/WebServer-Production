@@ -27,9 +27,9 @@ class DeckList extends Component{
   }
 
 render(){
-  let deckNodes = this.state.decks.map(function(deck) {
+  let deckNodes = this.state.decks.map(function(deck, index) {
       return (
-        <DeckListItem deck={deck}/>
+        <DeckListItem key={index} deck={deck}/>
       );
   });
   return (

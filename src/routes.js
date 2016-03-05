@@ -20,6 +20,7 @@ import LoginPage from './components/LoginPage';
 import RegisterPage from './components/RegisterPage';
 import NotFoundPage from './components/NotFoundPage';
 import ErrorPage from './components/ErrorPage';
+//import HomePage from './components/HomePage';
 import ProfilePage from './components/ProfilePage';
 import HomePage from './components/HomePage/HomePage.js';
 /*
@@ -50,12 +51,11 @@ const router = new Router(on => {
   //show register page.
   on('/register', async () => <RegisterPage />);
   //show register page.
-  on('/decks', async () => <ProfilePage/>);
+  on('/decks', async () => <DeckPage/>);
   //show todo page
   on('/Profile', async() => <ProfilePage/>);
   //
   on('/home', async() => <HomePage/>);
-
 
   on('*', async (state) => {
     //Gets the api info for that content

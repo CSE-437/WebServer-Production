@@ -4,7 +4,7 @@ import Promise from 'bluebird';
 import {Router} from 'express';
 import Parse from 'parse/node';
 
-
+import UserUtil from './UserUtil';
 import TransactionObject from '../transactions/TransactionModel';
 
 const router = new Router();
@@ -40,7 +40,7 @@ router.post('/signup', async (req,res,next) => {
       newUser.signUp(null,{
         success: function(user){
           console.log(user.get("sessionToken"))
-          req.session.user = user;
+          req.session.user = UserUtil.UserToObject(user);
           req.session.sessionToken = user.get("sessionToken");
           res.status(200).send({err: null, user: user});
         },
@@ -54,15 +54,18 @@ router.post('/signup', async (req,res,next) => {
     }
 
 });
-
+router.get('/whoami', async (req,res,next)=>{
+  res.status(200).send(req.session.user);
+})
 router.post('/login', async (req,res,next) => {
     var username = req.body.username;
     var password = req.body.password;
     if(username && password){
       Parse.User.logIn(username, password,{
         success: function(user){
-          console.log(user.get("sessionToken"))
-          req.session.user = user;
+          console.log("User loging in", user)
+          req.session.user = UserUtil.UserToObject(user);
+          
           req.session.sessionToken = user.get("sessionToken");
 
           res.status(200).send({err: null, user: user});

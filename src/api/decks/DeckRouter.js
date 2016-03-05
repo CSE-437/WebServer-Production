@@ -25,14 +25,15 @@ router.get('/', async (req,res,next) =>{
   if (req.query.owner){
     query.equalTo("owner", req.query.user)
   }
-  if (req.query.owner){
+  if (req.query.gid){
     query.equalTo("gid", req.query.gid)
   }
+  query.limit(req.query.limit || 20)
   //console.log(query)
   query.find({
     success: function(results){
-    //  console.log("Succssfully retrieved ", results);
-      return res.status(200).send(results);
+      console.log("Succssfully retrieved ", results, results.map((d)=>d.get("owner")));
+      return res.status(200).send(results.map((d)=>DeckUtil.toObject(d)));
     },
     error: function(err){
       //console.log("Failed to get decks ", err);
@@ -52,28 +53,30 @@ router.post('/', async (req,res,next) => {
     if (req.body.gid){
       query.equalTo("gid", req.body.gid);
     }else if(req.body.did){
-      query.equalTo("gid", req.session.user.get("username")+req.body.did)
+      query.equalTo("gid", req.session.user.username+':'+req.body.did)
     }
     query.find({
       success: function(results){
 
-        //console.log("here2")
+        console.log("recieveing decks", results)
         var newDeck = results[0] || new Parse.Object("Deck");
         //console.log("here4", results)
         newDeck = DeckUtil.fromRequestBody(newDeck, req.body);
-        var gid = req.body.gid || req.session.user.get("username") +":"+req.body.did
+        var gid = req.body.gid || req.session.user.username +":"+req.body.did
         var did = Number(gid.split(":")[1]);
         newDeck.set("gid", gid);
         newDeck.set("did", did);
+        newDeck.set("owner", req.session.user.username);
+        console.log("Making a new deck", did, gid)
         newDeck.save(null, {
             success: function(deck){
 
           //    console.log("here3")
-              return res.status(200).send(deck)
+              return res.status(200).send(DeckUtil.toObject(deck))
             },
             error: function(deck, error){
             //  console.log(newDeck);
-              return res.status(400).send({err: error, deck: deck});
+              return res.status(400).send({err: error, deck: DeckUtil.toObject(deck)});
             },
             sessionToken: req.session.sessionToken
           });
@@ -96,10 +99,10 @@ router.get('/:gid', async (req, res, next) => {
   query.equalTo("gid", req.gid);
   query.find({
     success: function(results){
-      return res.status(200).send(results);
+      return res.status(200).send(results.map((d)=>DeckUtil.toObject(d)));
     },
     error: function(deck, error){
-      return res.status(400).send({err: error, deck: deck});
+      return res.status(400).send({err: error, deck: DeckUtil.toObject(deck)});
     },
     sessionToken: req.session.sessionToken
   });

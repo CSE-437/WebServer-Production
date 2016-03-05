@@ -7,6 +7,7 @@ import s from './HomePage.scss'; //Import custom styles
 import Link from '../Link'
 
 import DeckList from '../DeckLib/DeckList';
+import {Grid, Row, Col} from 'react-bootstrap';
 
 const title = 'Welcome to AnkiHub'; //page title
 
@@ -49,9 +50,17 @@ class HomePage extends Component {
 
    //Render component
    return (
-     <div>
-     <DeckList/>
-     </div>
+     <Grid>
+       <Row className="show-grid">
+
+         <Col xs={12} md={8}>
+          <DeckList/>
+         </Col>
+         <Col xs={6} md={4}>
+          <div>Side Bar</div>
+         </Col>
+       </Row>
+     </Grid>
    );
  }
 

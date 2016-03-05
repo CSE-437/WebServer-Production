@@ -1,28 +1,29 @@
 import dispatcher from '../core/Dispatcher';
+import {toQueryString} from '../core/misc';
+
 import $ from 'jquery'
 
 class DeckActions{
   constructor(){
     this.generateActions(
       'getAllDecksFail',
-	    // 'getAllDecksSuccess',
+	    'getAllDecksSuccess',
       'uploadDeckSuccess',
       'uploadDeckFail',
       'getDeckSuccess',
       'getDeckFail',
       'postTransactionsSuccess',
-      'postTransactionsFail'
+      'postTransactionsFail',
+      'getTransactionsSuccess',
+      'getTransactionsFail'
     )
   }
-  getAllDecksSuccess(data){
-    return data;
-  }
-  getAllDecks(){
+  getAllDecks(options){
 	  var self = this
-    $.get('/api/decks')
+    var optionsString = options? '?'+toQueryString(options):'';
+    $.get('/api/decks'+optionsString)
       .done((data)=>{
-		  console.log("NEw data", self, data)
-        self.getAllDecksSuccess(data)
+		    self.getAllDecksSuccess(data)
       })
       .fail((data)=>{
         self.getAllDecksFail(data)
@@ -56,6 +57,16 @@ class DeckActions{
       })
       .fail((data)=>{
         self.postTransactionsFail(data)
+      });
+  }
+  getTransactions(did){
+	  var self = this;
+    $.get(`/api/decks/${did}/transactions`)
+      .done((data)=>{
+        self.getTransactionsSuccess(data)
+      })
+      .fail((data)=>{
+        self.getTransactionsFail(data)
       });
   }
 }

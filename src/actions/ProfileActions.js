@@ -6,24 +6,13 @@ class ProfileActions{
   constructor(){
     //Each of these actiosn will become a function
     this.generateActions(
-      'getDecksSuccess',
-      'getDecksFail',
       'signUpSuccess',
+      'signUpFail',
       'logInSuccess',
+      'logInFail',
+      'logOutSuccess',
+      'logOutFail'
     );
-  }
-
-  //Directly callled by TodoPage
-  //R
-  getDecks(){
-    //Get all todos
-    $.ajax({url: '/api/Profile/all'})
-      .done((data)=>{
-        this.getDecksSuccess(data)
-      })
-      .fail((err)=>{
-        this.getDecksFail(err)
-      });
   }
 
   signUp(info){
@@ -34,6 +23,28 @@ class ProfileActions{
       })
       .fail((data)=>{
         self.signUpFail(data)
+      });
+  }
+
+  logIn(info){
+    var self = this;
+    $.post('/api/users/login', info)
+      .done((data)=>{
+        self.logInSuccess(data)
+      })
+      .fail((data)=>{
+        self.logInFail(data)
+      });
+  }
+
+  logOut(){
+    var self = this;
+    $.post('/api/users/logout')
+      .done((data)=>{
+        self.logOutSucess(data)
+      })
+      .fail((data)=>{
+        self.logOutFail(data)
       });
   }
 }

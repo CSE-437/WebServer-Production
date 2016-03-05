@@ -51,12 +51,13 @@ server.use(session({
   saveUninitialized: true
 }));
 
+import UserUtil from './api/users/UserUtil';
 server.use(function(req,res,next){
   if(!req.session.user || !req.session.sessionToken){
     Parse.User.logIn("Fluffluff", "password",{
       success:function(user){
         console.log('loged in')
-        req.session.user = user;
+        req.session.user = UserUtil.UserToObject(user);
         req.session.sessionToken = user.get("sessionToken");
 
         next();
