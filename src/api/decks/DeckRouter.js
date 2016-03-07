@@ -59,6 +59,7 @@ router.post('/', async (req,res,next) => {
       success: function(results){
 
         console.log("recieveing decks", results)
+        var creatingDeck = !!results[0];
         var newDeck = results[0] || new Parse.Object("Deck");
         //console.log("here4", results)
         newDeck = DeckUtil.fromRequestBody(newDeck, req.body);
@@ -72,6 +73,17 @@ router.post('/', async (req,res,next) => {
             success: function(deck){
 
           //    console.log("here3")
+              //Associate Deck with User
+              if(creatingDeck){
+                var userQuery = new Parse.Query(Parse.User);
+                userQuery.equalTo("username", req.session.user.username);
+                userQuery.find({
+                  success: function(user){
+                      user.add("decks", deck);
+                      user.save();
+                  }
+                });
+              }
               return res.status(200).send(DeckUtil.toObject(deck))
             },
             error: function(deck, error){
