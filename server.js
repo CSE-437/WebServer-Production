@@ -145,36 +145,6 @@ module.exports =
     saveUninitialized: true
   }));
   
-  server.use(function (req, res, next) {
-    if (!req.session.user || !req.session.sessionToken) {
-      _parseNode2['default'].User.logIn("Fluffluff", "password", {
-        success: function success(user) {
-          console.log('loged in');
-          req.session.user = _apiUsersUserUtil2['default'].UserToObject(user);
-          req.session.sessionToken = user.get("sessionToken");
-  
-          next();
-        }, error: function error(u, _error) {
-          var user = new _parseNode2['default'].User();
-          user.set("username", "Fluffluff");
-          user.set("password", "password");
-  
-          user.signUp(null, {
-            success: function success(user) {
-              req.session.user = user;
-              req.session.sessionToken = user.get("sessionToken");
-              next();
-            }
-          });
-        }
-  
-      });
-    } else {
-      console.log;
-      next();
-    }
-  });
-  
   server.use(_express2['default']['static'](_path2['default'].join(__dirname, 'public')));
   
   //
@@ -182,9 +152,9 @@ module.exports =
   // -----------------------------------------------------------------------------
   server.use('/api/users', __webpack_require__(95));
   server.use('/api/decks', __webpack_require__(98));
-  server.use('/api/cards', __webpack_require__(100));
-  server.use('/api/todo', __webpack_require__(102));
-  server.use('/api/content', __webpack_require__(103));
+  server.use('/api/cards', __webpack_require__(101));
+  server.use('/api/todo', __webpack_require__(103));
+  server.use('/api/content', __webpack_require__(104));
   
   //
   // Register server-side rendering middleware
@@ -3163,7 +3133,7 @@ module.exports =
   
   var _actionsTodoActions2 = _interopRequireDefault(_actionsTodoActions);
   
-  //Remember that ever component gets it's own store
+  // Remember that ever component gets it's own store
   
   var TodoStore = (function () {
     function TodoStore() {
@@ -3173,19 +3143,13 @@ module.exports =
       this.todos = [];
     }
   
-    //Notice the naming scheme. Alt expects hte functions to be named on
-    //followed by Actions
+    // Notice the naming scheme. Alt expects hte functions to be named on
+    // followed by Actions
   
     _createClass(TodoStore, [{
       key: 'onGetTodosSuccess',
       value: function onGetTodosSuccess(data) {
         this.todos = data;
-      }
-    }, {
-      key: 'onGetTodosFail',
-      value: function onGetTodosFail(err) {
-        //use toastr library to have popup error
-        toastr.error(data.message);
       }
     }]);
   
@@ -3587,13 +3551,13 @@ module.exports =
       }
     }, {
       key: 'onGetTransactionsSuccess',
-      value: function onGetTransactionsSuccess() {
+      value: function onGetTransactionsSuccess(data) {
         this.transactions.concat(data);
       }
     }, {
       key: 'onGetTransactionsFail',
-      value: function onGetTransactionsFail() {
-        _toastr2['default'].error(data);
+      value: function onGetTransactionsFail(error) {
+        _toastr2['default'].error(error);
       }
     }]);
   
@@ -5359,13 +5323,14 @@ module.exports =
           newUser.set("subscriptions", []);
           newUser.signUp(null, {
             success: function success(user) {
-              console.log(user.get("sessionToken"));
-              req.session.user = _UserUtil2['default'].UserToObject(user);
-              req.session.sessionToken = user.get("sessionToken");
-              res.status(200).send({ err: null, user: user });
+              req.session.regenerate(function (err) {
+                req.session.sessionToken = user.toJSON().sessionToken;
+                req.session.username = user.toJSON().username;
+                res.status(200).send({ err: null, user: user });
+              });
             },
             error: function error(user, _error) {
-              res.status(400).send({ err: _error, user: user });
+              res.status(400).send({ err: _error, user: user.toJSON() });
             },
             sessionToken: req.session.sessionToken
           });
@@ -5385,7 +5350,7 @@ module.exports =
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
         case 0:
-          res.status(200).send(req.session.user);
+          res.status(200).send(req.session);
   
         case 1:
         case 'end':
@@ -5408,18 +5373,16 @@ module.exports =
   
           _parseNode2['default'].User.logIn(username, password, {
             success: function success(user) {
-              console.log("User loging in", user);
-              req.session.user = _UserUtil2['default'].UserToObject(user);
-  
-              req.session.sessionToken = user.get("sessionToken");
-  
-              res.status(200).send({ err: null, user: user });
+              req.session.regenerate(function (err) {
+                req.session.sessionToken = user.toJSON().sessionToken;
+                req.session.username = user.toJSON().username;
+                req.user = user;
+                res.status(200).send({ err: null, user: user.toJSON() });
+              });
             },
             error: function error(user, _error2) {
-              console.log("here");
-              res.status(400).send({ err: _error2, user: user });
-            },
-            sessionToken: req.session.sessionToken
+              res.status(400).send({ err: _error2, user: user.toJSON() });
+            }
           });
           context$1$0.next = 7;
           break;
@@ -5554,40 +5517,30 @@ module.exports =
 /* 97 */
 /***/ function(module, exports, __webpack_require__) {
 
-  "use strict";
+  'use strict';
   
-  Object.defineProperty(exports, "__esModule", {
+  Object.defineProperty(exports, '__esModule', {
     value: true
   });
   
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
   var _parseNode = __webpack_require__(91);
   
   var _parseNode2 = _interopRequireDefault(_parseNode);
   
-  var Transaction = _parseNode2["default"].Object.extend("Transaction", {
-    validate: function validate() {
-      return this.query, this.on;
-    }
-  }, {});
+  var Transaction = _parseNode2['default'].Object.extend('Transaction', {}, {});
   
-  exports["default"] = Transaction;
-  var TransactionUtil = {
-    fromRequestBody: function fromRequestBody(t, body) {
-      t.set("query", body.query);
-      t.set("data", body.data || {});
-  
-      return t;
-    } };
+  exports['default'] = Transaction;
+  var TransactionUtil = {};
   exports.TransactionUtil = TransactionUtil;
 
 /***/ },
 /* 98 */
 /***/ function(module, exports, __webpack_require__) {
 
-  //Register todos with aws dynammodb.
-  //https://github.com/yortus/asyncawait
+  // Register todos with aws dynammodb.
+  // https://github.com/yortus/asyncawait
   'use strict';
   
   Object.defineProperty(exports, '__esModule', {
@@ -5597,10 +5550,6 @@ module.exports =
   var _this = this;
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
-  var _bluebird = __webpack_require__(96);
-  
-  var _bluebird2 = _interopRequireDefault(_bluebird);
   
   var _express = __webpack_require__(3);
   
@@ -5613,10 +5562,11 @@ module.exports =
   var _transactionsTransactionModel2 = _interopRequireDefault(_transactionsTransactionModel);
   
   var Parse = __webpack_require__(91);
+  var randomstring = __webpack_require__(100).generate;
   
   var router = new _express.Router();
   
-  router.get('/', function callee$0$0(req, res, next) {
+  router.get('/', function callee$0$0(req, res) {
     var query;
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
@@ -5624,34 +5574,30 @@ module.exports =
           query = new Parse.Query(_DeckModel2['default']);
   
           if (req.query.keywords) {
-            query.containsAll("keywords", req.query.keywords);
+            query.containsAll('keywords', req.query.keywords);
           }
           if (req.query.name) {
-            query.contains("name", req.query.name);
+            query.contains('name', req.query.name);
           }
           if (req.query.cids) {
-            query.containsAll("cids", req.query.cids);
+            query.containsAll('cids', req.query.cids);
           }
           if (req.query.owner) {
-            query.equalTo("owner", req.query.user);
+            query.equalTo('owner', req.query.user);
           }
           if (req.query.gid) {
-            query.equalTo("gid", req.query.gid);
+            query.equalTo('gid', req.query.gid);
           }
           query.limit(req.query.limit || 20);
-          //console.log(query)
+  
           query.find({
             success: function success(results) {
-              console.log("Succssfully retrieved ", results, results.map(function (d) {
-                return d.get("owner");
-              }));
-              return res.status(200).send(results.map(function (d) {
-                return _DeckModel.DeckUtil.toObject(d);
+              return res.status(200).json(results.map(function (d) {
+                return d.toJSON();
               }));
             },
             error: function error(err) {
-              //console.log("Failed to get decks ", err);
-              return res.status(400).send(err);
+              return res.status(400).json(err);
             },
             sessionToken: req.session.sessionToken
           });
@@ -5662,8 +5608,8 @@ module.exports =
       }
     }, null, _this);
   });
-  //If deck exist update it. Uses session names
-  router.post('/', function callee$0$0(req, res, next) {
+  // Only for posting decks
+  router.post('/', function callee$0$0(req, res) {
     var query;
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
@@ -5675,60 +5621,57 @@ module.exports =
             break;
           }
   
-          return context$1$0.abrupt('return', res.status(400).send({ err: "Must have a did or gid" }));
+          return context$1$0.abrupt('return', res.status(400).json({ err: 'Must have a did or gid' }));
   
         case 3:
+  
           if (req.body.gid) {
-            query.equalTo("gid", req.body.gid);
+            query.equalTo('gid', req.body.gid);
           } else if (req.body.did) {
-            query.equalTo("gid", req.session.user.username + ':' + req.body.did);
+            query.equalTo('gid', req.session.username + ':' + req.body.did);
           }
           query.find({
             success: function success(results) {
+              if (results[0]) {
+                return res.status(400).json({ error: 'Deck already Exist' });
+              }
+              // TODO : Validate Decks
+              var newDeck = new Parse.Object('Deck');
+              var newDeckBody = req.body;
+              var gid = req.body.gid || req.session.username + ':' + req.body.did;
+              var did = gid.split(':')[1];
+              newDeckBody.gid = gid;
+              newDeckBody.did = did;
+              newDeckBody.owner = req.session.username;
   
-              console.log("recieveing decks", results);
-              var creatingDeck = !!results[0];
-              var newDeck = results[0] || new Parse.Object("Deck");
-              //console.log("here4", results)
-              newDeck = _DeckModel.DeckUtil.fromRequestBody(newDeck, req.body);
-              var gid = req.body.gid || req.session.user.username + ":" + req.body.did;
-              var did = Number(gid.split(":")[1]);
-              newDeck.set("gid", gid);
-              newDeck.set("did", did);
-              newDeck.set("owner", req.session.user.username);
-              console.log("Making a new deck", did, gid);
-              newDeck.save(null, {
+              newDeck.save(newDeckBody, {
                 success: function success(deck) {
+                  var userQuery = new Parse.Query(Parse.User);
+                  userQuery.equalTo('username', req.session.user.username);
+                  userQuery.find({
+                    success: function success(user) {
+                      user.add('decks', deck);
+                      user.save();
+                    }
+                  });
   
-                  //    console.log("here3")
-                  //Associate Deck with User
-                  if (creatingDeck) {
-                    var userQuery = new Parse.Query(Parse.User);
-                    userQuery.equalTo("username", req.session.user.username);
-                    userQuery.find({
-                      success: function success(user) {
-                        user.add("decks", deck);
-                        user.save();
-                      }
-                    });
-                  }
-                  return res.status(200).send(_DeckModel.DeckUtil.toObject(deck));
+                  return res.status(200).json(deck.toJSON());
                 },
                 error: function error(deck, _error) {
-                  //  console.log(newDeck);
-                  return res.status(400).send({ err: _error, deck: _DeckModel.DeckUtil.toObject(deck) });
+                  return res.status(400).json({ error: _error, deck: deck.toJSON() });
                 },
                 sessionToken: req.session.sessionToken
               });
+              return null;
             },
             error: function error(err) {
-  
-              return res.status(500).send({ err: err, deck: {} });
+              return res.status(500).json({ error: err, deck: {} });
             },
             sessionToken: req.session.sessionToken
           });
+          return context$1$0.abrupt('return', null);
   
-        case 5:
+        case 6:
         case 'end':
           return context$1$0.stop();
       }
@@ -5748,22 +5691,22 @@ module.exports =
     }, null, _this);
   });
   
-  router.get('/:gid', function callee$0$0(req, res, next) {
+  router.get('/:gid', function callee$0$0(req, res) {
     var query;
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
         case 0:
           query = new Parse.Query(_DeckModel2['default']);
   
-          query.equalTo("gid", req.gid);
+          query.equalTo('gid', req.gid);
           query.find({
             success: function success(results) {
-              return res.status(200).send(results.map(function (d) {
-                return _DeckModel.DeckUtil.toObject(d);
+              return res.status(200).json(results.map(function (d) {
+                return d.toJSON();
               }));
             },
             error: function error(deck, _error2) {
-              return res.status(400).send({ err: _error2, deck: _DeckModel.DeckUtil.toObject(deck) });
+              return res.status(400).json({ error: _error2, deck: deck.toJSON(deck) });
             },
             sessionToken: req.session.sessionToken
           });
@@ -5774,50 +5717,79 @@ module.exports =
       }
     }, null, _this);
   });
-  //Expects [transactions] TODO deal with Fork
-  router.post('/:gid', function callee$0$0(req, res, next) {
-    var current_id, transactions, parsedTransactions;
+  
+  router.post('/:gid', function callee$0$0(req, res) {
+    var indexGroup, transactions;
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
         case 0:
-          current_id = req.gid;
+          indexGroup = randomstring(30);
   
           if (!(!req.body.isArray && !(req.body.length > 0))) {
             context$1$0.next = 3;
             break;
           }
   
-          return context$1$0.abrupt('return', res.status(400).send({ err: "Must send array of transactions" }));
+          return context$1$0.abrupt('return', res.status(400).json({ error: 'Must send array of transactions' }));
   
         case 3:
-          transactions = req.body.map(function (body) {
-            var t = new Parse.Object("Transaction");
-            return _transactionsTransactionModel.TransactionUtil.fromRequestBody(t, body);
-          });
-          parsedTransactions = [];
-  
-          transactions.forEach(function (t, index) {
-            t.set("on", current_id);
-            t.set("owner", req.session.get("username"));
-            t.set("localIndex", index);
-            t.save(null, {
-              success: function success(trans) {
-                //TODO maintain order or not
-  
-                parsedTransactions.push({ transaction: trans, error: null });
-                if (parsedTransactions.length == transactions.length) {
-                  res.status(200).send(parsedTransactions);
-                }
-              },
-              error: function error(trans, _error3) {
-  
-                parsedTransactions.push({ transaction: trans, error: _error3 });
-                if (parsedTransactions.length == transactions.length) {
-                  res.status(400).send(parsedTransactions);
-                }
-              },
-              sessionToken: req.session.sessionToken
+          transactions = req.body.map(function (body, index) {
+            var t = new Parse.Object('Transaction');
+            Object.keys(body).forEach(function (key) {
+              return t.set(key, body[key]);
             });
+            t.set('on', req.gid);
+            t.set('for', 'Deck');
+            t.set('owner', req.session.username);
+            t.set('indexGroup', indexGroup);
+            t.set('index', index);
+            return t;
+          });
+  
+          Parse.Object.saveAll(transactions, {
+            success: function success(list) {
+              return res.status(200).json(list);
+            },
+            error: function error(_error3) {
+              return res.status(500).json(_error3);
+            },
+            sessionToken: req.session.sessionToken
+          });
+          return context$1$0.abrupt('return', null);
+  
+        case 6:
+        case 'end':
+          return context$1$0.stop();
+      }
+    }, null, _this);
+  });
+  
+  router.get('/:gid/transactions', function callee$0$0(req, res) {
+    var query;
+    return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
+      while (1) switch (context$1$0.prev = context$1$0.next) {
+        case 0:
+          query = new Parse.Query(_transactionsTransactionModel2['default']);
+  
+          if (req.query.indexGroup) {
+            query.equalTo('indexGroup', req.query.indexGroup);
+          }
+          if (req.query.since) {
+            query.whereGreaterThan('createdAt', req.query.since);
+          }
+          query.limit(req.query.limit || 20);
+          query.descending('createdAt');
+  
+          query.find({
+            success: function success(results) {
+              return res.status(200).json(results.map(function (deck) {
+                return deck.toJSON();
+              }));
+            },
+            error: function error(_error4) {
+              return res.status(500).json(_error4);
+            },
+            sessionToken: req.session.sessionToken
           });
   
         case 6:
@@ -5830,66 +5802,39 @@ module.exports =
   exports['default'] = router;
   module.exports = exports['default'];
 
-  //console.log("IN get all decks")
-
 /***/ },
 /* 99 */
 /***/ function(module, exports, __webpack_require__) {
 
-  "use strict";
+  'use strict';
   
-  Object.defineProperty(exports, "__esModule", {
+  Object.defineProperty(exports, '__esModule', {
     value: true
   });
   
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
   var _parseNode = __webpack_require__(91);
   
   var _parseNode2 = _interopRequireDefault(_parseNode);
   
-  var Deck = _parseNode2["default"].Object.extend("Deck", {
-    validate: function validate() {
-      return true;
-    }
-  }, {//class methods
-  
-  });
-  exports["default"] = Deck;
-  var DeckUtil = {
-    fromRequestBody: function fromRequestBody(deck, body) {
-  
-      deck.set("name", body.name);
-      deck.set("keywords", body.keywords || "");
-      deck.set("desc", body.desc || "");
-      deck.set("newCards", body.newCards || []);
-      deck.set("isPublic", body.isPublic || true);
-      deck.set("children", body.children || []);
-      deck.set("subscribers", body.subscribers || []);
-      return deck;
-    },
-    toObject: function toObject(deck) {
-      return {
-        name: deck.get("name"),
-        owner: deck.get("owner"),
-        keywords: deck.get("keywords"),
-        desc: deck.get("desc"),
-        newCards: deck.get("newCards"),
-        ispublic: deck.get("isPublic"),
-        children: deck.get("children"),
-        subscribers: deck.get("subscribers"),
-        cids: deck.get("cids"),
-        gid: deck.get("gid"),
-        did: deck.get("did")
-      };
-    }
-  };
+  var Deck = _parseNode2['default'].Object.extend('Deck', {}, {});
+  exports['default'] = Deck;
+  var DeckUtil = {};
   exports.DeckUtil = DeckUtil;
 
 /***/ },
 /* 100 */
+/***/ function(module, exports) {
+
+  module.exports = require("randomstring");
+
+/***/ },
+/* 101 */
 /***/ function(module, exports, __webpack_require__) {
 
+  // Register todos with aws dynammodb.
+  // https://github.com/yortus/asyncawait
   'use strict';
   
   Object.defineProperty(exports, '__esModule', {
@@ -5900,13 +5845,9 @@ module.exports =
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
-  var _bluebird = __webpack_require__(96);
-  
-  var _bluebird2 = _interopRequireDefault(_bluebird);
-  
   var _express = __webpack_require__(3);
   
-  var _CardModel = __webpack_require__(101);
+  var _CardModel = __webpack_require__(102);
   
   var _CardModel2 = _interopRequireDefault(_CardModel);
   
@@ -5915,109 +5856,59 @@ module.exports =
   var _transactionsTransactionModel2 = _interopRequireDefault(_transactionsTransactionModel);
   
   var Parse = __webpack_require__(91);
+  var randomstring = __webpack_require__(100).generate;
   
   var router = new _express.Router();
   
-  router.get('/', function callee$0$0(req, res, next) {
-    return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
-      while (1) switch (context$1$0.prev = context$1$0.next) {
-        case 0:
-          //console.log("IN get all Cards")
-          if (req.query.keywords) {
-            query.containsAll("keywords", req.query.keywords);
-          }
-          if (req.query.tags) {
-            query.contains("tags", req.query.tags);
-          }
-          if (req.query.notes) {
-            query.containsAll("notes", req.query.notes);
-          }
-          if (req.params.cid) {
-            query.equalTo("cid", req.query.cid);
-          }
-  
-          if (req.params.username) {
-            query.equalTo("cid", req.query.username);
-          }
-  
-          if (req.params.gid) {
-            query.equalTo("gid", req.query.gid);
-          }
-          console.log(query);
-          query.find({
-            success: function success(results) {
-              console.log("Succssfully retrieved ", results);
-              return res.status(200).send(results);
-            },
-            error: function error(err) {
-              console.log("Failed to get Cards ", err);
-              return res.status(400).send(err);
-            },
-            sessionToken: req.session.sessionToken
-          });
-  
-        case 8:
-        case 'end':
-          return context$1$0.stop();
-      }
-    }, null, _this);
-  });
-  //Todo check for username
-  router.post('/', function callee$0$0(req, res, next) {
+  router.get('/', function callee$0$0(req, res) {
     var query;
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
         case 0:
           query = new Parse.Query(_CardModel2['default']);
   
-          if (!(!req.body.gid && !req.body.did)) {
-            context$1$0.next = 3;
-            break;
+          if (req.query.keywords) {
+            query.containsAll('keywords', req.query.keywords);
           }
+          if (req.query.owner) {
+            query.equalTo('owner', req.query.owner);
+          }
+          if (req.query.cid) {
+            query.equalTo('cid', req.query.cid);
+          }
+          if (req.query.did) {
+            query.equalTo('did', req.query.did);
+          }
+          if (req.query.gid) {
+            query.equalTo('gid', req.query.gid);
+          }
+          if (req.query.notes) {
+            query.containsAll('notes', req.query.notes);
+          }
+          if (req.query.tags) {
+            query.containsAll('cid', req.query.tags);
+          }
+          query.limit(req.query.limit || 20);
   
-          return context$1$0.abrupt('return', res.status(400).send({ err: "Must have a did or gid" }));
-  
-        case 3:
-          if (req.body.gid) {
-            query.equalTo("gid", req.body.gid);
-          }
-          if (req.body.did) {
-            query.equalTo("did", req.body.did);
-          }
-          console.log("here1");
           query.find({
             success: function success(results) {
-  
-              console.log("here2");
-              var newCard = results[0] || new Parse.Object("Card");
-              console.log("here4", results);
-              newCard = _CardModel.CardUtil.fromRequestBody(newCard, req.body);
-              newCard.save(null, {
-                success: function success(Card) {
-  
-                  console.log("here3");
-                  return res.status(200).send(Card);
-                },
-                error: function error(Card, _error) {
-                  console.log(newCard);
-                  return res.status(400).send({ err: _error, Card: Card });
-                },
-                sessionToken: req.session.sessionToken
-              });
+              return res.status(200).json(results.map(function (d) {
+                return d.toJSON();
+              }));
             },
             error: function error(err) {
-  
-              return res.status(400).send({ err: err, Card: {} });
+              return res.status(400).json(err);
             },
             sessionToken: req.session.sessionToken
           });
   
-        case 7:
+        case 10:
         case 'end':
           return context$1$0.stop();
       }
     }, null, _this);
   });
+  
   router.param('gid', function callee$0$0(req, res, next, gid) {
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
@@ -6032,20 +5923,22 @@ module.exports =
     }, null, _this);
   });
   
-  router.get('/:gid', function callee$0$0(req, res, next) {
+  router.get('/:gid', function callee$0$0(req, res) {
     var query;
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
         case 0:
           query = new Parse.Query(_CardModel2['default']);
   
-          query.equalTo("gid", req.gid);
+          query.equalTo('gid', req.gid);
           query.find({
             success: function success(results) {
-              return res.status(200).send(results);
+              return res.status(200).json(results.map(function (d) {
+                return d.toJSON();
+              }));
             },
-            error: function error(Card, _error2) {
-              return res.status(400).send({ err: _error2, Card: Card });
+            error: function error(card, _error) {
+              return res.status(400).json({ error: _error, card: card.toJSON() });
             },
             sessionToken: req.session.sessionToken
           });
@@ -6056,57 +5949,82 @@ module.exports =
       }
     }, null, _this);
   });
-  //Expects [transactions] TODO deal with Fork
-  router.post('/:gid', function callee$0$0(req, res, next) {
-    var current_id, transactions, parsedTransactions;
+  
+  router.post('/:gid', function callee$0$0(req, res) {
+    var indexGroup, transactions;
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
         case 0:
-          current_id = req.gid;
+          indexGroup = randomstring(30);
   
           if (!(!req.body.isArray && !(req.body.length > 0))) {
             context$1$0.next = 3;
             break;
           }
   
-          return context$1$0.abrupt('return', res.status(400).send({ err: "Must send array of transactions" }));
+          return context$1$0.abrupt('return', res.status(400).json({ error: 'Must send array of transactions' }));
   
         case 3:
-          console.log("here1");
-          transactions = req.body.map(function (body) {
-            console.log("here2");
-            var t = new Parse.Object("Transaction");
-            console.log("here3");
-            return _transactionsTransactionModel.TransactionUtil.fromRequestBody(t, body);
-          });
-  
-          console.log("here4");
-          parsedTransactions = [];
-  
-          transactions.forEach(function (t) {
-            console.log("here5");
-            t.set("on", current_id);
-            t.save(null, {
-              success: function success(trans) {
-                //TODO maintain order
-  
-                parsedTransactions.push({ transaction: trans, error: null });
-                if (parsedTransactions.length == transactions.length) {
-                  res.status(200).send(parsedTransactions);
-                }
-              },
-              error: function error(trans, _error3) {
-  
-                parsedTransactions.push({ transaction: trans, error: _error3 });
-                if (parsedTransactions.length == transactions.length) {
-                  res.status(400).send(parsedTransactions);
-                }
-              },
-              sessionToken: req.session.sessionToken
+          transactions = req.body.map(function (body, index) {
+            var t = new Parse.Object('Transaction');
+            Object.keys(body).forEach(function (key) {
+              return t.set(key, body[key]);
             });
+            t.set('on', req.gid);
+            t.set('for', 'Card');
+            t.set('owner', req.session.username);
+            t.set('indexGroup', indexGroup);
+            t.set('index', index);
+            return t;
           });
   
-        case 8:
+          Parse.Object.saveAll(transactions, {
+            success: function success(list) {
+              return res.status(200).json(list);
+            },
+            error: function error(_error2) {
+              return res.status(500).json(_error2);
+            },
+            sessionToken: req.session.sessionToken
+          });
+          return context$1$0.abrupt('return', null);
+  
+        case 6:
+        case 'end':
+          return context$1$0.stop();
+      }
+    }, null, _this);
+  });
+  
+  router.get('/:gid/transactions', function callee$0$0(req, res) {
+    var query;
+    return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
+      while (1) switch (context$1$0.prev = context$1$0.next) {
+        case 0:
+          query = new Parse.Query(_transactionsTransactionModel2['default']);
+  
+          if (req.query.indexGroup) {
+            query.equalTo('indexGroup', req.query.indexGroup);
+          }
+          if (req.query.since) {
+            query.whereGreaterThan('createdAt', req.query.since);
+          }
+          query.limit(req.query.limit || 20);
+          query.descending('createdAt');
+  
+          query.find({
+            success: function success(results) {
+              return res.status(200).json(results.map(function (deck) {
+                return deck.toJSON();
+              }));
+            },
+            error: function error(_error3) {
+              return res.status(500).json(_error3);
+            },
+            sessionToken: req.session.sessionToken
+          });
+  
+        case 6:
         case 'end':
           return context$1$0.stop();
       }
@@ -6117,47 +6035,28 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 101 */
+/* 102 */
 /***/ function(module, exports, __webpack_require__) {
 
-  "use strict";
+  'use strict';
   
-  Object.defineProperty(exports, "__esModule", {
+  Object.defineProperty(exports, '__esModule', {
     value: true
   });
   
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
   var _parseNode = __webpack_require__(91);
   
   var _parseNode2 = _interopRequireDefault(_parseNode);
   
-  var Card = _parseNode2["default"].Object.extend("Card", {
-    validate: function validate() {
-      return true; //Handled parse side
-    }
-  }, {//class methods
-  
-  });
-  exports["default"] = Card;
-  var CardUtil = {
-    fromRequestBody: function fromRequestBody(card, body) {
-      card.set("cid", body.cid);
-      card.set("did", body.did);
-      card.set("front", body.front);
-      card.set("keywords", body.keywords);
-      card.set("back", body.back);
-      card.set("tags", body.tags);
-      card.set("notes", body.notes);
-      card.set("owner", body.owner);
-  
-      return card;
-    }
-  };
-  exports.CardUtil = CardUtil;
+  var Card = _parseNode2['default'].Object.extend('Card', {}, {});
+  exports['default'] = Card;
+  var DeckUtil = {};
+  exports.DeckUtil = DeckUtil;
 
 /***/ },
-/* 102 */
+/* 103 */
 /***/ function(module, exports, __webpack_require__) {
 
   //Register todos with aws dynammodb.
@@ -6232,7 +6131,7 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 103 */
+/* 104 */
 /***/ function(module, exports, __webpack_require__) {
 
   /**
@@ -6254,7 +6153,7 @@ module.exports =
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
-  var _fs = __webpack_require__(104);
+  var _fs = __webpack_require__(105);
   
   var _fs2 = _interopRequireDefault(_fs);
   
@@ -6266,11 +6165,11 @@ module.exports =
   
   var _bluebird2 = _interopRequireDefault(_bluebird);
   
-  var _jade = __webpack_require__(105);
+  var _jade = __webpack_require__(106);
   
   var _jade2 = _interopRequireDefault(_jade);
   
-  var _frontMatter = __webpack_require__(106);
+  var _frontMatter = __webpack_require__(107);
   
   var _frontMatter2 = _interopRequireDefault(_frontMatter);
   
@@ -6373,19 +6272,19 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 104 */
+/* 105 */
 /***/ function(module, exports) {
 
   module.exports = require("fs");
 
 /***/ },
-/* 105 */
+/* 106 */
 /***/ function(module, exports) {
 
   module.exports = require("jade");
 
 /***/ },
-/* 106 */
+/* 107 */
 /***/ function(module, exports) {
 
   module.exports = require("front-matter");
