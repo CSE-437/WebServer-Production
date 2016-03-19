@@ -83,46 +83,46 @@ module.exports =
   
   var _routes2 = _interopRequireDefault(_routes);
   
-  var _componentsHtml = __webpack_require__(85);
+  var _componentsHtml = __webpack_require__(81);
   
   var _componentsHtml2 = _interopRequireDefault(_componentsHtml);
   
-  var _assets = __webpack_require__(86);
+  var _assets = __webpack_require__(82);
   
   var _assets2 = _interopRequireDefault(_assets);
   
   var _config = __webpack_require__(14);
   
-  var _morgan = __webpack_require__(87);
+  var _morgan = __webpack_require__(83);
   
   var _morgan2 = _interopRequireDefault(_morgan);
   
-  var _cookieParser = __webpack_require__(88);
+  var _cookieParser = __webpack_require__(84);
   
   var _cookieParser2 = _interopRequireDefault(_cookieParser);
   
-  var _bodyParser = __webpack_require__(89);
+  var _bodyParser = __webpack_require__(85);
   
   var _bodyParser2 = _interopRequireDefault(_bodyParser);
   
-  var _expressSession = __webpack_require__(90);
+  var _expressSession = __webpack_require__(86);
   
   var _expressSession2 = _interopRequireDefault(_expressSession);
   
-  var _parseNode = __webpack_require__(91);
+  var _parseNode = __webpack_require__(87);
   
   var _parseNode2 = _interopRequireDefault(_parseNode);
   
-  var _apiUsersUserUtil = __webpack_require__(92);
+  var _apiUsersUserUtil = __webpack_require__(88);
   
   var _apiUsersUserUtil2 = _interopRequireDefault(_apiUsersUserUtil);
   
-  var ParseStore = __webpack_require__(93)(_expressSession2['default']);
+  var ParseStore = __webpack_require__(89)(_expressSession2['default']);
   
   _parseNode2['default'].initialize(process.env.APP_ID || "AnkiHubParse");
   _parseNode2['default'].serverURL = process.env.SERVER_URL || "https://ankihubparse.herokuapp.com/parse";
   
-  var io = __webpack_require__(94)(server);
+  var io = __webpack_require__(90)(server);
   
   var server = global.server = (0, _express2['default'])();
   
@@ -150,11 +150,11 @@ module.exports =
   //
   // Register API middleware
   // -----------------------------------------------------------------------------
-  server.use('/api/users', __webpack_require__(95));
-  server.use('/api/decks', __webpack_require__(98));
-  server.use('/api/cards', __webpack_require__(101));
-  server.use('/api/todo', __webpack_require__(103));
-  server.use('/api/content', __webpack_require__(104));
+  server.use('/api/users', __webpack_require__(91));
+  server.use('/api/decks', __webpack_require__(94));
+  server.use('/api/cards', __webpack_require__(97));
+  server.use('/api/todo', __webpack_require__(99));
+  server.use('/api/content', __webpack_require__(100));
   
   //
   // Register server-side rendering middleware
@@ -315,47 +315,37 @@ module.exports =
   
   var _componentsApp2 = _interopRequireDefault(_componentsApp);
   
-  var _componentsContentPage = __webpack_require__(43);
+  var _componentsContentPage = __webpack_require__(50);
   
   var _componentsContentPage2 = _interopRequireDefault(_componentsContentPage);
   
-  var _componentsContactPage = __webpack_require__(46);
+  var _componentsContactPage = __webpack_require__(53);
   
   var _componentsContactPage2 = _interopRequireDefault(_componentsContactPage);
   
-  var _componentsTodoPage = __webpack_require__(49);
-  
-  var _componentsTodoPage2 = _interopRequireDefault(_componentsTodoPage);
-  
-  var _componentsDeckPage = __webpack_require__(57);
+  var _componentsDeckPage = __webpack_require__(56);
   
   var _componentsDeckPage2 = _interopRequireDefault(_componentsDeckPage);
   
-  var _componentsLoginPage = __webpack_require__(64);
+  var _componentsLoginPage = __webpack_require__(66);
   
   var _componentsLoginPage2 = _interopRequireDefault(_componentsLoginPage);
   
-  var _componentsRegisterPage = __webpack_require__(67);
+  var _componentsRegisterPage = __webpack_require__(69);
   
   var _componentsRegisterPage2 = _interopRequireDefault(_componentsRegisterPage);
   
-  var _componentsNotFoundPage = __webpack_require__(71);
+  var _componentsNotFoundPage = __webpack_require__(72);
   
   var _componentsNotFoundPage2 = _interopRequireDefault(_componentsNotFoundPage);
   
-  var _componentsErrorPage = __webpack_require__(74);
+  var _componentsErrorPage = __webpack_require__(75);
   
   var _componentsErrorPage2 = _interopRequireDefault(_componentsErrorPage);
   
-  //import HomePage from './components/HomePage';
-  
-  var _componentsProfilePage = __webpack_require__(77);
+  var _componentsProfilePage = __webpack_require__(78);
   
   var _componentsProfilePage2 = _interopRequireDefault(_componentsProfilePage);
-  
-  var _componentsHomePageHomePageJs = __webpack_require__(80);
-  
-  var _componentsHomePageHomePageJs2 = _interopRequireDefault(_componentsHomePageHomePageJs);
   
   /*
   Use a router from react-routing project.
@@ -387,7 +377,7 @@ module.exports =
         }
       }, null, _this);
     });
-    //Show contact page
+    // Show contact page
     on('/contact', function callee$1$0() {
       return regeneratorRuntime.async(function callee$1$0$(context$2$0) {
         while (1) switch (context$2$0.prev = context$2$0.next) {
@@ -400,7 +390,7 @@ module.exports =
         }
       }, null, _this);
     });
-    //show login page. TODO Implement
+    // show login page. TODO Implement
     on('/login', function callee$1$0() {
       return regeneratorRuntime.async(function callee$1$0$(context$2$0) {
         while (1) switch (context$2$0.prev = context$2$0.next) {
@@ -413,7 +403,7 @@ module.exports =
         }
       }, null, _this);
     });
-    //show register page.
+    // show register page.
     on('/register', function callee$1$0() {
       return regeneratorRuntime.async(function callee$1$0$(context$2$0) {
         while (1) switch (context$2$0.prev = context$2$0.next) {
@@ -426,7 +416,7 @@ module.exports =
         }
       }, null, _this);
     });
-    //show register page.
+    // show register page.
     on('/decks', function callee$1$0() {
       return regeneratorRuntime.async(function callee$1$0$(context$2$0) {
         while (1) switch (context$2$0.prev = context$2$0.next) {
@@ -439,7 +429,7 @@ module.exports =
         }
       }, null, _this);
     });
-    //show todo page
+    // show todo page
     on('/Profile', function callee$1$0() {
       return regeneratorRuntime.async(function callee$1$0$(context$2$0) {
         while (1) switch (context$2$0.prev = context$2$0.next) {
@@ -453,18 +443,6 @@ module.exports =
       }, null, _this);
     });
     //
-    on('/home', function callee$1$0() {
-      return regeneratorRuntime.async(function callee$1$0$(context$2$0) {
-        while (1) switch (context$2$0.prev = context$2$0.next) {
-          case 0:
-            return context$2$0.abrupt('return', _react2['default'].createElement(_componentsHomePageHomePageJs2['default'], null));
-  
-          case 1:
-          case 'end':
-            return context$2$0.stop();
-        }
-      }, null, _this);
-    });
   
     on('*', function callee$1$0(state) {
       var response, content;
@@ -489,7 +467,7 @@ module.exports =
         }
       }, null, _this);
     });
-    //Shows error pages. Custome 404 pages.
+    // Shows error pages. Custome 404 pages.
     on('error', function (state, error) {
       return state.statusCode === 404 ? _react2['default'].createElement(
         _componentsApp2['default'],
@@ -503,7 +481,7 @@ module.exports =
     });
   });
   
-  //Whenever someoene calls require(routes.js) they will get this function
+  // Whenever someoene calls require(routes.js) they will get this function
   exports['default'] = router;
   module.exports = exports['default'];
 
@@ -514,14 +492,14 @@ module.exports =
   THIS WAITS FOR MULTIPLE CHILD COMPONENTS
   */
 
-  //This syntacts checks to make sure the component isn't nil, and
-  //Returns the <App context={state.context}>{component}</App>
-  //Equivilent to return (component)? nil : <App context={state.context}>{component}</App>;
+  // This syntacts checks to make sure the component isn't nil, and
+  // Returns the <App context={state.context}>{component}</App>
+  // Equivilent to return (component)? nil : <App context={state.context}>{component}</App>;
 
-  //Gets the api info for that content
+  // Gets the api info for that content
 
-  //Returns the content page. This content page will be inside the app
-  //due to the await next(); statement in the first on
+  // Returns the content page. This content page will be inside the app
+  // due to the await next(); statement in the first on
 
 /***/ },
 /* 7 */
@@ -1482,11 +1460,11 @@ module.exports =
   
   var _Header2 = _interopRequireDefault(_Header);
   
-  var _Feedback = __webpack_require__(37);
+  var _Feedback = __webpack_require__(43);
   
   var _Feedback2 = _interopRequireDefault(_Feedback);
   
-  var _Footer = __webpack_require__(40);
+  var _Footer = __webpack_require__(46);
   
   var _Footer2 = _interopRequireDefault(_Footer);
   
@@ -2268,11 +2246,15 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _classnames = __webpack_require__(33);
+  var _storesProfileStore = __webpack_require__(33);
   
-  var _classnames2 = _interopRequireDefault(_classnames);
+  var _storesProfileStore2 = _interopRequireDefault(_storesProfileStore);
   
-  var _NavigationScss = __webpack_require__(34);
+  var _actionsProfileActions = __webpack_require__(36);
+  
+  var _actionsProfileActions2 = _interopRequireDefault(_actionsProfileActions);
+  
+  var _NavigationScss = __webpack_require__(39);
   
   var _NavigationScss2 = _interopRequireDefault(_NavigationScss);
   
@@ -2284,20 +2266,94 @@ module.exports =
   
   var _Link2 = _interopRequireDefault(_Link);
   
-  var _reactBootstrap = __webpack_require__(36);
+  var _reactBootstrap = __webpack_require__(41);
+  
+  var _toastr = __webpack_require__(38);
+  
+  var _toastr2 = _interopRequireDefault(_toastr);
+  
+  var objectAssign = __webpack_require__(42);
   
   var Navigation = (function (_Component) {
     _inherits(Navigation, _Component);
   
-    function Navigation() {
+    _createClass(Navigation, null, [{
+      key: 'propTypes',
+      value: {
+        className: _react.PropTypes.string
+      },
+      enumerable: true
+    }]);
+  
+    function Navigation(props) {
       _classCallCheck(this, _Navigation);
   
-      _get(Object.getPrototypeOf(_Navigation.prototype), 'constructor', this).apply(this, arguments);
+      _get(Object.getPrototypeOf(_Navigation.prototype), 'constructor', this).call(this, props);
+      this.state = objectAssign(_storesProfileStore2['default'].getState(), { showModal: false });
+      // need to use bind so that the this variable for onChange
+      // refers to this DeckPage object not the function
+      this.onChange = this.onChange.bind(this);
+      this.openLogInModal = this.openLogInModal.bind(this);
+      this.closeLogInModal = this.closeLogInModal.bind(this);
     }
   
     _createClass(Navigation, [{
+      key: 'componentDidMount',
+      value: function componentDidMount() {
+        // makes the DeckStore call the onchange function whenever it cnanges.
+        // This is why we had to use bind
+        _storesProfileStore2['default'].listen(this.onChange);
+        // As soon as it is poling for data get data
+      }
+    }, {
+      key: 'componentWillUnmount',
+      value: function componentWillUnmount() {
+        // remove event listener
+        _storesProfileStore2['default'].unlisten(this.onChange);
+      }
+    }, {
+      key: 'openLogInModal',
+      value: function openLogInModal() {
+        this.setState({ showModal: true });
+      }
+    }, {
+      key: 'closeLogInModal',
+      value: function closeLogInModal() {
+        this.setState({ showModal: false });
+      }
+    }, {
+      key: 'logIn',
+      value: function logIn(event) {
+        event.preventDefault();
+        var username = event.target[0].value;
+        var password = event.target[1].value;
+        _actionsProfileActions2['default'].logIn({ username: username, password: password });
+        this.closeLogInModal();
+      }
+    }, {
+      key: 'logOut',
+      value: function logOut() {
+        _actionsProfileActions2['default'].logOut();
+      }
+    }, {
+      key: 'onChange',
+      value: function onChange(state) {
+        console.log("new state");
+        this.setState(state);
+      }
+    }, {
       key: 'render',
       value: function render() {
+        var LogInModalButton = !this.state.loggedIn ? _react2['default'].createElement(
+          _reactBootstrap.NavItem,
+          { onClick: this.openLogInModal },
+          'Log In'
+        ) : _react2['default'].createElement(
+          _reactBootstrap.NavItem,
+          { onClick: this.logOut },
+          'Log Out'
+        );
+  
         return _react2['default'].createElement(
           _reactBootstrap.Navbar,
           { inverse: true },
@@ -2325,39 +2381,64 @@ module.exports =
                 _reactBootstrap.NavItem,
                 null,
                 this.props.children
+              ),
+              _react2['default'].createElement(
+                _reactBootstrap.NavItem,
+                null,
+                this.state.loggedIn
               )
             ),
             _react2['default'].createElement(
               _reactBootstrap.Nav,
               { pullRight: true },
+              LogInModalButton,
               _react2['default'].createElement(
                 _reactBootstrap.NavItem,
-                null,
-                _react2['default'].createElement(
-                  'a',
-                  { className: _NavigationScss2['default'].link, href: '/profile', onClick: _Link2['default'].handleClick },
-                  'profile'
-                )
+                { href: '/profile', onClick: _Link2['default'].handleClick },
+                'Profile'
               ),
               _react2['default'].createElement(
                 _reactBootstrap.NavItem,
-                null,
-                _react2['default'].createElement(
-                  'a',
-                  { className: _NavigationScss2['default'].link, href: '/home', onClick: _Link2['default'].handleClick },
-                  'home'
-                )
+                { href: '/decks', onClick: _Link2['default'].handleClick },
+                'Decks'
+              )
+            )
+          ),
+          _react2['default'].createElement(
+            _reactBootstrap.Modal,
+            { show: this.state.showModal, onHide: this.closeLogInModal },
+            _react2['default'].createElement(
+              _reactBootstrap.Modal.Header,
+              { closeButton: true },
+              _react2['default'].createElement(
+                _reactBootstrap.Modal.Title,
+                { id: 'contained-modal-title-lg' },
+                'LogIn to AnkiHub'
+              )
+            ),
+            _react2['default'].createElement(
+              _reactBootstrap.Modal.Body,
+              null,
+              _react2['default'].createElement(
+                'form',
+                { onSubmit: this.logIn.bind(this) },
+                _react2['default'].createElement(_reactBootstrap.Input, { type: 'text', label: 'Username', placeholder: 'Username', ref: 'usernameField', value: this.state.username }),
+                _react2['default'].createElement(_reactBootstrap.Input, { type: 'password', label: 'Password', ref: 'passwordField' }),
+                _react2['default'].createElement(_reactBootstrap.ButtonInput, { type: 'submit', value: 'Log In' })
+              )
+            ),
+            _react2['default'].createElement(
+              _reactBootstrap.Modal.Footer,
+              null,
+              _react2['default'].createElement(
+                _reactBootstrap.Button,
+                { onClick: this.closeLogInModal },
+                'Close'
               )
             )
           )
         );
       }
-    }], [{
-      key: 'propTypes',
-      value: {
-        className: _react.PropTypes.string
-      },
-      enumerable: true
     }]);
   
     var _Navigation = Navigation;
@@ -2370,16 +2451,239 @@ module.exports =
 
 /***/ },
 /* 33 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-  module.exports = require("classnames");
+  'use strict';
+  
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  
+  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+  
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+  
+  var _coreDispatcher = __webpack_require__(34);
+  
+  var _coreDispatcher2 = _interopRequireDefault(_coreDispatcher);
+  
+  var _actionsProfileActions = __webpack_require__(36);
+  
+  var _actionsProfileActions2 = _interopRequireDefault(_actionsProfileActions);
+  
+  var _toastr = __webpack_require__(38);
+  
+  var _toastr2 = _interopRequireDefault(_toastr);
+  
+  // Remember that ever component gets it's own store
+  
+  var ProfileStore = (function () {
+    function ProfileStore() {
+      _classCallCheck(this, ProfileStore);
+  
+      this.bindActions(_actionsProfileActions2['default']);
+      this.bindListeners({
+        handleSignUp: _actionsProfileActions2['default'].signUpSuccess,
+        handleLogIn: _actionsProfileActions2['default'].logInSuccess,
+        loginFail: _actionsProfileActions2['default'].logInFail
+      });
+      this.state = {
+        decks: [],
+        user: {},
+        loggedIn: false
+      };
+    }
+  
+    /* *********************
+    DECK FUNCTIONS
+    ***********************/
+  
+    _createClass(ProfileStore, [{
+      key: 'onGetMyDecksSuccess',
+      value: function onGetMyDecksSuccess(decks) {
+        this.setState({ decks: decks });
+      }
+  
+      /* *********************
+      LOGIN FUNCTIONS
+      ***********************/
+    }, {
+      key: 'onLogOutSuccess',
+      value: function onLogOutSuccess() {
+        this.setState({
+          user: {},
+          loggedIn: false
+        });
+      }
+    }, {
+      key: 'handleSignUp',
+      value: function handleSignUp(user) {
+        this.setState({
+          user: user,
+          loggedIn: true
+        });
+        _actionsProfileActions2['default'].getMyDecks(user.username);
+      }
+    }, {
+      key: 'handleLogIn',
+      value: function handleLogIn(user) {
+        this.setState({
+          user: user,
+          loggedIn: true
+        });
+        _actionsProfileActions2['default'].getMyDecks(user.username);
+      }
+    }, {
+      key: 'loginFail',
+      value: function loginFail(err) {
+        _toastr2['default'].error(err);
+      }
+    }]);
+  
+    return ProfileStore;
+  })();
+  
+  exports['default'] = _coreDispatcher2['default'].createStore(ProfileStore);
+  module.exports = exports['default'];
 
 /***/ },
 /* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
+  /**
+   * React Starter Kit (https://www.reactstarterkit.com/)
+   *
+   * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.txt file in the root directory of this source tree.
+   */
   
-      var content = __webpack_require__(35);
+  'use strict';
+  
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+  
+  var _alt = __webpack_require__(35);
+  
+  var _alt2 = _interopRequireDefault(_alt);
+  
+  var dispatcher = new _alt2['default']();
+  
+  exports['default'] = dispatcher;
+  module.exports = exports['default'];
+
+/***/ },
+/* 35 */
+/***/ function(module, exports) {
+
+  module.exports = require("alt");
+
+/***/ },
+/* 36 */
+/***/ function(module, exports, __webpack_require__) {
+
+  'use strict';
+  
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  
+  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+  
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+  
+  var _coreDispatcher = __webpack_require__(34);
+  
+  var _coreDispatcher2 = _interopRequireDefault(_coreDispatcher);
+  
+  var _jquery = __webpack_require__(37);
+  
+  var _jquery2 = _interopRequireDefault(_jquery);
+  
+  // Remember that this file runs on the client not the server
+  
+  var ProfileActions = (function () {
+    function ProfileActions() {
+      _classCallCheck(this, ProfileActions);
+  
+      // Each of these actiosn will become a function
+      this.generateActions('signUpSuccess', 'signUpFail', 'logInSuccess', 'logInFail', 'logOutSuccess', 'logOutFail', 'getMyDecksSuccess', 'getMyDecksFail');
+    }
+  
+    _createClass(ProfileActions, [{
+      key: 'signUp',
+      value: function signUp(info) {
+        var self = this;
+        _jquery2['default'].post('/api/users/signup', info).done(function (data) {
+          self.signUpSuccess(data);
+        }).fail(function (data) {
+          self.signUpFail(data);
+        });
+      }
+    }, {
+      key: 'logIn',
+      value: function logIn(info) {
+        var self = this;
+        _jquery2['default'].post('/api/users/login', info).done(function (data) {
+          self.logInSuccess(data);
+        }).fail(function (data) {
+          self.logInFail(data);
+        });
+      }
+    }, {
+      key: 'logOut',
+      value: function logOut() {
+        var self = this;
+        _jquery2['default'].post('/api/users/logout').done(function (data) {
+          self.logOutSuccess(data);
+        }).fail(function (data) {
+          self.logOutFail(data);
+        });
+      }
+    }, {
+      key: 'getMyDecks',
+      value: function getMyDecks(username) {
+        var self = this;
+        _jquery2['default'].get('/api/decks?' + username).done(function (data) {
+          self.getMyDecksSuccess(data);
+        }).fail(function (data) {
+          self.getMyDecksFail(data);
+        });
+      }
+    }]);
+  
+    return ProfileActions;
+  })();
+  
+  exports['default'] = _coreDispatcher2['default'].createActions(ProfileActions);
+  module.exports = exports['default'];
+
+/***/ },
+/* 37 */
+/***/ function(module, exports) {
+
+  module.exports = require("jquery");
+
+/***/ },
+/* 38 */
+/***/ function(module, exports) {
+
+  module.exports = require("toastr");
+
+/***/ },
+/* 39 */
+/***/ function(module, exports, __webpack_require__) {
+
+  
+      var content = __webpack_require__(40);
       var insertCss = __webpack_require__(20);
   
       if (typeof content === 'string') {
@@ -2392,7 +2696,7 @@ module.exports =
     
 
 /***/ },
-/* 35 */
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
   exports = module.exports = __webpack_require__(19)();
@@ -2411,13 +2715,19 @@ module.exports =
   };
 
 /***/ },
-/* 36 */
+/* 41 */
 /***/ function(module, exports) {
 
   module.exports = require("react-bootstrap");
 
 /***/ },
-/* 37 */
+/* 42 */
+/***/ function(module, exports) {
+
+  module.exports = require("object-assign");
+
+/***/ },
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
   /**
@@ -2449,7 +2759,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _FeedbackScss = __webpack_require__(38);
+  var _FeedbackScss = __webpack_require__(44);
   
   var _FeedbackScss2 = _interopRequireDefault(_FeedbackScss);
   
@@ -2504,11 +2814,11 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 38 */
+/* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
   
-      var content = __webpack_require__(39);
+      var content = __webpack_require__(45);
       var insertCss = __webpack_require__(20);
   
       if (typeof content === 'string') {
@@ -2521,7 +2831,7 @@ module.exports =
     
 
 /***/ },
-/* 39 */
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
   exports = module.exports = __webpack_require__(19)();
@@ -2540,7 +2850,7 @@ module.exports =
   };
 
 /***/ },
-/* 40 */
+/* 46 */
 /***/ function(module, exports, __webpack_require__) {
 
   /**
@@ -2572,7 +2882,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _FooterScss = __webpack_require__(41);
+  var _FooterScss = __webpack_require__(47);
   
   var _FooterScss2 = _interopRequireDefault(_FooterScss);
   
@@ -2583,6 +2893,10 @@ module.exports =
   var _Link = __webpack_require__(25);
   
   var _Link2 = _interopRequireDefault(_Link);
+  
+  var _classnames = __webpack_require__(49);
+  
+  var _classnames2 = _interopRequireDefault(_classnames);
   
   var Footer = (function (_Component) {
     _inherits(Footer, _Component);
@@ -2596,9 +2910,11 @@ module.exports =
     _createClass(Footer, [{
       key: 'render',
       value: function render() {
+        var cx = (0, _classnames2['default'])([_FooterScss2['default'].root, 'footer', 'navbar-fixed-bottom']);
+        console.log(cx);
         return _react2['default'].createElement(
-          'div',
-          { className: _FooterScss2['default'].root },
+          'footer',
+          { className: cx },
           'sexy footer'
         );
       }
@@ -2613,11 +2929,11 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 41 */
+/* 47 */
 /***/ function(module, exports, __webpack_require__) {
 
   
-      var content = __webpack_require__(42);
+      var content = __webpack_require__(48);
       var insertCss = __webpack_require__(20);
   
       if (typeof content === 'string') {
@@ -2630,7 +2946,7 @@ module.exports =
     
 
 /***/ },
-/* 42 */
+/* 48 */
 /***/ function(module, exports, __webpack_require__) {
 
   exports = module.exports = __webpack_require__(19)();
@@ -2638,7 +2954,7 @@ module.exports =
   
   
   // module
-  exports.push([module.id, ".Footer_root_3dP{color:#d1d1d1}.Footer_spacer_3n7{color:hsla(0,0%,100%,.3)}", ""]);
+  exports.push([module.id, ".Footer_root_3dP{color:#d1d1d1;background-color:#222;min-height:100px}.Footer_spacer_3n7{color:hsla(0,0%,100%,.3)}", ""]);
   
   // exports
   exports.locals = {
@@ -2647,7 +2963,13 @@ module.exports =
   };
 
 /***/ },
-/* 43 */
+/* 49 */
+/***/ function(module, exports) {
+
+  module.exports = require("classnames");
+
+/***/ },
+/* 50 */
 /***/ function(module, exports, __webpack_require__) {
 
   /**
@@ -2679,7 +3001,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _ContentPageScss = __webpack_require__(44);
+  var _ContentPageScss = __webpack_require__(51);
   
   var _ContentPageScss2 = _interopRequireDefault(_ContentPageScss);
   
@@ -2744,11 +3066,11 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 44 */
+/* 51 */
 /***/ function(module, exports, __webpack_require__) {
 
   
-      var content = __webpack_require__(45);
+      var content = __webpack_require__(52);
       var insertCss = __webpack_require__(20);
   
       if (typeof content === 'string') {
@@ -2761,7 +3083,7 @@ module.exports =
     
 
 /***/ },
-/* 45 */
+/* 52 */
 /***/ function(module, exports, __webpack_require__) {
 
   exports = module.exports = __webpack_require__(19)();
@@ -2778,7 +3100,7 @@ module.exports =
   };
 
 /***/ },
-/* 46 */
+/* 53 */
 /***/ function(module, exports, __webpack_require__) {
 
   /**
@@ -2810,7 +3132,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _ContactPageScss = __webpack_require__(47);
+  var _ContactPageScss = __webpack_require__(54);
   
   var _ContactPageScss2 = _interopRequireDefault(_ContactPageScss);
   
@@ -2873,11 +3195,11 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 47 */
+/* 54 */
 /***/ function(module, exports, __webpack_require__) {
 
   
-      var content = __webpack_require__(48);
+      var content = __webpack_require__(55);
       var insertCss = __webpack_require__(20);
   
       if (typeof content === 'string') {
@@ -2890,7 +3212,7 @@ module.exports =
     
 
 /***/ },
-/* 48 */
+/* 55 */
 /***/ function(module, exports, __webpack_require__) {
 
   exports = module.exports = __webpack_require__(19)();
@@ -2907,361 +3229,7 @@ module.exports =
   };
 
 /***/ },
-/* 49 */
-/***/ function(module, exports, __webpack_require__) {
-
-  /**
-   * React Starter Kit (https://www.reactstarterkit.com/)
-   *
-   * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.txt file in the root directory of this source tree.
-   */
-  
-  'use strict';
-  
-  Object.defineProperty(exports, '__esModule', {
-    value: true
-  });
-  
-  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-  
-  var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-  
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
-  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
-  function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-  
-  var _react = __webpack_require__(4);
-  
-  var _react2 = _interopRequireDefault(_react);
-  
-  var _decoratorsWithStyles = __webpack_require__(24);
-  
-  var _decoratorsWithStyles2 = _interopRequireDefault(_decoratorsWithStyles);
-  
-  //Applies custmo style
-  
-  var _TodoPageScss = __webpack_require__(50);
-  
-  var _TodoPageScss2 = _interopRequireDefault(_TodoPageScss);
-  
-  //Import custom styles
-  
-  var _storesTodoStore = __webpack_require__(52);
-  
-  var _storesTodoStore2 = _interopRequireDefault(_storesTodoStore);
-  
-  var _actionsTodoActions = __webpack_require__(55);
-  
-  var _actionsTodoActions2 = _interopRequireDefault(_actionsTodoActions);
-  
-  var _Link = __webpack_require__(25);
-  
-  var _Link2 = _interopRequireDefault(_Link);
-  
-  var title = 'Stuff Todo'; //page title
-  
-  //sets styles.
-  
-  var TodoPage = (function (_Component) {
-    _inherits(TodoPage, _Component);
-  
-    _createClass(TodoPage, null, [{
-      key: 'contextTypes',
-      value: {
-        onSetTitle: _react.PropTypes.func.isRequired
-      },
-  
-      //Constroctor for class.
-      //REMEBER props and state are two different things.
-      //databinding uses props.
-      enumerable: true
-    }]);
-  
-    function TodoPage(props) {
-      _classCallCheck(this, _TodoPage);
-  
-      _get(Object.getPrototypeOf(_TodoPage.prototype), 'constructor', this).call(this, props);
-      this.state = _storesTodoStore2['default'].getState();
-      //need to use bind so that the this variable for onChange
-      //refers to this TodoPage object not the function
-      this.onChange = this.onChange.bind(this);
-    }
-  
-    _createClass(TodoPage, [{
-      key: 'componentWillMount',
-      value: function componentWillMount() {
-        this.context.onSetTitle(title);
-      }
-  
-      //Alwasy call
-    }, {
-      key: 'componentDidMount',
-      value: function componentDidMount() {
-        //makes the TodoStore call the onchange function whenever it cnanges.
-        //This is why we had to use bind
-        _storesTodoStore2['default'].listen(this.onChange);
-        //As soon as it is poling for data get data
-        _actionsTodoActions2['default'].getTodos();
-      }
-    }, {
-      key: 'componentWillUnmount',
-      value: function componentWillUnmount() {
-        //remove event listener
-        _storesTodoStore2['default'].unlisten(this.onChange);
-      }
-  
-      //simply sets the state whenever the todo store changes
-    }, {
-      key: 'onChange',
-      value: function onChange(state) {
-        this.setState(state);
-        console.log(this.getState);
-      }
-    }, {
-      key: 'render',
-      value: function render() {
-        var todos = this.state.todos.map(function (todo) {
-          return _react2['default'].createElement(
-            'li',
-            { key: todo.id },
-            _react2['default'].createElement(
-              'a',
-              { href: '/todo/' + todo.id, onClick: _Link2['default'].handleClick },
-              todo.name
-            ),
-            _react2['default'].createElement(
-              'p',
-              null,
-              todo.description
-            )
-          );
-        });
-        //Render component
-        return _react2['default'].createElement(
-          'div',
-          { className: _TodoPageScss2['default'].root },
-          ' //Sets the root class',
-          _react2['default'].createElement(
-            'div',
-            { className: _TodoPageScss2['default'].container },
-            ' //sets the container style',
-            _react2['default'].createElement(
-              'h1',
-              null,
-              title
-            ),
-            ' //one way databinding //for loop to draw all of the todos',
-            todos,
-            _react2['default'].createElement(
-              'p',
-              null,
-              'Try to complete the aboe todos'
-            )
-          )
-        );
-      }
-    }]);
-  
-    var _TodoPage = TodoPage;
-    TodoPage = (0, _decoratorsWithStyles2['default'])(_TodoPageScss2['default'])(TodoPage) || TodoPage;
-    return TodoPage;
-  })(_react.Component);
-  
-  exports['default'] = TodoPage;
-  module.exports = exports['default'];
-
-/***/ },
-/* 50 */
-/***/ function(module, exports, __webpack_require__) {
-
-  
-      var content = __webpack_require__(51);
-      var insertCss = __webpack_require__(20);
-  
-      if (typeof content === 'string') {
-        content = [[module.id, content, '']];
-      }
-  
-      module.exports = content.locals || {};
-      module.exports._getCss = function() { return content.toString(); };
-      module.exports._insertCss = insertCss.bind(null, content);
-    
-
-/***/ },
-/* 51 */
-/***/ function(module, exports, __webpack_require__) {
-
-  exports = module.exports = __webpack_require__(19)();
-  // imports
-  
-  
-  // module
-  exports.push([module.id, ".TodoPage_container_1bn{margin:0 auto;padding:0 0 40px;max-width:1000px}", ""]);
-  
-  // exports
-  exports.locals = {
-  	"root": "TodoPage_root_3fz",
-  	"container": "TodoPage_container_1bn"
-  };
-
-/***/ },
-/* 52 */
-/***/ function(module, exports, __webpack_require__) {
-
-  'use strict';
-  
-  Object.defineProperty(exports, '__esModule', {
-    value: true
-  });
-  
-  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-  
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
-  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
-  var _coreDispatcher = __webpack_require__(53);
-  
-  var _coreDispatcher2 = _interopRequireDefault(_coreDispatcher);
-  
-  var _actionsTodoActions = __webpack_require__(55);
-  
-  var _actionsTodoActions2 = _interopRequireDefault(_actionsTodoActions);
-  
-  // Remember that ever component gets it's own store
-  
-  var TodoStore = (function () {
-    function TodoStore() {
-      _classCallCheck(this, TodoStore);
-  
-      this.bindActions(_actionsTodoActions2['default']);
-      this.todos = [];
-    }
-  
-    // Notice the naming scheme. Alt expects hte functions to be named on
-    // followed by Actions
-  
-    _createClass(TodoStore, [{
-      key: 'onGetTodosSuccess',
-      value: function onGetTodosSuccess(data) {
-        this.todos = data;
-      }
-    }]);
-  
-    return TodoStore;
-  })();
-  
-  exports['default'] = _coreDispatcher2['default'].createStore(TodoStore);
-  module.exports = exports['default'];
-
-/***/ },
-/* 53 */
-/***/ function(module, exports, __webpack_require__) {
-
-  /**
-   * React Starter Kit (https://www.reactstarterkit.com/)
-   *
-   * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.txt file in the root directory of this source tree.
-   */
-  
-  'use strict';
-  
-  Object.defineProperty(exports, '__esModule', {
-    value: true
-  });
-  
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
-  var _alt = __webpack_require__(54);
-  
-  var _alt2 = _interopRequireDefault(_alt);
-  
-  var dispatcher = new _alt2['default']();
-  
-  exports['default'] = dispatcher;
-  module.exports = exports['default'];
-
-/***/ },
-/* 54 */
-/***/ function(module, exports) {
-
-  module.exports = require("alt");
-
-/***/ },
-/* 55 */
-/***/ function(module, exports, __webpack_require__) {
-
-  'use strict';
-  
-  Object.defineProperty(exports, '__esModule', {
-    value: true
-  });
-  
-  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-  
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
-  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
-  var _coreDispatcher = __webpack_require__(53);
-  
-  var _coreDispatcher2 = _interopRequireDefault(_coreDispatcher);
-  
-  var _jquery = __webpack_require__(56);
-  
-  var _jquery2 = _interopRequireDefault(_jquery);
-  
-  //Remember that this file runs on the client not the server
-  
-  var TodoActions = (function () {
-    function TodoActions() {
-      _classCallCheck(this, TodoActions);
-  
-      //Each of these actiosn will become a function
-      this.generateActions('getTodosSuccess', 'getTodosFail');
-      console.log(this);
-    }
-  
-    //Directly callled by TodoPage
-    //R
-  
-    _createClass(TodoActions, [{
-      key: 'getTodos',
-      value: function getTodos() {
-        var _this = this;
-  
-        //Get all todos
-        console.log(this);
-        _jquery2['default'].ajax({ url: '/api/todo/all' }).done(function (data) {
-          _this.getTodosSuccess(data);
-        }).fail(function (err) {
-          _this.getTodosFail(err);
-        });
-      }
-    }]);
-  
-    return TodoActions;
-  })();
-  
-  exports['default'] = _coreDispatcher2['default'].createActions(TodoActions);
-  module.exports = exports['default'];
-
-/***/ },
 /* 56 */
-/***/ function(module, exports) {
-
-  module.exports = require("jquery");
-
-/***/ },
-/* 57 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -3288,19 +3256,19 @@ module.exports =
   
   var _decoratorsWithStyles2 = _interopRequireDefault(_decoratorsWithStyles);
   
-  //Applies custmo style
+  // Applies custmo style
   
-  var _DeckPageScss = __webpack_require__(58);
+  var _DeckPageScss = __webpack_require__(57);
   
   var _DeckPageScss2 = _interopRequireDefault(_DeckPageScss);
   
-  //Import custom styles
+  // Import custom styles
   
-  var _storesDeckStore = __webpack_require__(60);
+  var _storesDeckStore = __webpack_require__(59);
   
   var _storesDeckStore2 = _interopRequireDefault(_storesDeckStore);
   
-  var _actionsDeckActions = __webpack_require__(61);
+  var _actionsDeckActions = __webpack_require__(60);
   
   var _actionsDeckActions2 = _interopRequireDefault(_actionsDeckActions);
   
@@ -3308,9 +3276,25 @@ module.exports =
   
   var _Link2 = _interopRequireDefault(_Link);
   
-  var title = 'Stuff Deck'; //page title
+  var _reactLoader = __webpack_require__(62);
   
-  //sets styles.
+  var _reactLoader2 = _interopRequireDefault(_reactLoader);
+  
+  var _reactBootstrap = __webpack_require__(41);
+  
+  var _DeckLibDeckList = __webpack_require__(63);
+  
+  var _DeckLibDeckList2 = _interopRequireDefault(_DeckLibDeckList);
+  
+  var _miscSearchBar = __webpack_require__(65);
+  
+  var _miscSearchBar2 = _interopRequireDefault(_miscSearchBar);
+  
+  var objectAssign = __webpack_require__(42);
+  
+  var title = 'Find Decks';
+  
+  // sets styles.
   
   var DeckPage = (function (_Component) {
     _inherits(DeckPage, _Component);
@@ -3320,10 +3304,6 @@ module.exports =
       value: {
         onSetTitle: _react.PropTypes.func.isRequired
       },
-  
-      //Constroctor for class.
-      //REMEBER props and state are two different things.
-      //databinding uses props.
       enumerable: true
     }]);
   
@@ -3331,9 +3311,8 @@ module.exports =
       _classCallCheck(this, _DeckPage);
   
       _get(Object.getPrototypeOf(_DeckPage.prototype), 'constructor', this).call(this, props);
-      this.state = _storesDeckStore2['default'].getState();
-      //need to use bind so that the this variable for onChange
-      //refers to this DeckPage object not the function
+      this.state = objectAssign(_storesDeckStore2['default'].getState(), { queryOptions: {} });
+  
       this.onChange = this.onChange.bind(this);
     }
   
@@ -3342,71 +3321,122 @@ module.exports =
       value: function componentWillMount() {
         this.context.onSetTitle(title);
       }
-  
-      //Alwasy call
     }, {
       key: 'componentDidMount',
       value: function componentDidMount() {
-        //makes the DeckStore call the onchange function whenever it cnanges.
-        //This is why we had to use bind
         _storesDeckStore2['default'].listen(this.onChange);
-        //As soon as it is poling for data get data
-        _actionsDeckActions2['default'].getDecks();
+        _actionsDeckActions2['default'].getAllDecks();
       }
     }, {
       key: 'componentWillUnmount',
       value: function componentWillUnmount() {
-        //remove event listener
         _storesDeckStore2['default'].unlisten(this.onChange);
       }
-  
-      //simply sets the state whenever the Deck store changes
     }, {
       key: 'onChange',
       value: function onChange(state) {
         this.setState(state);
-        console.log(this.getState);
+      }
+    }, {
+      key: 'modifySearch',
+      value: function modifySearch(key, value) {
+        var query = this.state.queryOptions;
+        if (key === 'keywords') {
+          // Always return an array
+          var keywords = value.match(/\w+/g);
+          console.log(keywords);
+          query.keywords = keywords;
+        } else {
+          query[key] = value;
+        }
+        if (!value) {
+          delete query[key];
+        }
+        this.setState({ queryOptions: query });
+        _actionsDeckActions2['default'].getAllDecks(query);
       }
     }, {
       key: 'render',
       value: function render() {
-        var Decks = this.state.decks.map(function (Deck) {
-          return _react2['default'].createElement(
-            'li',
-            { key: Deck.id },
-            _react2['default'].createElement(
-              'a',
-              { href: '/Deck/' + Deck.id, onClick: _Link2['default'].handleClick },
-              Deck.name
-            ),
-            _react2['default'].createElement(
-              'p',
-              null,
-              Deck.description
-            )
-          );
-        });
-        //Render component
         return _react2['default'].createElement(
           'div',
           { className: _DeckPageScss2['default'].root },
-          ' //Sets the root class',
           _react2['default'].createElement(
             'div',
             { className: _DeckPageScss2['default'].container },
-            ' //sets the container style',
             _react2['default'].createElement(
-              'h1',
+              _reactBootstrap.Grid,
               null,
-              title
+              _react2['default'].createElement(
+                _reactBootstrap.Row,
+                null,
+                _react2['default'].createElement(
+                  _reactBootstrap.Col,
+                  { xs: 6 },
+                  _react2['default'].createElement(
+                    'h2',
+                    null,
+                    'Deck Search'
+                  ),
+                  _react2['default'].createElement(_reactLoader2['default'], { loaded: this.state.decksLoaded }),
+                  _react2['default'].createElement('br', null),
+                  _react2['default'].createElement(
+                    'h4',
+                    null,
+                    'Search By Name:'
+                  ),
+                  _react2['default'].createElement(_miscSearchBar2['default'], { placeholder: 'name',
+                    onSearch: this.modifySearch.bind(this, 'name') }),
+                  _react2['default'].createElement('br', null),
+                  _react2['default'].createElement(
+                    'h4',
+                    null,
+                    'Search By Owner:'
+                  ),
+                  _react2['default'].createElement(_miscSearchBar2['default'], { placeholder: 'username',
+                    onSearch: this.modifySearch.bind(this, 'owner') }),
+                  _react2['default'].createElement('br', null),
+                  _react2['default'].createElement(
+                    'h4',
+                    null,
+                    'Search By KeyWords:'
+                  ),
+                  _react2['default'].createElement(_miscSearchBar2['default'], { placeholder: 'keyword1, keyword2',
+                    onSearch: this.modifySearch.bind(this, 'keywords') }),
+                  _react2['default'].createElement('br', null),
+                  _react2['default'].createElement(
+                    'h4',
+                    null,
+                    'Search By Global ID:'
+                  ),
+                  _react2['default'].createElement(_miscSearchBar2['default'], { placeholder: 'username:did',
+                    onSearch: this.modifySearch.bind(this, 'gid') }),
+                  _react2['default'].createElement('br', null),
+                  _react2['default'].createElement(
+                    'h4',
+                    null,
+                    'Search By Deck ID:'
+                  ),
+                  _react2['default'].createElement(_miscSearchBar2['default'], { placeholder: 'did',
+                    onSearch: this.modifySearch.bind(this, 'did') }),
+                  _react2['default'].createElement('br', null),
+                  _react2['default'].createElement(
+                    'h4',
+                    null,
+                    'Search By Card ID:'
+                  ),
+                  _react2['default'].createElement(_miscSearchBar2['default'], { placeholder: 'username:did:cid',
+                    onSearch: this.modifySearch.bind(this, 'cid') }),
+                  _react2['default'].createElement('br', null)
+                ),
+                _react2['default'].createElement(
+                  _reactBootstrap.Col,
+                  { xs: 6 },
+                  _react2['default'].createElement(_DeckLibDeckList2['default'], { decks: this.state.decks })
+                )
+              )
             ),
-            ' //one way databinding //for loop to draw all of the Decks',
-            Decks,
-            _react2['default'].createElement(
-              'p',
-              null,
-              'Try to complete the aboe Decks'
-            )
+            _react2['default'].createElement('br', null)
           )
         );
       }
@@ -3421,11 +3451,11 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 58 */
+/* 57 */
 /***/ function(module, exports, __webpack_require__) {
 
   
-      var content = __webpack_require__(59);
+      var content = __webpack_require__(58);
       var insertCss = __webpack_require__(20);
   
       if (typeof content === 'string') {
@@ -3438,7 +3468,7 @@ module.exports =
     
 
 /***/ },
-/* 59 */
+/* 58 */
 /***/ function(module, exports, __webpack_require__) {
 
   exports = module.exports = __webpack_require__(19)();
@@ -3446,13 +3476,123 @@ module.exports =
   
   
   // module
-  exports.push([module.id, ".DeckPage_container_1YM{margin:0 auto;padding:0 0 40px;max-width:1000px}", ""]);
+  exports.push([module.id, ".DeckPage_container_1YM{margin:5 auto;padding:0 0 40px;max-width:1000px}", ""]);
   
   // exports
   exports.locals = {
   	"root": "DeckPage_root_1Dz",
   	"container": "DeckPage_container_1YM"
   };
+
+/***/ },
+/* 59 */
+/***/ function(module, exports, __webpack_require__) {
+
+  'use strict';
+  
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  
+  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+  
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+  
+  var _coreDispatcher = __webpack_require__(34);
+  
+  var _coreDispatcher2 = _interopRequireDefault(_coreDispatcher);
+  
+  var _actionsDeckActions = __webpack_require__(60);
+  
+  var _actionsDeckActions2 = _interopRequireDefault(_actionsDeckActions);
+  
+  var _toastr = __webpack_require__(38);
+  
+  var _toastr2 = _interopRequireDefault(_toastr);
+  
+  var DeckStore = (function () {
+    function DeckStore() {
+      _classCallCheck(this, DeckStore);
+  
+      this.bindActions(_actionsDeckActions2['default']);
+      this.state = {};
+      this.state.decks = [];
+      this.state.workingDeck = null;
+      this.state.transactions = [];
+      this.state.decksLoaded = false;
+    }
+  
+    _createClass(DeckStore, [{
+      key: 'onReloadDecks',
+      value: function onReloadDecks() {
+        this.setState({ decksLoaded: false });
+      }
+    }, {
+      key: 'onGetAllDecksSuccess',
+      value: function onGetAllDecksSuccess(data) {
+        console.log(" Got Decks ");
+        this.setState({ decksLoaded: true, decks: data });
+      }
+    }, {
+      key: 'onGetAllDecksFail',
+      value: function onGetAllDecksFail(data) {
+        _toastr2['default'].error(data);
+      }
+    }, {
+      key: 'onUploadDeckSuccess',
+      value: function onUploadDeckSuccess(data) {
+        if (this.workingDeck) {
+          this.state.decks.push(this.workingDeck);
+        }
+        this.state.workingDeck = data;
+      }
+    }, {
+      key: 'onUploadDeckFail',
+      value: function onUploadDeckFail(data) {
+        _toastr2['default'].error(data);
+      }
+    }, {
+      key: 'onGetDeckSuccess',
+      value: function onGetDeckSuccess(data) {
+        if (this.workingDeck) {
+          this.state.decks.push(this.workingDeck);
+        }
+        this.state.workingDeck = data;
+      }
+    }, {
+      key: 'onGetDeckFail',
+      value: function onGetDeckFail(data) {
+        _toastr2['default'].error(data);
+      }
+    }, {
+      key: 'onPostTransactionsSuccess',
+      value: function onPostTransactionsSuccess(data) {
+        this.state.transactions.concat(data);
+      }
+    }, {
+      key: 'onPostTransactionsFail',
+      value: function onPostTransactionsFail(data) {
+        _toastr2['default'].error(data);
+      }
+    }, {
+      key: 'onGetTransactionsSuccess',
+      value: function onGetTransactionsSuccess(data) {
+        this.state.transactions.concat(data);
+      }
+    }, {
+      key: 'onGetTransactionsFail',
+      value: function onGetTransactionsFail(error) {
+        _toastr2['default'].error(error);
+      }
+    }]);
+  
+    return DeckStore;
+  })();
+  
+  exports['default'] = _coreDispatcher2['default'].createStore(DeckStore);
+  module.exports = exports['default'];
 
 /***/ },
 /* 60 */
@@ -3470,126 +3610,17 @@ module.exports =
   
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
   
-  var _coreDispatcher = __webpack_require__(53);
+  var _coreDispatcher = __webpack_require__(34);
   
   var _coreDispatcher2 = _interopRequireDefault(_coreDispatcher);
   
-  var _actionsDeckActions = __webpack_require__(61);
+  var _coreMisc = __webpack_require__(61);
   
-  var _actionsDeckActions2 = _interopRequireDefault(_actionsDeckActions);
-  
-  var _toastr = __webpack_require__(63);
+  var _toastr = __webpack_require__(38);
   
   var _toastr2 = _interopRequireDefault(_toastr);
   
-  var DeckStore = (function () {
-    function DeckStore() {
-      _classCallCheck(this, DeckStore);
-  
-      this.bindListeners({
-        onGetAllDecksSuccess: _actionsDeckActions2['default'].getAllDecksSuccess,
-        onGetAllDecksFail: _actionsDeckActions2['default'].getAllDecksFail,
-        onUploadDeckSuccess: _actionsDeckActions2['default'].uploadDeckSuccess,
-        onUploadDeckFail: _actionsDeckActions2['default'].uploadDeckFail,
-        onGetDeckSuccess: _actionsDeckActions2['default'].getDeckSuccess,
-        onGetDeckFail: _actionsDeckActions2['default'].getDeckFail,
-        onPostTransactionsSuccess: _actionsDeckActions2['default'].postTransactionsSuccess,
-        onPostTransactionsFail: _actionsDeckActions2['default'].postTransactionsFail,
-        onGetTransactionsSuccess: _actionsDeckActions2['default'].getTransactionsSuccess,
-        onGetTransactionsFail: _actionsDeckActions2['default'].getTransactionsFail
-      });
-      this.decks = [];
-      this.workingDeck = null;
-      this.transactions = [];
-    }
-  
-    _createClass(DeckStore, [{
-      key: 'onGetAllDecksSuccess',
-      value: function onGetAllDecksSuccess(data) {
-        this.decks = data;
-      }
-    }, {
-      key: 'onGetAllDecksFail',
-      value: function onGetAllDecksFail(data) {
-        _toastr2['default'].error(data);
-      }
-    }, {
-      key: 'onUploadDeckSuccess',
-      value: function onUploadDeckSuccess(data) {
-        if (this.workingDeck) {
-          this.decks.push(this.workingDeck);
-        }
-        this.workingDeck = data;
-      }
-    }, {
-      key: 'onUploadDeckFail',
-      value: function onUploadDeckFail(data) {
-        _toastr2['default'].error(data);
-      }
-    }, {
-      key: 'onGetDeckSuccess',
-      value: function onGetDeckSuccess(data) {
-        if (this.workingDeck) {
-          this.decks.push(this.workingDeck);
-        }
-        this.workingDeck = data;
-      }
-    }, {
-      key: 'onGetDeckFail',
-      value: function onGetDeckFail(data) {
-        _toastr2['default'].error(data);
-      }
-    }, {
-      key: 'onPostTransactionsSuccess',
-      value: function onPostTransactionsSuccess(data) {
-        this.transactions.concat(data);
-      }
-    }, {
-      key: 'onPostTransactionsFail',
-      value: function onPostTransactionsFail(data) {
-        _toastr2['default'].error(data);
-      }
-    }, {
-      key: 'onGetTransactionsSuccess',
-      value: function onGetTransactionsSuccess(data) {
-        this.transactions.concat(data);
-      }
-    }, {
-      key: 'onGetTransactionsFail',
-      value: function onGetTransactionsFail(error) {
-        _toastr2['default'].error(error);
-      }
-    }]);
-  
-    return DeckStore;
-  })();
-  
-  exports['default'] = _coreDispatcher2['default'].createStore(DeckStore);
-  module.exports = exports['default'];
-
-/***/ },
-/* 61 */
-/***/ function(module, exports, __webpack_require__) {
-
-  'use strict';
-  
-  Object.defineProperty(exports, '__esModule', {
-    value: true
-  });
-  
-  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-  
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
-  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
-  var _coreDispatcher = __webpack_require__(53);
-  
-  var _coreDispatcher2 = _interopRequireDefault(_coreDispatcher);
-  
-  var _coreMisc = __webpack_require__(62);
-  
-  var _jquery = __webpack_require__(56);
+  var _jquery = __webpack_require__(37);
   
   var _jquery2 = _interopRequireDefault(_jquery);
   
@@ -3597,15 +3628,19 @@ module.exports =
     function DeckActions() {
       _classCallCheck(this, DeckActions);
   
-      this.generateActions('getAllDecksFail', 'getAllDecksSuccess', 'uploadDeckSuccess', 'uploadDeckFail', 'getDeckSuccess', 'getDeckFail', 'postTransactionsSuccess', 'postTransactionsFail', 'getTransactionsSuccess', 'getTransactionsFail');
+      this.generateActions('reloadDecks', 'getAllDecksFail', 'getAllDecksSuccess', 'uploadDeckSuccess', 'uploadDeckFail', 'getDeckSuccess', 'getDeckFail', 'postTransactionsSuccess', 'postTransactionsFail', 'getTransactionsSuccess', 'getTransactionsFail');
     }
   
     _createClass(DeckActions, [{
       key: 'getAllDecks',
       value: function getAllDecks(options) {
         var self = this;
-        var optionsString = options ? '?' + (0, _coreMisc.toQueryString)(options) : '';
-        _jquery2['default'].get('/api/decks' + optionsString).done(function (data) {
+        var optionsString = options && !_jquery2['default'].isEmptyObject(options) ? '?' + _jquery2['default'].param(options, true) : '';
+        var queryString = '/api/decks' + optionsString;
+        console.log(queryString);
+        self.reloadDecks();
+        _jquery2['default'].get(queryString).done(function (data) {
+          console.log(data);
           self.getAllDecksSuccess(data);
         }).fail(function (data) {
           self.getAllDecksFail(data);
@@ -3660,7 +3695,7 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 62 */
+/* 61 */
 /***/ function(module, exports) {
 
   "use strict";
@@ -3669,6 +3704,7 @@ module.exports =
     value: true
   });
   var toQueryString = function toQueryString(obj, prefix) {
+  
     var str = [];
     for (var p in obj) {
       if (obj.hasOwnProperty(p)) {
@@ -3682,13 +3718,354 @@ module.exports =
   exports.toQueryString = toQueryString;
 
 /***/ },
-/* 63 */
+/* 62 */
 /***/ function(module, exports) {
 
-  module.exports = require("toastr");
+  module.exports = require("react-loader");
+
+/***/ },
+/* 63 */
+/***/ function(module, exports, __webpack_require__) {
+
+  'use strict';
+  
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  
+  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+  
+  var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+  
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+  
+  function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+  
+  var _react = __webpack_require__(4);
+  
+  var _react2 = _interopRequireDefault(_react);
+  
+  var _reactBootstrap = __webpack_require__(41);
+  
+  var _DeckListItem = __webpack_require__(64);
+  
+  var _DeckListItem2 = _interopRequireDefault(_DeckListItem);
+  
+  var DeckList = (function (_Component) {
+    _inherits(DeckList, _Component);
+  
+    function DeckList(props) {
+      _classCallCheck(this, DeckList);
+  
+      _get(Object.getPrototypeOf(DeckList.prototype), 'constructor', this).call(this, props);
+    }
+  
+    _createClass(DeckList, [{
+      key: 'render',
+      value: function render() {
+        var deckNodes = this.props.decks.map(function (deck, index) {
+          return _react2['default'].createElement(_DeckListItem2['default'], { key: index, deck: deck });
+        });
+        return _react2['default'].createElement(
+          'div',
+          { className: 'deckList' },
+          deckNodes
+        );
+      }
+    }]);
+  
+    return DeckList;
+  })(_react.Component);
+  
+  exports['default'] = DeckList;
+  module.exports = exports['default'];
 
 /***/ },
 /* 64 */
+/***/ function(module, exports, __webpack_require__) {
+
+  'use strict';
+  
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  
+  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+  
+  var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+  
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+  
+  function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+  
+  var _react = __webpack_require__(4);
+  
+  var _react2 = _interopRequireDefault(_react);
+  
+  var _actionsDeckActions = __webpack_require__(60);
+  
+  var _actionsDeckActions2 = _interopRequireDefault(_actionsDeckActions);
+  
+  var _storesDeckStore = __webpack_require__(59);
+  
+  var _storesDeckStore2 = _interopRequireDefault(_storesDeckStore);
+  
+  var _Link = __webpack_require__(25);
+  
+  var _Link2 = _interopRequireDefault(_Link);
+  
+  var _reactBootstrap = __webpack_require__(41);
+  
+  var DeckListItem = (function (_Component) {
+    _inherits(DeckListItem, _Component);
+  
+    function DeckListItem(props) {
+      _classCallCheck(this, DeckListItem);
+  
+      _get(Object.getPrototypeOf(DeckListItem.prototype), 'constructor', this).call(this, props);
+      this.state = { showModal: false };
+    }
+  
+    _createClass(DeckListItem, [{
+      key: 'close',
+      value: function close() {
+        this.setState({ showModal: false });
+      }
+    }, {
+      key: 'open',
+      value: function open() {
+        this.setState({ showModal: true });
+      }
+    }, {
+      key: 'render',
+      value: function render() {
+        var deck = this.props.deck;
+        var userUrl = '/users/' + deck.owner;
+        var deckUrl = '/deck/' + deck.gid;
+        var title = _react2['default'].createElement(
+          'h4',
+          null,
+          _react2['default'].createElement(_reactBootstrap.Glyphicon, { glyph: 'align-justify' }),
+          ' ',
+          _react2['default'].createElement(
+            'a',
+            { href: userUrl, onClick: _Link2['default'].handleClick },
+            deck.owner
+          ),
+          _react2['default'].createElement(
+            'span',
+            null,
+            '/'
+          ),
+          _react2['default'].createElement(
+            'a',
+            { href: deckUrl, onClick: _Link2['default'].handleClick },
+            deck.name
+          )
+        );
+        var subscribers = deck.subscribers ? _react2['default'].createElement(
+          'span',
+          null,
+          deck.subscribers.length,
+          ' Subscribers'
+        ) : _react2['default'].createElement(
+          'span',
+          null,
+          'No Subscribers'
+        );
+        var cards = deck.cids ? _react2['default'].createElement(
+          'span',
+          null,
+          deck.cids.length,
+          ' Cards'
+        ) : _react2['default'].createElement(
+          'span',
+          null,
+          'No Cards'
+        );
+        var keywords = deck.keywords ? _react2['default'].createElement(
+          'span',
+          null,
+          'Keywords: ',
+          deck.keywords.map(function (word) {
+            return _react2['default'].createElement(
+              'span',
+              null,
+              _react2['default'].createElement(
+                'a',
+                null,
+                word
+              ),
+              ', '
+            );
+          })
+        ) : _react2['default'].createElement(
+          'span',
+          null,
+          'No Keywords'
+        );
+        return _react2['default'].createElement(
+          'div',
+          null,
+          _react2['default'].createElement(
+            _reactBootstrap.Panel,
+            { header: title },
+            _react2['default'].createElement(
+              'blockquote',
+              null,
+              'Description: ',
+              deck.description
+            ),
+            _react2['default'].createElement(
+              _reactBootstrap.Button,
+              { onClick: this.open.bind(this) },
+              'Get Link'
+            ),
+            _react2['default'].createElement('br', null),
+            keywords,
+            _react2['default'].createElement('br', null),
+            subscribers,
+            _react2['default'].createElement('br', null),
+            cards
+          ),
+          _react2['default'].createElement(
+            _reactBootstrap.Modal,
+            { show: this.state.showModal, onHide: this.close.bind(this) },
+            _react2['default'].createElement(
+              _reactBootstrap.Modal.Header,
+              { closeButton: true },
+              _react2['default'].createElement(
+                _reactBootstrap.Modal.Title,
+                null,
+                'Paste this link into AnkiHub addon'
+              )
+            ),
+            _react2['default'].createElement(
+              _reactBootstrap.Modal.Body,
+              null,
+              _react2['default'].createElement(_reactBootstrap.Input, { type: 'text', value: location.origin + '/decks/' + deck.gid })
+            )
+          )
+        );
+      }
+    }]);
+  
+    return DeckListItem;
+  })(_react.Component);
+  
+  exports['default'] = DeckListItem;
+  module.exports = exports['default'];
+
+/***/ },
+/* 65 */
+/***/ function(module, exports, __webpack_require__) {
+
+  'use strict';
+  
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  
+  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+  
+  var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+  
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+  
+  function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+  
+  var _react = __webpack_require__(4);
+  
+  var _react2 = _interopRequireDefault(_react);
+  
+  var _Link = __webpack_require__(25);
+  
+  var _Link2 = _interopRequireDefault(_Link);
+  
+  var _reactBootstrap = __webpack_require__(41);
+  
+  var SearchBar = (function (_Component) {
+    _inherits(SearchBar, _Component);
+  
+    _createClass(SearchBar, null, [{
+      key: 'PropTypes',
+      value: {
+        placeholder: _react2['default'].PropTypes.string,
+        onSearch: _react2['default'].PropTypes.func
+      },
+      enumerable: true
+    }]);
+  
+    function SearchBar(props) {
+      _classCallCheck(this, SearchBar);
+  
+      _get(Object.getPrototypeOf(SearchBar.prototype), 'constructor', this).call(this, props);
+      this.state = { searchText: '' };
+    }
+  
+    _createClass(SearchBar, [{
+      key: 'clear',
+      value: function clear() {
+        this.setState({ searchText: '' });
+        if (this.props.onSearch) {
+          this.props.onSearch('');
+        }
+      }
+    }, {
+      key: 'handleChange',
+      value: function handleChange(event) {
+        this.setState({ searchText: event.target.value });
+      }
+    }, {
+      key: 'search',
+      value: function search() {
+        if (this.props.onSearch) {
+          this.props.onSearch(this.state.searchText);
+        }
+      }
+    }, {
+      key: 'render',
+      value: function render() {
+        return _react2['default'].createElement(
+          'div',
+          { className: 'custom-search-input' },
+          _react2['default'].createElement(
+            'div',
+            { className: 'input-group col-md-8' },
+            _react2['default'].createElement(_reactBootstrap.Input, { type: 'text', placeholder: this.props.placeholder, value: this.state.searchText, onChange: this.handleChange.bind(this) }),
+            _react2['default'].createElement(
+              'span',
+              { className: 'input-group-btn' },
+              _react2['default'].createElement(
+                'button',
+                { onClick: this.clear.bind(this), className: 'btn btn-danger', type: 'button' },
+                _react2['default'].createElement('span', { className: ' glyphicon glyphicon-remove' })
+              ),
+              _react2['default'].createElement(
+                'button',
+                { onClick: this.search.bind(this), className: 'btn btn-info', type: 'button' },
+                _react2['default'].createElement('span', { className: ' glyphicon glyphicon-search' })
+              )
+            )
+          )
+        );
+      }
+    }]);
+  
+    return SearchBar;
+  })(_react.Component);
+  
+  exports['default'] = SearchBar;
+  module.exports = exports['default'];
+
+/***/ },
+/* 66 */
 /***/ function(module, exports, __webpack_require__) {
 
   /**
@@ -3720,7 +4097,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _LoginPageScss = __webpack_require__(65);
+  var _LoginPageScss = __webpack_require__(67);
   
   var _LoginPageScss2 = _interopRequireDefault(_LoginPageScss);
   
@@ -3783,11 +4160,11 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 65 */
+/* 67 */
 /***/ function(module, exports, __webpack_require__) {
 
   
-      var content = __webpack_require__(66);
+      var content = __webpack_require__(68);
       var insertCss = __webpack_require__(20);
   
       if (typeof content === 'string') {
@@ -3800,7 +4177,7 @@ module.exports =
     
 
 /***/ },
-/* 66 */
+/* 68 */
 /***/ function(module, exports, __webpack_require__) {
 
   exports = module.exports = __webpack_require__(19)();
@@ -3817,7 +4194,7 @@ module.exports =
   };
 
 /***/ },
-/* 67 */
+/* 69 */
 /***/ function(module, exports, __webpack_require__) {
 
   /**
@@ -3849,7 +4226,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _RegisterPageScss = __webpack_require__(68);
+  var _RegisterPageScss = __webpack_require__(70);
   
   var _RegisterPageScss2 = _interopRequireDefault(_RegisterPageScss);
   
@@ -3857,11 +4234,11 @@ module.exports =
   
   var _decoratorsWithStyles2 = _interopRequireDefault(_decoratorsWithStyles);
   
-  var _actionsProfileActions = __webpack_require__(70);
+  var _actionsProfileActions = __webpack_require__(36);
   
   var _actionsProfileActions2 = _interopRequireDefault(_actionsProfileActions);
   
-  var _reactBootstrap = __webpack_require__(36);
+  var _reactBootstrap = __webpack_require__(41);
   
   var title = 'New User Registration';
   
@@ -3966,11 +4343,11 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 68 */
+/* 70 */
 /***/ function(module, exports, __webpack_require__) {
 
   
-      var content = __webpack_require__(69);
+      var content = __webpack_require__(71);
       var insertCss = __webpack_require__(20);
   
       if (typeof content === 'string') {
@@ -3983,7 +4360,7 @@ module.exports =
     
 
 /***/ },
-/* 69 */
+/* 71 */
 /***/ function(module, exports, __webpack_require__) {
 
   exports = module.exports = __webpack_require__(19)();
@@ -4000,79 +4377,7 @@ module.exports =
   };
 
 /***/ },
-/* 70 */
-/***/ function(module, exports, __webpack_require__) {
-
-  'use strict';
-  
-  Object.defineProperty(exports, '__esModule', {
-    value: true
-  });
-  
-  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-  
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
-  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
-  var _coreDispatcher = __webpack_require__(53);
-  
-  var _coreDispatcher2 = _interopRequireDefault(_coreDispatcher);
-  
-  var _jquery = __webpack_require__(56);
-  
-  var _jquery2 = _interopRequireDefault(_jquery);
-  
-  //Remember that this file runs on the client not the server
-  
-  var ProfileActions = (function () {
-    function ProfileActions() {
-      _classCallCheck(this, ProfileActions);
-  
-      //Each of these actiosn will become a function
-      this.generateActions('signUpSuccess', 'signUpFail', 'logInSuccess', 'logInFail', 'logOutSuccess', 'logOutFail');
-    }
-  
-    _createClass(ProfileActions, [{
-      key: 'signUp',
-      value: function signUp(info) {
-        var self = this;
-        _jquery2['default'].post('/api/users/signup', info).done(function (data) {
-          self.signUpSuccess(data);
-        }).fail(function (data) {
-          self.signUpFail(data);
-        });
-      }
-    }, {
-      key: 'logIn',
-      value: function logIn(info) {
-        var self = this;
-        _jquery2['default'].post('/api/users/login', info).done(function (data) {
-          self.logInSuccess(data);
-        }).fail(function (data) {
-          self.logInFail(data);
-        });
-      }
-    }, {
-      key: 'logOut',
-      value: function logOut() {
-        var self = this;
-        _jquery2['default'].post('/api/users/logout').done(function (data) {
-          self.logOutSucess(data);
-        }).fail(function (data) {
-          self.logOutFail(data);
-        });
-      }
-    }]);
-  
-    return ProfileActions;
-  })();
-  
-  exports['default'] = _coreDispatcher2['default'].createActions(ProfileActions);
-  module.exports = exports['default'];
-
-/***/ },
-/* 71 */
+/* 72 */
 /***/ function(module, exports, __webpack_require__) {
 
   /**
@@ -4104,7 +4409,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _NotFoundPageScss = __webpack_require__(72);
+  var _NotFoundPageScss = __webpack_require__(73);
   
   var _NotFoundPageScss2 = _interopRequireDefault(_NotFoundPageScss);
   
@@ -4165,11 +4470,11 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 72 */
+/* 73 */
 /***/ function(module, exports, __webpack_require__) {
 
   
-      var content = __webpack_require__(73);
+      var content = __webpack_require__(74);
       var insertCss = __webpack_require__(20);
   
       if (typeof content === 'string') {
@@ -4182,7 +4487,7 @@ module.exports =
     
 
 /***/ },
-/* 73 */
+/* 74 */
 /***/ function(module, exports, __webpack_require__) {
 
   exports = module.exports = __webpack_require__(19)();
@@ -4196,7 +4501,7 @@ module.exports =
 
 
 /***/ },
-/* 74 */
+/* 75 */
 /***/ function(module, exports, __webpack_require__) {
 
   /**
@@ -4228,7 +4533,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _ErrorPageScss = __webpack_require__(75);
+  var _ErrorPageScss = __webpack_require__(76);
   
   var _ErrorPageScss2 = _interopRequireDefault(_ErrorPageScss);
   
@@ -4288,11 +4593,11 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 75 */
+/* 76 */
 /***/ function(module, exports, __webpack_require__) {
 
   
-      var content = __webpack_require__(76);
+      var content = __webpack_require__(77);
       var insertCss = __webpack_require__(20);
   
       if (typeof content === 'string') {
@@ -4305,7 +4610,7 @@ module.exports =
     
 
 /***/ },
-/* 76 */
+/* 77 */
 /***/ function(module, exports, __webpack_require__) {
 
   exports = module.exports = __webpack_require__(19)();
@@ -4319,22 +4624,22 @@ module.exports =
 
 
 /***/ },
-/* 77 */
+/* 78 */
 /***/ function(module, exports, __webpack_require__) {
 
   /**
-   * React Starter Kit (https://www.reactstarterkit.com/)
-   *
-   * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.txt file in the root directory of this source tree.
-   */
+  * React Starter Kit (https://www.reactstarterkit.com/)
+  *
+  * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.
+  *
+  * This source code is licensed under the MIT license found in the
+  * LICENSE.txt file in the root directory of this source tree.
+  */
   
   'use strict';
   
   Object.defineProperty(exports, '__esModule', {
-      value: true
+    value: true
   });
   
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -4351,7 +4656,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _ProfilePageScss = __webpack_require__(78);
+  var _ProfilePageScss = __webpack_require__(79);
   
   var _ProfilePageScss2 = _interopRequireDefault(_ProfilePageScss);
   
@@ -4359,324 +4664,122 @@ module.exports =
   
   var _decoratorsWithStyles2 = _interopRequireDefault(_decoratorsWithStyles);
   
-  var _storesDeckStore = __webpack_require__(60);
+  var _storesProfileStore = __webpack_require__(33);
   
-  var _storesDeckStore2 = _interopRequireDefault(_storesDeckStore);
+  var _storesProfileStore2 = _interopRequireDefault(_storesProfileStore);
   
-  var _actionsDeckActions = __webpack_require__(61);
+  var _actionsProfileActions = __webpack_require__(36);
   
-  var _actionsDeckActions2 = _interopRequireDefault(_actionsDeckActions);
+  var _actionsProfileActions2 = _interopRequireDefault(_actionsProfileActions);
   
   var _Link = __webpack_require__(25);
   
   var _Link2 = _interopRequireDefault(_Link);
   
-  //Boostrap components
+  // Boostrap components
   
-  var _reactBootstrap = __webpack_require__(36);
+  var _reactBootstrap = __webpack_require__(41);
   
-  // tutorial10.js
-  var DeckList = _react2['default'].createClass({
-      displayName: 'DeckList',
+  var _DeckLibDeckList = __webpack_require__(63);
   
-      render: function render() {
-          var deckNodes = this.props.data.map(function (deck) {
-              return(
-                  // <Deck
-                  // key = {deck.name}
-                  // name = {deck.name}
-                  // desc = {deck.desc}
-                  // owner={deck.owner}
-                  // cids = {deck.cids}
-                  // children = {deck.children}
-                  // subscribers = {deck.subscribers}
-                  // >
-                  _react2['default'].createElement(Deck, {
-                      did: deck.did,
-                      name: deck.name,
-                      //keywords = {deck.keywords}
-                      //desc = {deck.desc}
-                      //cids = {deck.cids}
-                      //newCards = {deck.newCards}
-                      owner: deck.owner
-                      //ispublic = {deck.ispublic}
-                      //children = {deck.children}
-                      //subscribers = {deck.subscribers}
-                  })
-              );
-          });
-          return _react2['default'].createElement(
-              'div',
-              { className: 'commentList' },
-              deckNodes
-          );
-      }
-  });
-  
-  // tutorial16.js
-  var DeckForm = _react2['default'].createClass({
-      displayName: 'DeckForm',
-  
-      getInitialState: function getInitialState() {
-          return { owner: '', text: '' };
-      },
-      handleownerChange: function handleownerChange(e) {
-          this.setState({ owner: e.target.value });
-      },
-      handleTextChange: function handleTextChange(e) {
-          this.setState({ text: e.target.value });
-      },
-      handleSubmit: function handleSubmit(e) {
-          e.preventDefault();
-          var owner = this.state.owner.trim();
-          var text = this.state.text.trim();
-          if (!text || !owner) {
-              return;
-          }
-          this.props.onCommentSubmit({ owner: owner, text: text });
-          this.setState({ owner: '', text: '' });
-      },
-      render: function render() {
-          return _react2['default'].createElement(
-              'form',
-              { className: 'commentForm', onSubmit: this.handleSubmit },
-              _react2['default'].createElement('input', {
-                  type: 'text',
-                  placeholder: 'Your name',
-                  value: this.state.owner,
-                  onChange: this.handleownerChange
-              }),
-              _react2['default'].createElement('input', {
-                  type: 'text',
-                  placeholder: 'Say something...',
-                  value: this.state.deck,
-                  onChange: this.handleTextChange
-              }),
-              _react2['default'].createElement('input', { type: 'submit', value: 'Post' })
-          );
-      }
-  });
-  
-  // tutorial7.js
-  var Deck = _react2['default'].createClass({
-      displayName: 'Deck',
-  
-      render: function render() {
-          return _react2['default'].createElement(
-              'div',
-              { className: 'deck' },
-              _react2['default'].createElement(
-                  'div',
-                  { className: 'name' },
-                  'Name: ',
-                  this.props.name
-              ),
-              _react2['default'].createElement(
-                  'div',
-                  { className: 'owner' },
-                  'Owner: ',
-                  this.props.owner
-              )
-          );
-      }
-  });
-  
-  var Nav = _react2['default'].createClass({
-      displayName: 'Nav',
-  
-      render: function render() {
-          return _react2['default'].createElement(
-              'a',
-              {
-                  className: 'nav',
-                  url: this.props.url,
-                  onClick: this.handleClick },
-              this.props.text
-          );
-      },
-      handleClick: function handleClick(event) {
-          this.props.update(this.props.url);
-      }
-  });
+  var _DeckLibDeckList2 = _interopRequireDefault(_DeckLibDeckList);
   
   // tutorial14.js
+  // sets styles
   
-  var DeckBox = (function (_Component) {
-      _inherits(DeckBox, _Component);
+  var ProfilePage = (function (_Component) {
+    _inherits(ProfilePage, _Component);
   
-      _createClass(DeckBox, null, [{
-          key: 'contextTypes',
-          value: {
-              onSetTitle: _react.PropTypes.func.isRequired
-          },
+    _createClass(ProfilePage, null, [{
+      key: 'contextTypes',
+      value: {
+        onSetTitle: _react.PropTypes.func.isRequired
+      },
   
-          //Constroctor for class.
-          //REMEBER props and state are two different things.
-          //databinding uses props.
-          enumerable: true
-      }]);
+      // Constroctor for class.
+      // REMEBER props and state are two different things.
+      // databinding uses props.
+      enumerable: true
+    }]);
   
-      function DeckBox(props) {
-          _classCallCheck(this, DeckBox);
+    function ProfilePage(props) {
+      _classCallCheck(this, _ProfilePage);
   
-          _get(Object.getPrototypeOf(DeckBox.prototype), 'constructor', this).call(this, props);
-          this.state = _storesDeckStore2['default'].getState();
-          //need to use bind so that the this variable for onChange
-          //refers to this DeckPage object not the function
-          this.onChange = this.onChange.bind(this);
+      _get(Object.getPrototypeOf(_ProfilePage.prototype), 'constructor', this).call(this, props);
+      this.state = _storesProfileStore2['default'].getState();
+      // need to use bind so that the this variable for onChange
+      // refers to this DeckPage object not the function
+      this.onChange = this.onChange.bind(this);
+    }
+  
+    // <DeckForm onCommentSubmit={this.handleCommentSubmit} />
+  
+    _createClass(ProfilePage, [{
+      key: 'componentWillMount',
+      value: function componentWillMount() {
+        this.context.onSetTitle("Profile Page");
       }
   
-      // <DeckForm onCommentSubmit={this.handleCommentSubmit} />
+      // Alwasy call
+    }, {
+      key: 'componentDidMount',
+      value: function componentDidMount() {
+        // makes the DeckStore call the onchange function whenever it cnanges.
+        // This is why we had to use bind
+        _storesProfileStore2['default'].listen(this.onChange);
+        _actionsProfileActions2['default'].getMyDecks();
+        // As soon as it is poling for data get data
+      }
+    }, {
+      key: 'componentWillUnmount',
+      value: function componentWillUnmount() {
+        // remove event listener
+        _storesProfileStore2['default'].unlisten(this.onChange);
+      }
   
-      _createClass(DeckBox, [{
-          key: 'componentWillMount',
-          value: function componentWillMount() {
-              this.context.onSetTitle("Profile Page");
-          }
+      // simply sets the state whenever the Deck store changes
+    }, {
+      key: 'onChange',
+      value: function onChange(state) {
+        this.setState(state);
+      }
+    }, {
+      key: 'render',
+      value: function render() {
+        console.log(this.state);
+        return _react2['default'].createElement(
+          'div',
+          { className: 'ProfilePage' },
+          _react2['default'].createElement(
+            'h3',
+            null,
+            'Welcome ',
+            this.state.user.username
+          ),
+          _react2['default'].createElement(
+            'span',
+            null,
+            'Here are your decks'
+          ),
+          _react2['default'].createElement(_DeckLibDeckList2['default'], { decks: this.state.decks })
+        );
+      }
+    }]);
   
-          //Alwasy call
-      }, {
-          key: 'componentDidMount',
-          value: function componentDidMount() {
-              //makes the DeckStore call the onchange function whenever it cnanges.
-              //This is why we had to use bind
-              _storesDeckStore2['default'].listen(this.onChange);
-              //As soon as it is poling for data get data
-              _actionsDeckActions2['default'].getAllDecks();
-          }
-      }, {
-          key: 'componentWillUnmount',
-          value: function componentWillUnmount() {
-              //remove event listener
-              _storesDeckStore2['default'].unlisten(this.onChange);
-          }
-  
-          //simply sets the state whenever the Deck store changes
-      }, {
-          key: 'onChange',
-          value: function onChange(state) {
-              this.setState(state);
-              console.log("Getting new State", this.getState);
-          }
-      }, {
-          key: 'loadCommentsFromServer',
-          value: function loadCommentsFromServer() {
-              $.ajax({
-                  url: this.state.url,
-                  dataType: 'json',
-                  cache: false,
-                  success: (function (data) {
-                      this.setState({ data: data });
-                  }).bind(this),
-                  error: (function (xhr, status, err) {
-                      console.error(this.state.url, status, err.toString());
-                  }).bind(this)
-              });
-          }
-      }, {
-          key: 'handleUpdate',
-          value: function handleUpdate(_url) {
-  
-              $.ajax({
-                  url: _url,
-                  dataType: 'json',
-                  cache: false,
-                  success: (function (data) {
-                      this.setState({ data: data, url: _url });
-                  }).bind(this),
-                  error: (function (xhr, status, err) {
-                      console.error(_url, status, err.toString());
-                  }).bind(this)
-              });
-          }
-      }, {
-          key: 'handleCommentSubmit',
-          value: function handleCommentSubmit(comment) {
-              var comments = this.state.data;
-              // Optimistically set an id on the new comment that will be replaced
-              comment.id = Date.now();
-              var newComments = comments.concat([comment]);
-              this.setState({ data: newComments, url: this.state.url });
-  
-              $.ajax({
-                  url: this.state.url,
-                  dataType: 'json',
-                  type: 'POST',
-                  data: comment,
-                  success: (function (data) {
-                      this.setState({ data: data });
-                  }).bind(this),
-                  error: (function (xhr, status, err) {
-                      this.setState({ data: comments });
-                      console.error(this.state.url, status, err.toString());
-                  }).bind(this)
-              });
-          }
-      }, {
-          key: 'render',
-          value: function render() {
-              console.log(this.state.decks);
-              return _react2['default'].createElement(
-                  'div',
-                  { className: 'commentBox' },
-                  _react2['default'].createElement(
-                      _reactBootstrap.ButtonToolbar,
-                      null,
-                      _react2['default'].createElement(
-                          _reactBootstrap.Button,
-                          null,
-                          'Default'
-                      ),
-                      _react2['default'].createElement(
-                          _reactBootstrap.Button,
-                          { bsStyle: 'primary' },
-                          'Primary'
-                      ),
-                      _react2['default'].createElement(
-                          _reactBootstrap.Button,
-                          { bsStyle: 'success' },
-                          'Success'
-                      ),
-                      _react2['default'].createElement(
-                          _reactBootstrap.Button,
-                          { bsStyle: 'info' },
-                          'Info'
-                      ),
-                      _react2['default'].createElement(
-                          _reactBootstrap.Button,
-                          { bsStyle: 'warning' },
-                          'Warning'
-                      ),
-                      _react2['default'].createElement(
-                          _reactBootstrap.Button,
-                          { bsStyle: 'danger' },
-                          'Danger'
-                      ),
-                      _react2['default'].createElement(
-                          _reactBootstrap.Button,
-                          { bsStyle: 'link' },
-                          'Link'
-                      )
-                  ),
-                  'these are some decks from profilepage.js omg!!!!',
-                  _react2['default'].createElement(DeckList, { data: this.state.decks })
-              );
-          }
-      }]);
-  
-      return DeckBox;
+    var _ProfilePage = ProfilePage;
+    ProfilePage = (0, _decoratorsWithStyles2['default'])(_ProfilePageScss2['default'])(ProfilePage) || ProfilePage;
+    return ProfilePage;
   })(_react.Component);
   
-  exports['default'] = DeckBox;
+  exports['default'] = ProfilePage;
   module.exports = exports['default'];
-  /* Standard button */ /* Provides extra visual weight and identifies the primary action in a set of buttons */ /* Indicates a successful or positive action */ /* Contextual button for informational alert messages */ /* Indicates caution should be taken with this action */ /* Indicates a dangerous or potentially negative action */ /* Deemphasize a button by making it look like a link while maintaining button behavior */
 
 /***/ },
-/* 78 */
+/* 79 */
 /***/ function(module, exports, __webpack_require__) {
 
   
-      var content = __webpack_require__(79);
+      var content = __webpack_require__(80);
       var insertCss = __webpack_require__(20);
   
       if (typeof content === 'string') {
@@ -4689,7 +4792,7 @@ module.exports =
     
 
 /***/ },
-/* 79 */
+/* 80 */
 /***/ function(module, exports, __webpack_require__) {
 
   exports = module.exports = __webpack_require__(19)();
@@ -4706,364 +4809,7 @@ module.exports =
   };
 
 /***/ },
-/* 80 */
-/***/ function(module, exports, __webpack_require__) {
-
-  'use strict';
-  
-  Object.defineProperty(exports, '__esModule', {
-    value: true
-  });
-  
-  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-  
-  var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-  
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
-  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
-  function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-  
-  var _react = __webpack_require__(4);
-  
-  var _react2 = _interopRequireDefault(_react);
-  
-  var _decoratorsWithStyles = __webpack_require__(24);
-  
-  var _decoratorsWithStyles2 = _interopRequireDefault(_decoratorsWithStyles);
-  
-  //Applies custmo style
-  
-  var _HomePageScss = __webpack_require__(81);
-  
-  var _HomePageScss2 = _interopRequireDefault(_HomePageScss);
-  
-  //Import custom styles
-  
-  var _Link = __webpack_require__(25);
-  
-  var _Link2 = _interopRequireDefault(_Link);
-  
-  var _DeckLibDeckList = __webpack_require__(83);
-  
-  var _DeckLibDeckList2 = _interopRequireDefault(_DeckLibDeckList);
-  
-  var _reactBootstrap = __webpack_require__(36);
-  
-  var title = 'Welcome to AnkiHub'; //page title
-  
-  //sets styles.
-  
-  var HomePage = (function (_Component) {
-    _inherits(HomePage, _Component);
-  
-    _createClass(HomePage, null, [{
-      key: 'contextTypes',
-      value: {
-        onSetTitle: _react.PropTypes.func.isRequired
-      },
-  
-      //Constroctor for class.
-      //REMEBER props and state are two different things.
-      //databinding uses props.
-      enumerable: true
-    }]);
-  
-    function HomePage(props) {
-      _classCallCheck(this, _HomePage);
-  
-      _get(Object.getPrototypeOf(_HomePage.prototype), 'constructor', this).call(this, props);
-  
-      this.onChange = this.onChange.bind(this);
-    }
-  
-    _createClass(HomePage, [{
-      key: 'componentWillMount',
-      value: function componentWillMount() {
-        this.context.onSetTitle(title);
-      }
-  
-      //Alwasy call
-    }, {
-      key: 'componentDidMount',
-      value: function componentDidMount() {}
-    }, {
-      key: 'componentWillUnmount',
-      value: function componentWillUnmount() {}
-  
-      //simply sets the state whenever the Deck store changes
-    }, {
-      key: 'onChange',
-      value: function onChange(state) {
-        this.setState(state);
-      }
-    }, {
-      key: 'render',
-      value: function render() {
-  
-        //Render component
-        return _react2['default'].createElement(
-          _reactBootstrap.Grid,
-          null,
-          _react2['default'].createElement(
-            _reactBootstrap.Row,
-            { className: 'show-grid' },
-            _react2['default'].createElement(
-              _reactBootstrap.Col,
-              { xs: 12, md: 8 },
-              _react2['default'].createElement(_DeckLibDeckList2['default'], null)
-            ),
-            _react2['default'].createElement(
-              _reactBootstrap.Col,
-              { xs: 6, md: 4 },
-              _react2['default'].createElement(
-                'div',
-                null,
-                'Side Bar'
-              )
-            )
-          )
-        );
-      }
-    }]);
-  
-    var _HomePage = HomePage;
-    HomePage = (0, _decoratorsWithStyles2['default'])(_HomePageScss2['default'])(HomePage) || HomePage;
-    return HomePage;
-  })(_react.Component);
-  
-  exports['default'] = HomePage;
-  module.exports = exports['default'];
-
-/***/ },
 /* 81 */
-/***/ function(module, exports, __webpack_require__) {
-
-  
-      var content = __webpack_require__(82);
-      var insertCss = __webpack_require__(20);
-  
-      if (typeof content === 'string') {
-        content = [[module.id, content, '']];
-      }
-  
-      module.exports = content.locals || {};
-      module.exports._getCss = function() { return content.toString(); };
-      module.exports._insertCss = insertCss.bind(null, content);
-    
-
-/***/ },
-/* 82 */
-/***/ function(module, exports, __webpack_require__) {
-
-  exports = module.exports = __webpack_require__(19)();
-  // imports
-  
-  
-  // module
-  exports.push([module.id, ".HomePage_container_1JI{margin:0 auto;padding:0 0 40px;max-width:1000px}", ""]);
-  
-  // exports
-  exports.locals = {
-  	"root": "HomePage_root_cbh",
-  	"container": "HomePage_container_1JI"
-  };
-
-/***/ },
-/* 83 */
-/***/ function(module, exports, __webpack_require__) {
-
-  'use strict';
-  
-  Object.defineProperty(exports, '__esModule', {
-    value: true
-  });
-  
-  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-  
-  var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-  
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
-  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
-  function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-  
-  var _react = __webpack_require__(4);
-  
-  var _react2 = _interopRequireDefault(_react);
-  
-  var _actionsDeckActions = __webpack_require__(61);
-  
-  var _actionsDeckActions2 = _interopRequireDefault(_actionsDeckActions);
-  
-  var _storesDeckStore = __webpack_require__(60);
-  
-  var _storesDeckStore2 = _interopRequireDefault(_storesDeckStore);
-  
-  var _reactBootstrap = __webpack_require__(36);
-  
-  var _DeckListItem = __webpack_require__(84);
-  
-  var _DeckListItem2 = _interopRequireDefault(_DeckListItem);
-  
-  var DeckList = (function (_Component) {
-    _inherits(DeckList, _Component);
-  
-    function DeckList(props) {
-      _classCallCheck(this, DeckList);
-  
-      _get(Object.getPrototypeOf(DeckList.prototype), 'constructor', this).call(this, props);
-      this.state = _storesDeckStore2['default'].getState();
-      this.onChange = this.onChange.bind(this);
-    }
-  
-    _createClass(DeckList, [{
-      key: 'componentDidMount',
-      value: function componentDidMount() {
-        _storesDeckStore2['default'].listen(this.onChange);
-        //Todo pass properties
-        _actionsDeckActions2['default'].getAllDecks({ limit: 30 });
-      }
-    }, {
-      key: 'componentWillUnmount',
-      value: function componentWillUnmount() {
-        _storesDeckStore2['default'].unlisten(this.onChange);
-      }
-    }, {
-      key: 'onChange',
-      value: function onChange(state) {
-        this.setState(state);
-      }
-    }, {
-      key: 'render',
-      value: function render() {
-        var deckNodes = this.state.decks.map(function (deck, index) {
-          return _react2['default'].createElement(_DeckListItem2['default'], { key: index, deck: deck });
-        });
-        return _react2['default'].createElement(
-          'div',
-          { 'class': 'deckList' },
-          deckNodes
-        );
-      }
-    }]);
-  
-    return DeckList;
-  })(_react.Component);
-  
-  exports['default'] = DeckList;
-  module.exports = exports['default'];
-
-/***/ },
-/* 84 */
-/***/ function(module, exports, __webpack_require__) {
-
-  'use strict';
-  
-  Object.defineProperty(exports, '__esModule', {
-    value: true
-  });
-  
-  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-  
-  var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-  
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
-  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
-  function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-  
-  var _react = __webpack_require__(4);
-  
-  var _react2 = _interopRequireDefault(_react);
-  
-  var _actionsDeckActions = __webpack_require__(61);
-  
-  var _actionsDeckActions2 = _interopRequireDefault(_actionsDeckActions);
-  
-  var _storesDeckStore = __webpack_require__(60);
-  
-  var _storesDeckStore2 = _interopRequireDefault(_storesDeckStore);
-  
-  var _Link = __webpack_require__(25);
-  
-  var _Link2 = _interopRequireDefault(_Link);
-  
-  var _reactBootstrap = __webpack_require__(36);
-  
-  var DeckListItem = (function (_Component) {
-    _inherits(DeckListItem, _Component);
-  
-    function DeckListItem() {
-      _classCallCheck(this, DeckListItem);
-  
-      _get(Object.getPrototypeOf(DeckListItem.prototype), 'constructor', this).apply(this, arguments);
-    }
-  
-    _createClass(DeckListItem, [{
-      key: 'render',
-      value: function render() {
-        var deck = this.props.deck;
-        var userUrl = "/users/" + deck.owner;
-        var deckUrl = "/decks/" + deck.gid;
-        var title = _react2['default'].createElement(
-          'h4',
-          null,
-          _react2['default'].createElement(_reactBootstrap.Glyphicon, { glyph: 'align-justify' }),
-          _react2['default'].createElement(
-            'a',
-            { href: userUrl, onClick: _Link2['default'].handleClick },
-            deck.owner
-          ),
-          _react2['default'].createElement(
-            'span',
-            null,
-            '/'
-          ),
-          _react2['default'].createElement(
-            'a',
-            { href: deckUrl, onClick: _Link2['default'].handleClick },
-            deck.name
-          )
-        );
-        console.log(deck);
-        var subscribers = _react2['default'].createElement(
-          'span',
-          null,
-          deck.subscribers.length,
-          ' Subscribers'
-        );
-        var cards = _react2['default'].createElement(
-          'span',
-          null,
-          deck.cids.length,
-          ' Cards'
-        );
-        return _react2['default'].createElement(
-          _reactBootstrap.Panel,
-          { header: title },
-          _react2['default'].createElement(
-            'blockquote',
-            null,
-            deck.desc
-          ),
-          subscribers,
-          cards
-        );
-      }
-    }]);
-  
-    return DeckListItem;
-  })(_react.Component);
-  
-  exports['default'] = DeckListItem;
-  module.exports = exports['default'];
-
-/***/ },
-/* 85 */
 /***/ function(module, exports, __webpack_require__) {
 
   /**
@@ -5171,43 +4917,43 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 86 */
+/* 82 */
 /***/ function(module, exports) {
 
   module.exports = require("./assets");
 
 /***/ },
-/* 87 */
+/* 83 */
 /***/ function(module, exports) {
 
   module.exports = require("morgan");
 
 /***/ },
-/* 88 */
+/* 84 */
 /***/ function(module, exports) {
 
   module.exports = require("cookie-parser");
 
 /***/ },
-/* 89 */
+/* 85 */
 /***/ function(module, exports) {
 
   module.exports = require("body-parser");
 
 /***/ },
-/* 90 */
+/* 86 */
 /***/ function(module, exports) {
 
   module.exports = require("express-session");
 
 /***/ },
-/* 91 */
+/* 87 */
 /***/ function(module, exports) {
 
   module.exports = require("parse/node");
 
 /***/ },
-/* 92 */
+/* 88 */
 /***/ function(module, exports) {
 
   "use strict";
@@ -5227,19 +4973,19 @@ module.exports =
   module.exports = exports["default"];
 
 /***/ },
-/* 93 */
+/* 89 */
 /***/ function(module, exports) {
 
   module.exports = require("connect-parse");
 
 /***/ },
-/* 94 */
+/* 90 */
 /***/ function(module, exports) {
 
   module.exports = require("socket.io");
 
 /***/ },
-/* 95 */
+/* 91 */
 /***/ function(module, exports, __webpack_require__) {
 
   //Register todos with aws dynammodb.
@@ -5254,21 +5000,21 @@ module.exports =
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
-  var _bluebird = __webpack_require__(96);
+  var _bluebird = __webpack_require__(92);
   
   var _bluebird2 = _interopRequireDefault(_bluebird);
   
   var _express = __webpack_require__(3);
   
-  var _parseNode = __webpack_require__(91);
+  var _parseNode = __webpack_require__(87);
   
   var _parseNode2 = _interopRequireDefault(_parseNode);
   
-  var _UserUtil = __webpack_require__(92);
+  var _UserUtil = __webpack_require__(88);
   
   var _UserUtil2 = _interopRequireDefault(_UserUtil);
   
-  var _transactionsTransactionModel = __webpack_require__(97);
+  var _transactionsTransactionModel = __webpack_require__(93);
   
   var _transactionsTransactionModel2 = _interopRequireDefault(_transactionsTransactionModel);
   
@@ -5377,18 +5123,18 @@ module.exports =
                 req.session.sessionToken = user.toJSON().sessionToken;
                 req.session.username = user.toJSON().username;
                 req.user = user;
-                res.status(200).send({ err: null, user: user.toJSON() });
+                res.status(200).send(user.toJSON());
               });
             },
             error: function error(user, _error2) {
-              res.status(400).send({ err: _error2, user: user.toJSON() });
+              res.status(400).send({ error: _error2, user: user.toJSON() });
             }
           });
           context$1$0.next = 7;
           break;
   
         case 6:
-          return context$1$0.abrupt('return', res.status(400).send({ err: { msg: "Need username and password" } }));
+          return context$1$0.abrupt('return', res.status(400).send({ error: { msg: "Need username and password" } }));
   
         case 7:
         case 'end':
@@ -5508,13 +5254,13 @@ module.exports =
   //console.log("IN get all decks")
 
 /***/ },
-/* 96 */
+/* 92 */
 /***/ function(module, exports) {
 
   module.exports = require("bluebird");
 
 /***/ },
-/* 97 */
+/* 93 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -5525,7 +5271,7 @@ module.exports =
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
-  var _parseNode = __webpack_require__(91);
+  var _parseNode = __webpack_require__(87);
   
   var _parseNode2 = _interopRequireDefault(_parseNode);
   
@@ -5536,7 +5282,7 @@ module.exports =
   exports.TransactionUtil = TransactionUtil;
 
 /***/ },
-/* 98 */
+/* 94 */
 /***/ function(module, exports, __webpack_require__) {
 
   // Register todos with aws dynammodb.
@@ -5553,16 +5299,16 @@ module.exports =
   
   var _express = __webpack_require__(3);
   
-  var _DeckModel = __webpack_require__(99);
+  var _DeckModel = __webpack_require__(95);
   
   var _DeckModel2 = _interopRequireDefault(_DeckModel);
   
-  var _transactionsTransactionModel = __webpack_require__(97);
+  var _transactionsTransactionModel = __webpack_require__(93);
   
   var _transactionsTransactionModel2 = _interopRequireDefault(_transactionsTransactionModel);
   
-  var Parse = __webpack_require__(91);
-  var randomstring = __webpack_require__(100).generate;
+  var Parse = __webpack_require__(87);
+  var randomstring = __webpack_require__(96).generate;
   
   var router = new _express.Router();
   
@@ -5574,19 +5320,23 @@ module.exports =
           query = new Parse.Query(_DeckModel2['default']);
   
           if (req.query.keywords) {
-            query.containsAll('keywords', req.query.keywords);
+            console.log(req.query.keywords);
+            query.containsAll('keywords', [].concat(req.query.keywords));
           }
           if (req.query.name) {
-            query.contains('name', req.query.name);
+            query.equalTo('name', req.query.name);
           }
           if (req.query.cids) {
-            query.containsAll('cids', req.query.cids);
+            query.containsAll('cids', [].concat(req.query.cids));
           }
           if (req.query.owner) {
             query.equalTo('owner', req.query.user);
           }
           if (req.query.gid) {
             query.equalTo('gid', req.query.gid);
+          }
+          if (req.query.did) {
+            query.equalTo('did', req.query.did);
           }
           query.limit(req.query.limit || 20);
   
@@ -5602,7 +5352,7 @@ module.exports =
             sessionToken: req.session.sessionToken
           });
   
-        case 8:
+        case 9:
         case 'end':
           return context$1$0.stop();
       }
@@ -5614,16 +5364,17 @@ module.exports =
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
         case 0:
+          console.log("here");
           query = new Parse.Query(_DeckModel2['default']);
   
           if (!(!req.body.gid && !req.body.did)) {
-            context$1$0.next = 3;
+            context$1$0.next = 4;
             break;
           }
   
           return context$1$0.abrupt('return', res.status(400).json({ err: 'Must have a did or gid' }));
   
-        case 3:
+        case 4:
   
           if (req.body.gid) {
             query.equalTo('gid', req.body.gid);
@@ -5671,7 +5422,7 @@ module.exports =
           });
           return context$1$0.abrupt('return', null);
   
-        case 6:
+        case 7:
         case 'end':
           return context$1$0.stop();
       }
@@ -5803,7 +5554,7 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 99 */
+/* 95 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -5814,7 +5565,7 @@ module.exports =
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
-  var _parseNode = __webpack_require__(91);
+  var _parseNode = __webpack_require__(87);
   
   var _parseNode2 = _interopRequireDefault(_parseNode);
   
@@ -5824,13 +5575,13 @@ module.exports =
   exports.DeckUtil = DeckUtil;
 
 /***/ },
-/* 100 */
+/* 96 */
 /***/ function(module, exports) {
 
   module.exports = require("randomstring");
 
 /***/ },
-/* 101 */
+/* 97 */
 /***/ function(module, exports, __webpack_require__) {
 
   // Register todos with aws dynammodb.
@@ -5847,16 +5598,16 @@ module.exports =
   
   var _express = __webpack_require__(3);
   
-  var _CardModel = __webpack_require__(102);
+  var _CardModel = __webpack_require__(98);
   
   var _CardModel2 = _interopRequireDefault(_CardModel);
   
-  var _transactionsTransactionModel = __webpack_require__(97);
+  var _transactionsTransactionModel = __webpack_require__(93);
   
   var _transactionsTransactionModel2 = _interopRequireDefault(_transactionsTransactionModel);
   
-  var Parse = __webpack_require__(91);
-  var randomstring = __webpack_require__(100).generate;
+  var Parse = __webpack_require__(87);
+  var randomstring = __webpack_require__(96).generate;
   
   var router = new _express.Router();
   
@@ -6035,7 +5786,7 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 102 */
+/* 98 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -6046,7 +5797,7 @@ module.exports =
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
-  var _parseNode = __webpack_require__(91);
+  var _parseNode = __webpack_require__(87);
   
   var _parseNode2 = _interopRequireDefault(_parseNode);
   
@@ -6056,7 +5807,7 @@ module.exports =
   exports.DeckUtil = DeckUtil;
 
 /***/ },
-/* 103 */
+/* 99 */
 /***/ function(module, exports, __webpack_require__) {
 
   //Register todos with aws dynammodb.
@@ -6072,7 +5823,7 @@ module.exports =
   
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
   
-  var _bluebird = __webpack_require__(96);
+  var _bluebird = __webpack_require__(92);
   
   var _bluebird2 = _interopRequireDefault(_bluebird);
   
@@ -6131,7 +5882,7 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 104 */
+/* 100 */
 /***/ function(module, exports, __webpack_require__) {
 
   /**
@@ -6153,7 +5904,7 @@ module.exports =
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
-  var _fs = __webpack_require__(105);
+  var _fs = __webpack_require__(101);
   
   var _fs2 = _interopRequireDefault(_fs);
   
@@ -6161,15 +5912,15 @@ module.exports =
   
   var _express = __webpack_require__(3);
   
-  var _bluebird = __webpack_require__(96);
+  var _bluebird = __webpack_require__(92);
   
   var _bluebird2 = _interopRequireDefault(_bluebird);
   
-  var _jade = __webpack_require__(106);
+  var _jade = __webpack_require__(102);
   
   var _jade2 = _interopRequireDefault(_jade);
   
-  var _frontMatter = __webpack_require__(107);
+  var _frontMatter = __webpack_require__(103);
   
   var _frontMatter2 = _interopRequireDefault(_frontMatter);
   
@@ -6272,19 +6023,19 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 105 */
+/* 101 */
 /***/ function(module, exports) {
 
   module.exports = require("fs");
 
 /***/ },
-/* 106 */
+/* 102 */
 /***/ function(module, exports) {
 
   module.exports = require("jade");
 
 /***/ },
-/* 107 */
+/* 103 */
 /***/ function(module, exports) {
 
   module.exports = require("front-matter");
