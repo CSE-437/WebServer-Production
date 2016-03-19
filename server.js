@@ -2484,10 +2484,11 @@ module.exports =
       _classCallCheck(this, ProfileStore);
   
       this.bindActions(_actionsProfileActions2['default']);
+      console.log(_actionsProfileActions2['default']);
       this.bindListeners({
         handleSignUp: _actionsProfileActions2['default'].signUpSuccess,
         handleLogIn: _actionsProfileActions2['default'].logInSuccess,
-        loginFail: _actionsProfileActions2['default'].logInFail
+        handleLogInFail: _actionsProfileActions2['default'].logInFail
       });
       this.state = {
         decks: [],
@@ -2514,7 +2515,17 @@ module.exports =
       value: function onLogOutSuccess() {
         this.setState({
           user: {},
+          decks: [],
           loggedIn: false
+        });
+      }
+    }, {
+      key: 'handleLogInFail',
+      value: function handleLogInFail(error) {
+        this.setState({
+          loggedIn: false,
+          decks: [],
+          user: {}
         });
       }
     }, {
@@ -2534,11 +2545,6 @@ module.exports =
           loggedIn: true
         });
         _actionsProfileActions2['default'].getMyDecks(user.username);
-      }
-    }, {
-      key: 'loginFail',
-      value: function loginFail(err) {
-        _toastr2['default'].error(err);
       }
     }]);
   
@@ -2636,6 +2642,7 @@ module.exports =
           self.logInSuccess(data);
         }).fail(function (data) {
           self.logInFail(data);
+          console.log('failed to login');
         });
       }
     }, {
@@ -2652,6 +2659,9 @@ module.exports =
       key: 'getMyDecks',
       value: function getMyDecks(username) {
         var self = this;
+        if (!username) {
+          return self.getMyDecksFail({ error: "Not Logged In " });
+        }
         _jquery2['default'].get('/api/decks?' + username).done(function (data) {
           self.getMyDecksSuccess(data);
         }).fail(function (data) {
@@ -4747,7 +4757,7 @@ module.exports =
       key: 'render',
       value: function render() {
         console.log(this.state);
-        return _react2['default'].createElement(
+        var page = this.state.loggedIn ? _react2['default'].createElement(
           'div',
           { className: 'ProfilePage' },
           _react2['default'].createElement(
@@ -4762,7 +4772,12 @@ module.exports =
             'Here are your decks'
           ),
           _react2['default'].createElement(_DeckLibDeckList2['default'], { decks: this.state.decks })
+        ) : _react2['default'].createElement(
+          'h3',
+          null,
+          'Please Login'
         );
+        return page;
       }
     }]);
   
