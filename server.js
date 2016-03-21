@@ -2564,7 +2564,7 @@ module.exports =
       key: 'handleSignUp',
       value: function handleSignUp(data) {
         console.log('here');
-        var user = data.user;
+        var user = data.user || data;
         if (data.error) {
           _toastr2['default'].error(data.error);
           return;
@@ -2579,7 +2579,7 @@ module.exports =
       key: 'handleLogIn',
       value: function handleLogIn(data) {
         console.log('here2');
-        var user = data.user;
+        var user = data.user || data;
         if (data.error) {
           _toastr2['default'].error(data.error);
           return;
@@ -5642,18 +5642,18 @@ module.exports =
                 req.session.sessionToken = user.toJSON().sessionToken;
                 req.session.username = user.toJSON().username;
                 req.user = user;
-                res.status(200).send({ error: null, user: user.toJSON() });
+                res.status(200).json(user.toJSON());
               });
             },
             error: function error(user, _error2) {
-              res.status(400).send({ error: _error2, user: user.toJSON() });
+              res.status(400).json({ error: _error2, user: user.toJSON() });
             }
           });
           context$1$0.next = 7;
           break;
   
         case 6:
-          return context$1$0.abrupt('return', res.status(400).send({ error: { msg: "Need username and password" } }));
+          return context$1$0.abrupt('return', res.status(400).json({ error: { msg: "Need username and password" } }));
   
         case 7:
         case 'end':
@@ -5699,7 +5699,9 @@ module.exports =
           query.equalTo("username", req.username);
           query.find({
             success: function success(results) {
-              return res.status(200).send(results);
+              return res.status(200).json(results.map(function (r) {
+                return r.toJSON();
+              }));
             },
             error: function error(deck, _error3) {
               return res.status(400).send({ err: _error3, deck: deck });
