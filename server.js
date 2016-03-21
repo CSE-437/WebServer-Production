@@ -2518,7 +2518,8 @@ module.exports =
       this.bindListeners({
         handleSignUp: _actionsProfileActions2['default'].signUpSuccess,
         handleLogIn: _actionsProfileActions2['default'].logInSuccess,
-        handleLogInFail: _actionsProfileActions2['default'].logInFail
+        handleLogInFail: _actionsProfileActions2['default'].logInFail,
+        onGetMyDecksSuccess: _actionsProfileActions2['default'].getMyDecksSuccess
       });
       this.state = {
         decks: [],
@@ -2534,6 +2535,7 @@ module.exports =
     _createClass(ProfileStore, [{
       key: 'onGetMyDecksSuccess',
       value: function onGetMyDecksSuccess(decks) {
+        console.log('hello', decks);
         this.setState({ decks: decks });
       }
   
@@ -2560,21 +2562,33 @@ module.exports =
       }
     }, {
       key: 'handleSignUp',
-      value: function handleSignUp(user) {
+      value: function handleSignUp(data) {
+        console.log('here');
+        var user = data.user;
+        if (data.error) {
+          _toastr2['default'].error(data.error);
+          return;
+        }
         this.setState({
           user: user,
           loggedIn: true
         });
-        _actionsProfileActions2['default'].getMyDecks(user.username);
+        //ProfileActions.getMyDecks(user.username);
       }
     }, {
       key: 'handleLogIn',
-      value: function handleLogIn(user) {
+      value: function handleLogIn(data) {
+        console.log('here2');
+        var user = data.user;
+        if (data.error) {
+          _toastr2['default'].error(data.error);
+          return;
+        }
         this.setState({
           user: user,
           loggedIn: true
         });
-        _actionsProfileActions2['default'].getMyDecks(user.username);
+        //ProfileActions.getMyDecks(user.username);
       }
     }]);
   
@@ -4764,7 +4778,8 @@ module.exports =
         // makes the DeckStore call the onchange function whenever it cnanges.
         // This is why we had to use bind
         _storesProfileStore2['default'].listen(this.onChange);
-        _actionsProfileActions2['default'].getMyDecks();
+        console.log('here');
+        _actionsProfileActions2['default'].getMyDecks(this.state.user.username);
         // As soon as it is poling for data get data
       }
     }, {
