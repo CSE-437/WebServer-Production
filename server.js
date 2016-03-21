@@ -5579,19 +5579,9 @@ module.exports =
                 res.status(200).send({ err: null, user: user });
               });
             },
-            error: (function (_error) {
-              function error(_x, _x2) {
-                return _error.apply(this, arguments);
-              }
-  
-              error.toString = function () {
-                return _error.toString();
-              };
-  
-              return error;
-            })(function (user, error) {
-              res.status(400).send({ err: error, user: user.toJSON() });
-            }),
+            error: function error(user, _error) {
+              res.status(400).send({ err: _error, user: user.toJSON() });
+            },
             sessionToken: req.session.sessionToken
           });
           context$1$0.next = 11;
@@ -5637,22 +5627,12 @@ module.exports =
                 req.session.sessionToken = user.toJSON().sessionToken;
                 req.session.username = user.toJSON().username;
                 req.user = user;
-                res.status(200).send({ error: error, user: user.toJSON() });
+                res.status(200).send({ error: null, user: user.toJSON() });
               });
             },
-            error: (function (_error2) {
-              function error(_x3, _x4) {
-                return _error2.apply(this, arguments);
-              }
-  
-              error.toString = function () {
-                return _error2.toString();
-              };
-  
-              return error;
-            })(function (user, error) {
-              res.status(400).send({ error: error, user: user.toJSON() });
-            })
+            error: function error(user, _error2) {
+              res.status(400).send({ error: _error2, user: user.toJSON() });
+            }
           });
           context$1$0.next = 7;
           break;
@@ -5706,19 +5686,9 @@ module.exports =
             success: function success(results) {
               return res.status(200).send(results);
             },
-            error: (function (_error3) {
-              function error(_x5, _x6) {
-                return _error3.apply(this, arguments);
-              }
-  
-              error.toString = function () {
-                return _error3.toString();
-              };
-  
-              return error;
-            })(function (deck, error) {
-              return res.status(400).send({ err: error, deck: deck });
-            }),
+            error: function error(deck, _error3) {
+              return res.status(400).send({ err: _error3, deck: deck });
+            },
             sessionToken: req.session.sessionToken
           });
   
@@ -5765,23 +5735,13 @@ module.exports =
                   res.status(200).send(parsedTransactions);
                 }
               },
-              error: (function (_error4) {
-                function error(_x7, _x8) {
-                  return _error4.apply(this, arguments);
-                }
+              error: function error(trans, _error4) {
   
-                error.toString = function () {
-                  return _error4.toString();
-                };
-  
-                return error;
-              })(function (trans, error) {
-  
-                parsedTransactions.push({ transaction: trans, error: error });
+                parsedTransactions.push({ transaction: trans, error: _error4 });
                 if (parsedTransactions.length == transactions.length) {
                   res.status(400).send(parsedTransactions);
                 }
-              }),
+              },
               sessionToken: req.session.sessionToken
             });
           });
@@ -5932,14 +5892,16 @@ module.exports =
               }
               // TODO : Validate Decks
               var newDeck = new Parse.Object('Deck');
-              var newDeckBody = req.body;
+              Object.keys(req.body).forEach(function (key) {
+                return newDeck.set(key, req.body[key]);
+              });
               var gid = req.body.gid || req.session.username + ':' + req.body.did;
               var did = gid.split(':')[1];
-              newDeckBody.gid = gid;
-              newDeckBody.did = did;
-              newDeckBody.owner = req.session.username;
+              newDeck.set('gid', gid);
+              newDeck.set('did', did);
+              newDeck.set('owner', req.session.username);
   
-              newDeck.save(newDeckBody, {
+              newDeck.save(null, {
                 success: function success(deck) {
                   console.log('here2');
                   var userQuery = new Parse.Query(Parse.User);
