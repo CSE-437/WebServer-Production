@@ -120,7 +120,7 @@ module.exports =
   var ParseStore = __webpack_require__(95)(_expressSession2['default']);
   
   _parseNode2['default'].initialize(process.env.APP_ID || "AnkiHubParse");
-  _parseNode2['default'].serverURL = process.env.SERVER_URL || "https://ankihubparse.herokuapp.com/parse";
+  _parseNode2['default'].serverURL = process.env.SERVER_URL || "https://ankihubparse2.herokuapp.com/parse";
   
   var io = __webpack_require__(96)(server);
   
