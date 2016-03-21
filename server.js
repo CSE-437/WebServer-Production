@@ -5900,7 +5900,7 @@ module.exports =
               newDeck.set('gid', gid);
               newDeck.set('did', did);
               newDeck.set('owner', req.session.username);
-  
+              console.log('here1.5');
               newDeck.save(null, {
                 success: function success(deck) {
                   console.log('here2');
