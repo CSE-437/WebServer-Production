@@ -151,9 +151,9 @@ module.exports =
   // Register API middleware
   // -----------------------------------------------------------------------------
   server.use('/api/users', __webpack_require__(97));
-  server.use('/api/decks', __webpack_require__(100));
-  server.use('/api/cards', __webpack_require__(103));
-  server.use('/api/todo', __webpack_require__(105));
+  server.use('/api/decks', __webpack_require__(98));
+  server.use('/api/cards', __webpack_require__(102));
+  server.use('/api/todo', __webpack_require__(104));
   server.use('/api/content', __webpack_require__(106));
   
   //
@@ -5507,8 +5507,8 @@ module.exports =
 /* 97 */
 /***/ function(module, exports, __webpack_require__) {
 
-  //Register todos with aws dynammodb.
-  //https://github.com/yortus/asyncawait
+  // Register todos with aws dynammodb.
+  // https://github.com/yortus/asyncawait
   'use strict';
   
   Object.defineProperty(exports, '__esModule', {
@@ -5519,27 +5519,15 @@ module.exports =
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
-  var _bluebird = __webpack_require__(98);
-  
-  var _bluebird2 = _interopRequireDefault(_bluebird);
-  
   var _express = __webpack_require__(3);
   
   var _parseNode = __webpack_require__(93);
   
   var _parseNode2 = _interopRequireDefault(_parseNode);
   
-  var _UserUtil = __webpack_require__(94);
-  
-  var _UserUtil2 = _interopRequireDefault(_UserUtil);
-  
-  var _transactionsTransactionModel = __webpack_require__(99);
-  
-  var _transactionsTransactionModel2 = _interopRequireDefault(_transactionsTransactionModel);
-  
   var router = new _express.Router();
   
-  router.get('/', function callee$0$0(req, res, next) {
+  router.get('/', function callee$0$0(req, res) {
     var query;
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
@@ -5547,17 +5535,16 @@ module.exports =
           query = new _parseNode2['default'].Query(_parseNode2['default'].User);
   
           if (req.query.username) {
-  
-            query.contains("username", req.query.username);
+            query.equalTo('username', req.query.username);
           }
           query.find({
             success: function success(results) {
-              //console.log("Succssfully retrieved ", results);
-              return res.status(200).send(results);
+              // console.log('Succssfully retrieved ', results);
+              return res.status(200).json(results);
             },
-            error: function error(err) {
-              //console.log("Failed to get decks ", err);
-              return res.status(400).send(err);
+            error: function error(results, _error) {
+              // console.log('Failed to get decks ', err);
+              return res.status(400).json({ users: results, error: _error });
             },
             sessionToken: req.session.sessionToken
           });
@@ -5583,19 +5570,21 @@ module.exports =
   
           newUser = new _parseNode2['default'].User();
   
-          newUser.set("username", username);
-          newUser.set("password", password);
-          newUser.set("subscriptions", []);
+          newUser.set('username', username);
+          newUser.set('password', password);
+          newUser.set('subscriptions', []);
           newUser.signUp(null, {
             success: function success(user) {
               req.session.regenerate(function (err) {
                 req.session.sessionToken = user.toJSON().sessionToken;
                 req.session.username = user.toJSON().username;
-                res.status(200).send({ err: null, user: user });
+                var u = user.toJSON();
+                u.sessionID = req.session.sessionID;
+                res.status(200).json({ user: u });
               });
             },
-            error: function error(user, _error) {
-              res.status(400).send({ err: _error, user: user.toJSON() });
+            error: function error(user, _error2) {
+              res.status(400).json({ err: _error2, user: user.toJSON() });
             },
             sessionToken: req.session.sessionToken
           });
@@ -5603,7 +5592,7 @@ module.exports =
           break;
   
         case 10:
-          return context$1$0.abrupt('return', res.status(400).send({ err: { msg: "Need username and password" } }));
+          return context$1$0.abrupt('return', res.status(400).send({ err: { message: 'Need username and password' } }));
   
         case 11:
         case 'end':
@@ -5611,7 +5600,8 @@ module.exports =
       }
     }, null, _this);
   });
-  router.get('/whoami', function callee$0$0(req, res, next) {
+  
+  router.get('/whoami', function callee$0$0(req, res) {
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
         case 0:
@@ -5642,18 +5632,20 @@ module.exports =
                 req.session.sessionToken = user.toJSON().sessionToken;
                 req.session.username = user.toJSON().username;
                 req.user = user;
-                res.status(200).json(user.toJSON());
+                var u = user.toJSON();
+                u.sessionID = req.sessionID;
+                res.status(200).json({ user: u });
               });
             },
-            error: function error(user, _error2) {
-              res.status(400).json({ error: _error2, user: user.toJSON() });
+            error: function error(user, _error3) {
+              res.status(400).json({ error: _error3, user: user.toJSON() });
             }
           });
           context$1$0.next = 7;
           break;
   
         case 6:
-          return context$1$0.abrupt('return', res.status(400).json({ error: { msg: "Need username and password" } }));
+          return context$1$0.abrupt('return', res.status(400).json({ error: { msg: 'Need username and password' } }));
   
         case 7:
         case 'end':
@@ -5662,12 +5654,12 @@ module.exports =
     }, null, _this);
   });
   
-  router.post('/logout', function callee$0$0(req, res, next) {
+  router.post('/logout', function callee$0$0(req, res) {
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
         case 0:
           req.session.destroy();
-          res.status(200).send("Logged out");
+          res.status(200).send('Logged out');
   
         case 2:
         case 'end':
@@ -5696,15 +5688,15 @@ module.exports =
         case 0:
           query = new _parseNode2['default'].Query(_parseNode2['default'].User);
   
-          query.equalTo("username", req.username);
+          query.equalTo('username', req.username);
           query.find({
             success: function success(results) {
               return res.status(200).json(results.map(function (r) {
                 return r.toJSON();
               }));
             },
-            error: function error(deck, _error3) {
-              return res.status(400).send({ err: _error3, deck: deck });
+            error: function error(deck, _error4) {
+              return res.status(400).send({ err: _error4, deck: deck });
             },
             sessionToken: req.session.sessionToken
           });
@@ -5731,18 +5723,18 @@ module.exports =
             break;
           }
   
-          return context$1$0.abrupt('return', res.status(400).send({ err: "Must send array of transactions" }));
+          return context$1$0.abrupt('return', res.status(400).send({ err: 'Must send array of transactions' }));
   
         case 3:
           transactions = req.body.map(function (body) {
-            var t = new _parseNode2['default'].Object("Transaction");
+            var t = new _parseNode2['default'].Object('Transaction');
             return TransactionUtil.fromRequestBody(t, body);
           });
           parsedTransactions = [];
   
           transactions.forEach(function (t) {
-            console.log("here5");
-            t.set("on", current_id);
+            console.log('here5');
+            t.set('on', current_id);
             t.save(null, {
               success: function success(trans) {
                 //TODO maintain order
@@ -5752,9 +5744,9 @@ module.exports =
                   res.status(200).send(parsedTransactions);
                 }
               },
-              error: function error(trans, _error4) {
+              error: function error(trans, _error5) {
   
-                parsedTransactions.push({ transaction: trans, error: _error4 });
+                parsedTransactions.push({ transaction: trans, error: _error5 });
                 if (parsedTransactions.length == transactions.length) {
                   res.status(400).send(parsedTransactions);
                 }
@@ -5772,38 +5764,8 @@ module.exports =
   exports['default'] = router;
   module.exports = exports['default'];
 
-  //console.log("IN get all decks")
-
 /***/ },
 /* 98 */
-/***/ function(module, exports) {
-
-  module.exports = require("bluebird");
-
-/***/ },
-/* 99 */
-/***/ function(module, exports, __webpack_require__) {
-
-  'use strict';
-  
-  Object.defineProperty(exports, '__esModule', {
-    value: true
-  });
-  
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
-  var _parseNode = __webpack_require__(93);
-  
-  var _parseNode2 = _interopRequireDefault(_parseNode);
-  
-  var Transaction = _parseNode2['default'].Object.extend('Transaction', {}, {});
-  
-  exports['default'] = Transaction;
-  var TransactionUtil = {};
-  exports.TransactionUtil = TransactionUtil;
-
-/***/ },
-/* 100 */
 /***/ function(module, exports, __webpack_require__) {
 
   // Register todos with aws dynammodb.
@@ -5820,16 +5782,16 @@ module.exports =
   
   var _express = __webpack_require__(3);
   
-  var _DeckModel = __webpack_require__(101);
+  var _DeckModel = __webpack_require__(99);
   
   var _DeckModel2 = _interopRequireDefault(_DeckModel);
   
-  var _transactionsTransactionModel = __webpack_require__(99);
+  var _transactionsTransactionModel = __webpack_require__(100);
   
   var _transactionsTransactionModel2 = _interopRequireDefault(_transactionsTransactionModel);
   
   var Parse = __webpack_require__(93);
-  var randomstring = __webpack_require__(102).generate;
+  var randomstring = __webpack_require__(101).generate;
   
   var router = new _express.Router();
   
@@ -6101,7 +6063,7 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 101 */
+/* 99 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -6122,13 +6084,35 @@ module.exports =
   exports.DeckUtil = DeckUtil;
 
 /***/ },
-/* 102 */
+/* 100 */
+/***/ function(module, exports, __webpack_require__) {
+
+  'use strict';
+  
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+  
+  var _parseNode = __webpack_require__(93);
+  
+  var _parseNode2 = _interopRequireDefault(_parseNode);
+  
+  var Transaction = _parseNode2['default'].Object.extend('Transaction', {}, {});
+  
+  exports['default'] = Transaction;
+  var TransactionUtil = {};
+  exports.TransactionUtil = TransactionUtil;
+
+/***/ },
+/* 101 */
 /***/ function(module, exports) {
 
   module.exports = require("randomstring");
 
 /***/ },
-/* 103 */
+/* 102 */
 /***/ function(module, exports, __webpack_require__) {
 
   // Register todos with aws dynammodb.
@@ -6145,16 +6129,16 @@ module.exports =
   
   var _express = __webpack_require__(3);
   
-  var _CardModel = __webpack_require__(104);
+  var _CardModel = __webpack_require__(103);
   
   var _CardModel2 = _interopRequireDefault(_CardModel);
   
-  var _transactionsTransactionModel = __webpack_require__(99);
+  var _transactionsTransactionModel = __webpack_require__(100);
   
   var _transactionsTransactionModel2 = _interopRequireDefault(_transactionsTransactionModel);
   
   var Parse = __webpack_require__(93);
-  var randomstring = __webpack_require__(102).generate;
+  var randomstring = __webpack_require__(101).generate;
   
   var router = new _express.Router();
   
@@ -6333,7 +6317,7 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 104 */
+/* 103 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -6354,7 +6338,7 @@ module.exports =
   exports.DeckUtil = DeckUtil;
 
 /***/ },
-/* 105 */
+/* 104 */
 /***/ function(module, exports, __webpack_require__) {
 
   //Register todos with aws dynammodb.
@@ -6370,7 +6354,7 @@ module.exports =
   
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
   
-  var _bluebird = __webpack_require__(98);
+  var _bluebird = __webpack_require__(105);
   
   var _bluebird2 = _interopRequireDefault(_bluebird);
   
@@ -6429,6 +6413,12 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
+/* 105 */
+/***/ function(module, exports) {
+
+  module.exports = require("bluebird");
+
+/***/ },
 /* 106 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -6459,7 +6449,7 @@ module.exports =
   
   var _express = __webpack_require__(3);
   
-  var _bluebird = __webpack_require__(98);
+  var _bluebird = __webpack_require__(105);
   
   var _bluebird2 = _interopRequireDefault(_bluebird);
   
