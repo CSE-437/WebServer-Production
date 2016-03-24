@@ -151,9 +151,9 @@ module.exports =
   // Register API middleware
   // -----------------------------------------------------------------------------
   server.use('/api/users', __webpack_require__(97));
-  server.use('/api/decks', __webpack_require__(98));
-  server.use('/api/cards', __webpack_require__(102));
-  server.use('/api/todo', __webpack_require__(104));
+  server.use('/api/decks', __webpack_require__(100));
+  server.use('/api/cards', __webpack_require__(103));
+  server.use('/api/todo', __webpack_require__(105));
   server.use('/api/content', __webpack_require__(106));
   
   //
@@ -3719,9 +3719,10 @@ module.exports =
       }
     }, {
       key: 'postTransactions',
-      value: function postTransactions(did, transactions) {
+      value: function postTransactions(gid, transactions) {
+        console.log(arguments);
         var self = this;
-        _jquery2['default'].post('/api/decks/' + did, transactions).done(function (data) {
+        _jquery2['default'].post('/api/decks/' + gid, transactions).done(function (data) {
           self.postTransactionsSuccess(data);
         }).fail(function (data) {
           self.postTransactionsFail(data);
@@ -3892,6 +3893,12 @@ module.exports =
         this.setState({ showModal: true });
       }
     }, {
+      key: 'subscribe',
+      value: function subscribe() {
+        _actionsDeckActions2['default'].postTransactions(this.props.deck.gid, [{ query: 'aSUBSCRIBER', data: { gid: this.props.deck.gid } }]);
+        alert("You're subscribed!");
+      }
+    }, {
       key: 'render',
       value: function render() {
         var deck = this.props.deck;
@@ -3971,6 +3978,12 @@ module.exports =
               'Description: ',
               deck.description
             ),
+            _react2['default'].createElement(
+              _reactBootstrap.Button,
+              { onClick: this.subscribe.bind(this) },
+              'Subscribe'
+            ),
+            _react2['default'].createElement('br', null),
             _react2['default'].createElement(
               _reactBootstrap.Button,
               { onClick: this.open.bind(this) },
@@ -5507,8 +5520,8 @@ module.exports =
 /* 97 */
 /***/ function(module, exports, __webpack_require__) {
 
-  // Register todos with aws dynammodb.
-  // https://github.com/yortus/asyncawait
+  //Register todos with aws dynammodb.
+  //https://github.com/yortus/asyncawait
   'use strict';
   
   Object.defineProperty(exports, '__esModule', {
@@ -5519,15 +5532,27 @@ module.exports =
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
+  var _bluebird = __webpack_require__(98);
+  
+  var _bluebird2 = _interopRequireDefault(_bluebird);
+  
   var _express = __webpack_require__(3);
   
   var _parseNode = __webpack_require__(93);
   
   var _parseNode2 = _interopRequireDefault(_parseNode);
   
+  var _UserUtil = __webpack_require__(94);
+  
+  var _UserUtil2 = _interopRequireDefault(_UserUtil);
+  
+  var _transactionsTransactionModel = __webpack_require__(99);
+  
+  var _transactionsTransactionModel2 = _interopRequireDefault(_transactionsTransactionModel);
+  
   var router = new _express.Router();
   
-  router.get('/', function callee$0$0(req, res) {
+  router.get('/', function callee$0$0(req, res, next) {
     var query;
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
@@ -5535,16 +5560,17 @@ module.exports =
           query = new _parseNode2['default'].Query(_parseNode2['default'].User);
   
           if (req.query.username) {
-            query.equalTo('username', req.query.username);
+  
+            query.contains("username", req.query.username);
           }
           query.find({
             success: function success(results) {
-              // console.log('Succssfully retrieved ', results);
-              return res.status(200).json(results);
+              //console.log("Succssfully retrieved ", results);
+              return res.status(200).send(results);
             },
-            error: function error(results, _error) {
-              // console.log('Failed to get decks ', err);
-              return res.status(400).json({ users: results, error: _error });
+            error: function error(err) {
+              //console.log("Failed to get decks ", err);
+              return res.status(400).send(err);
             },
             sessionToken: req.session.sessionToken
           });
@@ -5570,21 +5596,19 @@ module.exports =
   
           newUser = new _parseNode2['default'].User();
   
-          newUser.set('username', username);
-          newUser.set('password', password);
-          newUser.set('subscriptions', []);
+          newUser.set("username", username);
+          newUser.set("password", password);
+          newUser.set("subscriptions", []);
           newUser.signUp(null, {
             success: function success(user) {
               req.session.regenerate(function (err) {
                 req.session.sessionToken = user.toJSON().sessionToken;
                 req.session.username = user.toJSON().username;
-                var u = user.toJSON();
-                u.sessionID = req.session.sessionID;
-                res.status(200).json({ user: u });
+                res.status(200).send({ err: null, user: user });
               });
             },
-            error: function error(user, _error2) {
-              res.status(400).json({ err: _error2, user: user.toJSON() });
+            error: function error(user, _error) {
+              res.status(400).send({ err: _error, user: user.toJSON() });
             },
             sessionToken: req.session.sessionToken
           });
@@ -5592,7 +5616,7 @@ module.exports =
           break;
   
         case 10:
-          return context$1$0.abrupt('return', res.status(400).send({ err: { message: 'Need username and password' } }));
+          return context$1$0.abrupt('return', res.status(400).send({ err: { msg: "Need username and password" } }));
   
         case 11:
         case 'end':
@@ -5600,8 +5624,7 @@ module.exports =
       }
     }, null, _this);
   });
-  
-  router.get('/whoami', function callee$0$0(req, res) {
+  router.get('/whoami', function callee$0$0(req, res, next) {
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
         case 0:
@@ -5632,20 +5655,18 @@ module.exports =
                 req.session.sessionToken = user.toJSON().sessionToken;
                 req.session.username = user.toJSON().username;
                 req.user = user;
-                var u = user.toJSON();
-                u.sessionID = req.sessionID;
-                res.status(200).json({ user: u });
+                res.status(200).json(user.toJSON());
               });
             },
-            error: function error(user, _error3) {
-              res.status(400).json({ error: _error3, user: user.toJSON() });
+            error: function error(user, _error2) {
+              res.status(400).json({ error: _error2, user: user.toJSON() });
             }
           });
           context$1$0.next = 7;
           break;
   
         case 6:
-          return context$1$0.abrupt('return', res.status(400).json({ error: { msg: 'Need username and password' } }));
+          return context$1$0.abrupt('return', res.status(400).json({ error: { msg: "Need username and password" } }));
   
         case 7:
         case 'end':
@@ -5654,12 +5675,12 @@ module.exports =
     }, null, _this);
   });
   
-  router.post('/logout', function callee$0$0(req, res) {
+  router.post('/logout', function callee$0$0(req, res, next) {
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
         case 0:
           req.session.destroy();
-          res.status(200).send('Logged out');
+          res.status(200).send("Logged out");
   
         case 2:
         case 'end':
@@ -5688,15 +5709,15 @@ module.exports =
         case 0:
           query = new _parseNode2['default'].Query(_parseNode2['default'].User);
   
-          query.equalTo('username', req.username);
+          query.equalTo("username", req.username);
           query.find({
             success: function success(results) {
               return res.status(200).json(results.map(function (r) {
                 return r.toJSON();
               }));
             },
-            error: function error(deck, _error4) {
-              return res.status(400).send({ err: _error4, deck: deck });
+            error: function error(deck, _error3) {
+              return res.status(400).send({ err: _error3, deck: deck });
             },
             sessionToken: req.session.sessionToken
           });
@@ -5723,18 +5744,18 @@ module.exports =
             break;
           }
   
-          return context$1$0.abrupt('return', res.status(400).send({ err: 'Must send array of transactions' }));
+          return context$1$0.abrupt('return', res.status(400).send({ err: "Must send array of transactions" }));
   
         case 3:
           transactions = req.body.map(function (body) {
-            var t = new _parseNode2['default'].Object('Transaction');
+            var t = new _parseNode2['default'].Object("Transaction");
             return TransactionUtil.fromRequestBody(t, body);
           });
           parsedTransactions = [];
   
           transactions.forEach(function (t) {
-            console.log('here5');
-            t.set('on', current_id);
+            console.log("here5");
+            t.set("on", current_id);
             t.save(null, {
               success: function success(trans) {
                 //TODO maintain order
@@ -5744,9 +5765,9 @@ module.exports =
                   res.status(200).send(parsedTransactions);
                 }
               },
-              error: function error(trans, _error5) {
+              error: function error(trans, _error4) {
   
-                parsedTransactions.push({ transaction: trans, error: _error5 });
+                parsedTransactions.push({ transaction: trans, error: _error4 });
                 if (parsedTransactions.length == transactions.length) {
                   res.status(400).send(parsedTransactions);
                 }
@@ -5764,8 +5785,38 @@ module.exports =
   exports['default'] = router;
   module.exports = exports['default'];
 
+  //console.log("IN get all decks")
+
 /***/ },
 /* 98 */
+/***/ function(module, exports) {
+
+  module.exports = require("bluebird");
+
+/***/ },
+/* 99 */
+/***/ function(module, exports, __webpack_require__) {
+
+  'use strict';
+  
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+  
+  var _parseNode = __webpack_require__(93);
+  
+  var _parseNode2 = _interopRequireDefault(_parseNode);
+  
+  var Transaction = _parseNode2['default'].Object.extend('Transaction', {}, {});
+  
+  exports['default'] = Transaction;
+  var TransactionUtil = {};
+  exports.TransactionUtil = TransactionUtil;
+
+/***/ },
+/* 100 */
 /***/ function(module, exports, __webpack_require__) {
 
   // Register todos with aws dynammodb.
@@ -5782,16 +5833,16 @@ module.exports =
   
   var _express = __webpack_require__(3);
   
-  var _DeckModel = __webpack_require__(99);
+  var _DeckModel = __webpack_require__(101);
   
   var _DeckModel2 = _interopRequireDefault(_DeckModel);
   
-  var _transactionsTransactionModel = __webpack_require__(100);
+  var _transactionsTransactionModel = __webpack_require__(99);
   
   var _transactionsTransactionModel2 = _interopRequireDefault(_transactionsTransactionModel);
   
   var Parse = __webpack_require__(93);
-  var randomstring = __webpack_require__(101).generate;
+  var randomstring = __webpack_require__(102).generate;
   
   var router = new _express.Router();
   
@@ -5880,6 +5931,16 @@ module.exports =
               newDeck.set('did', did);
               newDeck.set('owner', req.session.username);
               console.log('here1.5', req.session.username);
+              //      Parse.User.logIn('aarthi', 'password', {
+              //        success: function(user) {
+              //            console.log('success login', req.user);
+              //        },
+              //        error: function(user, error) {
+              //            console.log("error");
+              //            console.log(user + error);
+              //        }
+              //      });
+              console.log('request is', Parse.User.current());
               newDeck.save(null, {
                 success: function success(deck) {
                   console.log('here2');
@@ -5985,14 +6046,16 @@ module.exports =
         case 0:
           indexGroup = randomstring(30);
   
+          console.log(req.body);
+  
           if (!(!req.body.isArray && !(req.body.length > 0))) {
-            context$1$0.next = 3;
+            context$1$0.next = 4;
             break;
           }
   
-          return context$1$0.abrupt('return', res.status(400).json({ error: 'Must send array of transactions' }));
+          return context$1$0.abrupt('return', res.status(400).json({ error: 'Must send array of transactions ' + !req.body.isArray + ' }, ' + req.body.length }));
   
-        case 3:
+        case 4:
           transactions = req.body.map(function (body, index) {
             var t = new Parse.Object('Transaction');
             Object.keys(body).forEach(function (key) {
@@ -6017,7 +6080,7 @@ module.exports =
           });
           return context$1$0.abrupt('return', null);
   
-        case 6:
+        case 7:
         case 'end':
           return context$1$0.stop();
       }
@@ -6063,7 +6126,7 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 99 */
+/* 101 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -6084,35 +6147,13 @@ module.exports =
   exports.DeckUtil = DeckUtil;
 
 /***/ },
-/* 100 */
-/***/ function(module, exports, __webpack_require__) {
-
-  'use strict';
-  
-  Object.defineProperty(exports, '__esModule', {
-    value: true
-  });
-  
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
-  var _parseNode = __webpack_require__(93);
-  
-  var _parseNode2 = _interopRequireDefault(_parseNode);
-  
-  var Transaction = _parseNode2['default'].Object.extend('Transaction', {}, {});
-  
-  exports['default'] = Transaction;
-  var TransactionUtil = {};
-  exports.TransactionUtil = TransactionUtil;
-
-/***/ },
-/* 101 */
+/* 102 */
 /***/ function(module, exports) {
 
   module.exports = require("randomstring");
 
 /***/ },
-/* 102 */
+/* 103 */
 /***/ function(module, exports, __webpack_require__) {
 
   // Register todos with aws dynammodb.
@@ -6129,16 +6170,16 @@ module.exports =
   
   var _express = __webpack_require__(3);
   
-  var _CardModel = __webpack_require__(103);
+  var _CardModel = __webpack_require__(104);
   
   var _CardModel2 = _interopRequireDefault(_CardModel);
   
-  var _transactionsTransactionModel = __webpack_require__(100);
+  var _transactionsTransactionModel = __webpack_require__(99);
   
   var _transactionsTransactionModel2 = _interopRequireDefault(_transactionsTransactionModel);
   
   var Parse = __webpack_require__(93);
-  var randomstring = __webpack_require__(101).generate;
+  var randomstring = __webpack_require__(102).generate;
   
   var router = new _express.Router();
   
@@ -6317,7 +6358,7 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 103 */
+/* 104 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -6338,7 +6379,7 @@ module.exports =
   exports.DeckUtil = DeckUtil;
 
 /***/ },
-/* 104 */
+/* 105 */
 /***/ function(module, exports, __webpack_require__) {
 
   //Register todos with aws dynammodb.
@@ -6354,7 +6395,7 @@ module.exports =
   
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
   
-  var _bluebird = __webpack_require__(105);
+  var _bluebird = __webpack_require__(98);
   
   var _bluebird2 = _interopRequireDefault(_bluebird);
   
@@ -6413,12 +6454,6 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 105 */
-/***/ function(module, exports) {
-
-  module.exports = require("bluebird");
-
-/***/ },
 /* 106 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -6449,7 +6484,7 @@ module.exports =
   
   var _express = __webpack_require__(3);
   
-  var _bluebird = __webpack_require__(105);
+  var _bluebird = __webpack_require__(98);
   
   var _bluebird2 = _interopRequireDefault(_bluebird);
   
