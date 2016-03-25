@@ -113,18 +113,23 @@ module.exports =
   
   var _parseNode2 = _interopRequireDefault(_parseNode);
   
-  var ParseStore = __webpack_require__(93)(_expressSession2['default']);
+  var _connectTimeout = __webpack_require__(93);
   
-  _parseNode2['default'].initialize(process.env.APP_ID || "AnkiHubParse");
-  _parseNode2['default'].serverURL = process.env.SERVER_URL || "https://ankihubparse2.herokuapp.com/parse";
-  
-  var io = __webpack_require__(94)(server);
-  
-  var server = global.server = (0, _express2['default'])();
+  var _connectTimeout2 = _interopRequireDefault(_connectTimeout);
   
   //
   // Register Node.js middleware
   // -----------------------------------------------------------------------------
+  
+  var ParseStore = __webpack_require__(94)(_expressSession2['default']);
+  
+  _parseNode2['default'].initialize(process.env.APP_ID || "AnkiHubParse");
+  _parseNode2['default'].serverURL = process.env.SERVER_URL || "https://ankihubparse2.herokuapp.com/parse";
+  
+  var io = __webpack_require__(95)(server);
+  
+  var server = global.server = (0, _express2['default'])();
+  
   server.use((0, _morgan2['default'])('dev')); //log every request to console
   server.use((0, _cookieParser2['default'])()); //read cookies for authentication
   server.use(_bodyParser2['default'].json({ limit: '50mb' }));
@@ -144,11 +149,11 @@ module.exports =
   //
   // Register API middleware
   // -----------------------------------------------------------------------------
-  server.use('/api/users', __webpack_require__(95));
-  server.use('/api/decks', __webpack_require__(98));
-  server.use('/api/cards', __webpack_require__(101));
-  server.use('/api/todo', __webpack_require__(103));
-  server.use('/api/content', __webpack_require__(105));
+  server.use('/api/users', __webpack_require__(96));
+  server.use('/api/decks', __webpack_require__(99));
+  server.use('/api/cards', __webpack_require__(102));
+  server.use('/api/todo', __webpack_require__(104));
+  server.use('/api/content', __webpack_require__(106));
   
   //
   // Register server-side rendering middleware
@@ -231,6 +236,14 @@ module.exports =
       io.sockets.emit('onlineUsers', { onlineUsers: onlineUsers });
     });
   });
+  
+  //time out
+  
+  function haltOnTimedout(req, res, next) {
+    if (!req.timedout) next();
+  }
+  server.use((0, _connectTimeout2['default'])(600));
+  server.use(haltOnTimedout);
   
   //
   // Launch the server
@@ -2571,14 +2584,14 @@ module.exports =
     function ProfileStore() {
       _classCallCheck(this, ProfileStore);
   
-      this.bindActions(_actionsProfileActions2['default']);
       // .log(ProfileActions);
       this.bindListeners({
-        handleSignUp: _actionsProfileActions2['default'].signUpSuccess,
-        handleLogIn: _actionsProfileActions2['default'].logInSuccess,
+        onSignUpSuccess: _actionsProfileActions2['default'].signUpSuccess,
+        onLogInSuccess: _actionsProfileActions2['default'].logInSuccess,
         handleLogInFail: _actionsProfileActions2['default'].logInFail,
         onGetMyDecksSuccess: _actionsProfileActions2['default'].getMyDecksSuccess
       });
+      this.bindActions(_actionsProfileActions2['default']);
       this.state = {
         decks: [],
         user: {},
@@ -2619,8 +2632,8 @@ module.exports =
         });
       }
     }, {
-      key: 'handleSignUp',
-      value: function handleSignUp(data) {
+      key: 'onSignUpSuccess',
+      value: function onSignUpSuccess(data) {
         console.log('here');
         var user = data.user || data;
         if (data.error) {
@@ -2634,8 +2647,8 @@ module.exports =
         //ProfileActions.getMyDecks(user.username);
       }
     }, {
-      key: 'handleLogIn',
-      value: function handleLogIn(data) {
+      key: 'onLogInSuccess',
+      value: function onLogInSuccess(data) {
         console.log('here2');
         var user = data.user || data;
         if (data.error) {
@@ -2647,6 +2660,18 @@ module.exports =
           loggedIn: true
         });
         //ProfileActions.getMyDecks(user.username);
+      }
+    }, {
+      key: 'onPostTransactionsSuccess',
+      value: function onPostTransactionsSuccess(data) {
+        console.log("New Transactions", data);
+        _actionsProfileActions2['default'].updateUser({ username: this.state.user.username });
+      }
+    }, {
+      key: 'onUpdateUserSuccess',
+      value: function onUpdateUserSuccess(user) {
+        var user = user || this.state.user;
+        this.setState({ user: user });
       }
     }]);
   
@@ -2723,7 +2748,7 @@ module.exports =
       _classCallCheck(this, ProfileActions);
   
       // Each of these actiosn will become a function
-      this.generateActions('signUpSuccess', 'signUpFail', 'logInSuccess', 'logInFail', 'logOutSuccess', 'logOutFail', 'getMyDecksSuccess', 'getMyDecksFail');
+      this.generateActions('signUpSuccess', 'signUpFail', 'logInSuccess', 'logInFail', 'logOutSuccess', 'logOutFail', 'getMyDecksSuccess', 'getMyDecksFail', 'postTransactionsSuccess', 'postTransactionsFail', 'updateUserSuccess', 'updateUserFail');
     }
   
     _createClass(ProfileActions, [{
@@ -2768,6 +2793,27 @@ module.exports =
           self.getMyDecksSuccess(data);
         }).fail(function (data) {
           self.getMyDecksFail(data);
+        });
+      }
+    }, {
+      key: 'postTransactions',
+      value: function postTransactions(username, transactions) {
+        var t = { transactions: transactions };
+        var self = this;
+        _jquery2['default'].post('/api/users/' + username, t).done(function (data) {
+          self.postTransactionsSuccess(data);
+        }).fail(function (data) {
+          self.postTransactionsFail(data);
+        });
+      }
+    }, {
+      key: 'updateUser',
+      value: function updateUser(options) {
+        var self = this;
+        _jquery2['default'].get('/api/users?' + _jquery2['default'].param(options, true)).done(function (data) {
+          self.updateUserSuccess(data[0]);
+        }).fail(function (data) {
+          self.updateUserFail(data);
         });
       }
     }]);
@@ -3383,6 +3429,10 @@ module.exports =
   
   var _actionsDeckActions2 = _interopRequireDefault(_actionsDeckActions);
   
+  var _actionsProfileActions = __webpack_require__(36);
+  
+  var _actionsProfileActions2 = _interopRequireDefault(_actionsProfileActions);
+  
   var _Link = __webpack_require__(25);
   
   var _Link2 = _interopRequireDefault(_Link);
@@ -3443,6 +3493,9 @@ module.exports =
       value: function componentWillUnmount() {
         _storesDeckStore2['default'].unlisten(this.onChange);
       }
+    }, {
+      key: 'subscribe',
+      value: function subscribe(index, deck) {}
     }, {
       key: 'onChange',
       value: function onChange(state) {
@@ -3543,7 +3596,9 @@ module.exports =
                 _react2['default'].createElement(
                   _reactBootstrap.Col,
                   { xs: 6 },
-                  _react2['default'].createElement(_DeckLibDeckList2['default'], { decks: this.state.decks })
+                  _react2['default'].createElement(_DeckLibDeckList2['default'], { decks: this.state.decks, actions: [new _DeckLibDeckList.DeckListAction("Test", function (index, deck) {
+                      return console.log(index, deck);
+                    })] })
                 )
               )
             ),
@@ -3850,8 +3905,26 @@ module.exports =
     _createClass(DeckList, [{
       key: 'render',
       value: function render() {
+        console.log(this.props.actions);
+        var actions = this.props.actions;
         var deckNodes = this.props.decks.map(function (deck, index) {
-          return _react2['default'].createElement(_DeckListItem2['default'], { key: index, deck: deck });
+          var bActions = !actions ? _react2['default'].createElement(
+            'span',
+            null,
+            'No Actions'
+          ) : actions.map(function (action, i) {
+            return _react2['default'].createElement(
+              _reactBootstrap.Button,
+              { key: index, onClick: actions[i].action.bind(null, index, deck) },
+              actions[i].name
+            );
+          });
+  
+          return _react2['default'].createElement(
+            _DeckListItem2['default'],
+            { key: index, deck: deck },
+            bActions
+          );
         });
         return _react2['default'].createElement(
           'div',
@@ -3864,8 +3937,18 @@ module.exports =
     return DeckList;
   })(_react.Component);
   
+  var DeckListAction =
+  // action is a function that takes the index of the deck and the deck
+  // ex action(index, deck)
+  function DeckListAction(name, action) {
+    _classCallCheck(this, DeckListAction);
+  
+    this.name = name;
+    this.action = action;
+  };
+  
   exports['default'] = DeckList;
-  module.exports = exports['default'];
+  exports.DeckListAction = DeckListAction;
 
 /***/ },
 /* 63 */
@@ -3894,6 +3977,14 @@ module.exports =
   var _actionsDeckActions = __webpack_require__(60);
   
   var _actionsDeckActions2 = _interopRequireDefault(_actionsDeckActions);
+  
+  var _actionsProfileActions = __webpack_require__(36);
+  
+  var _actionsProfileActions2 = _interopRequireDefault(_actionsProfileActions);
+  
+  var _storesProfileStore = __webpack_require__(33);
+  
+  var _storesProfileStore2 = _interopRequireDefault(_storesProfileStore);
   
   var _storesDeckStore = __webpack_require__(59);
   
@@ -3928,7 +4019,7 @@ module.exports =
     }, {
       key: 'subscribe',
       value: function subscribe() {
-        _actionsDeckActions2['default'].postTransactions(this.props.deck.gid, [{ query: 'aSUBSCRIBER', data: { gid: this.props.deck.gid } }]);
+        _actionsProfileActions2['default'].postTransactions(_storesProfileStore2['default'].getState().user.username, [{ query: 'aSUBSCRIPTION', data: { gid: this.props.deck.gid } }]);
         alert("You're subscribed!");
       }
     }, {
@@ -4027,7 +4118,9 @@ module.exports =
             _react2['default'].createElement('br', null),
             subscribers,
             _react2['default'].createElement('br', null),
-            cards
+            cards,
+            _react2['default'].createElement('hr', null),
+            this.props.children
           ),
           _react2['default'].createElement(
             _reactBootstrap.Modal,
@@ -5521,16 +5614,22 @@ module.exports =
 /* 93 */
 /***/ function(module, exports) {
 
-  module.exports = require("connect-parse");
+  module.exports = require("connect-timeout");
 
 /***/ },
 /* 94 */
 /***/ function(module, exports) {
 
-  module.exports = require("socket.io");
+  module.exports = require("connect-parse");
 
 /***/ },
 /* 95 */
+/***/ function(module, exports) {
+
+  module.exports = require("socket.io");
+
+/***/ },
+/* 96 */
 /***/ function(module, exports, __webpack_require__) {
 
   // Register todos with aws dynammodb.
@@ -5551,11 +5650,11 @@ module.exports =
   
   var _parseNode2 = _interopRequireDefault(_parseNode);
   
-  var _coreIsArray = __webpack_require__(96);
+  var _coreIsArray = __webpack_require__(97);
   
   var _coreIsArray2 = _interopRequireDefault(_coreIsArray);
   
-  var randomstring = __webpack_require__(97).generate;
+  var randomstring = __webpack_require__(98).generate;
   
   var router = new _express.Router();
   
@@ -5800,7 +5899,7 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 96 */
+/* 97 */
 /***/ function(module, exports) {
 
   'use strict';
@@ -5816,13 +5915,13 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 97 */
+/* 98 */
 /***/ function(module, exports) {
 
   module.exports = require("randomstring");
 
 /***/ },
-/* 98 */
+/* 99 */
 /***/ function(module, exports, __webpack_require__) {
 
   // Register todos with aws dynammodb.
@@ -5839,52 +5938,66 @@ module.exports =
   
   var _express = __webpack_require__(3);
   
-  var _coreIsArray = __webpack_require__(96);
+  var _coreIsArray = __webpack_require__(97);
   
   var _coreIsArray2 = _interopRequireDefault(_coreIsArray);
   
-  var _DeckModel = __webpack_require__(99);
+  var _DeckModel = __webpack_require__(100);
   
   var _DeckModel2 = _interopRequireDefault(_DeckModel);
   
-  var _transactionsTransactionModel = __webpack_require__(100);
+  var _transactionsTransactionModel = __webpack_require__(101);
   
   var _transactionsTransactionModel2 = _interopRequireDefault(_transactionsTransactionModel);
   
   var Parse = __webpack_require__(92);
-  var randomstring = __webpack_require__(97).generate;
+  var randomstring = __webpack_require__(98).generate;
   
   var router = new _express.Router();
   
   router.get('/', function callee$0$0(req, res) {
-    var query;
+    var query, limit;
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
         case 0:
-  
+          console.log('here 1');
           req.session.sessionToken = req.session.sessionToken || req.body.sessionToken;
           query = new Parse.Query(_DeckModel2['default']);
   
+          console.log('here 2');
           if (req.query.keywords) {
             console.log(req.query.keywords);
             query.containsAll('keywords', [].concat(req.query.keywords));
+            console.log('here 3');
           }
+          console.log('here 4');
           if (req.query.name) {
             query.equalTo('name', req.query.name);
+            console.log('here 5');
           }
+          console.log('here 6');
           if (req.query.cids) {
             query.containsAll('cids', [].concat(req.query.cids));
+            console.log('here 7');
           }
+          console.log('here 8');
           if (req.query.owner) {
             query.equalTo('owner', req.query.user);
+            console.log('here 9');
           }
+          console.log('here 10');
           if (req.query.gid) {
             query.equalTo('gid', req.query.gid);
+            console.log('here 11');
           }
+          console.log('here 12');
           if (req.query.did) {
             query.equalTo('did', req.query.did);
+            console.log('here 13');
           }
-          query.limit(req.query.limit || 20);
+          limit = req.query.limit ? parseInt(req.query.limit) : 20;
+  
+          query.limit(limit);
           console.log(req.query);
   
           query.find({
@@ -5899,7 +6012,7 @@ module.exports =
             sessionToken: req.session.sessionToken
           });
   
-        case 11:
+        case 19:
         case 'end':
           return context$1$0.stop();
       }
@@ -6147,7 +6260,7 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 99 */
+/* 100 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -6168,7 +6281,7 @@ module.exports =
   exports.DeckUtil = DeckUtil;
 
 /***/ },
-/* 100 */
+/* 101 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -6190,7 +6303,7 @@ module.exports =
   exports.TransactionUtil = TransactionUtil;
 
 /***/ },
-/* 101 */
+/* 102 */
 /***/ function(module, exports, __webpack_require__) {
 
   // Register todos with aws dynammodb.
@@ -6207,16 +6320,16 @@ module.exports =
   
   var _express = __webpack_require__(3);
   
-  var _CardModel = __webpack_require__(102);
+  var _CardModel = __webpack_require__(103);
   
   var _CardModel2 = _interopRequireDefault(_CardModel);
   
-  var _transactionsTransactionModel = __webpack_require__(100);
+  var _transactionsTransactionModel = __webpack_require__(101);
   
   var _transactionsTransactionModel2 = _interopRequireDefault(_transactionsTransactionModel);
   
   var Parse = __webpack_require__(92);
-  var randomstring = __webpack_require__(97).generate;
+  var randomstring = __webpack_require__(98).generate;
   
   var router = new _express.Router();
   
@@ -6395,7 +6508,7 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 102 */
+/* 103 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -6416,7 +6529,7 @@ module.exports =
   exports.DeckUtil = DeckUtil;
 
 /***/ },
-/* 103 */
+/* 104 */
 /***/ function(module, exports, __webpack_require__) {
 
   //Register todos with aws dynammodb.
@@ -6432,7 +6545,7 @@ module.exports =
   
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
   
-  var _bluebird = __webpack_require__(104);
+  var _bluebird = __webpack_require__(105);
   
   var _bluebird2 = _interopRequireDefault(_bluebird);
   
@@ -6491,13 +6604,13 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 104 */
+/* 105 */
 /***/ function(module, exports) {
 
   module.exports = require("bluebird");
 
 /***/ },
-/* 105 */
+/* 106 */
 /***/ function(module, exports, __webpack_require__) {
 
   /**
@@ -6519,7 +6632,7 @@ module.exports =
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
-  var _fs = __webpack_require__(106);
+  var _fs = __webpack_require__(107);
   
   var _fs2 = _interopRequireDefault(_fs);
   
@@ -6527,15 +6640,15 @@ module.exports =
   
   var _express = __webpack_require__(3);
   
-  var _bluebird = __webpack_require__(104);
+  var _bluebird = __webpack_require__(105);
   
   var _bluebird2 = _interopRequireDefault(_bluebird);
   
-  var _jade = __webpack_require__(107);
+  var _jade = __webpack_require__(108);
   
   var _jade2 = _interopRequireDefault(_jade);
   
-  var _frontMatter = __webpack_require__(108);
+  var _frontMatter = __webpack_require__(109);
   
   var _frontMatter2 = _interopRequireDefault(_frontMatter);
   
@@ -6638,19 +6751,19 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 106 */
+/* 107 */
 /***/ function(module, exports) {
 
   module.exports = require("fs");
 
 /***/ },
-/* 107 */
+/* 108 */
 /***/ function(module, exports) {
 
   module.exports = require("jade");
 
 /***/ },
-/* 108 */
+/* 109 */
 /***/ function(module, exports) {
 
   module.exports = require("front-matter");
