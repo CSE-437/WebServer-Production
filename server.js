@@ -3433,6 +3433,10 @@ module.exports =
   
   var _actionsProfileActions2 = _interopRequireDefault(_actionsProfileActions);
   
+  var _storesProfileStore = __webpack_require__(33);
+  
+  var _storesProfileStore2 = _interopRequireDefault(_storesProfileStore);
+  
   var _Link = __webpack_require__(25);
   
   var _Link2 = _interopRequireDefault(_Link);
@@ -3495,7 +3499,10 @@ module.exports =
       }
     }, {
       key: 'subscribe',
-      value: function subscribe(index, deck) {}
+      value: function subscribe(index, deck) {
+        alert('subscribed, ' + index + ', ' + deck.gid);
+        _actionsProfileActions2['default'].postTransactions(_storesProfileStore2['default'].getState().user.username, [{ query: 'aSUBSCRIPTION', data: { gid: deck.gid } }]);
+      }
     }, {
       key: 'onChange',
       value: function onChange(state) {
@@ -3596,9 +3603,7 @@ module.exports =
                 _react2['default'].createElement(
                   _reactBootstrap.Col,
                   { xs: 6 },
-                  _react2['default'].createElement(_DeckLibDeckList2['default'], { decks: this.state.decks, actions: [new _DeckLibDeckList.DeckListAction("Test", function (index, deck) {
-                      return console.log(index, deck);
-                    })] })
+                  _react2['default'].createElement(_DeckLibDeckList2['default'], { decks: this.state.decks, actions: [new _DeckLibDeckList.DeckListAction("Subscribe", this.subscribe)] })
                 )
               )
             ),
@@ -4017,12 +4022,6 @@ module.exports =
         this.setState({ showModal: true });
       }
     }, {
-      key: 'subscribe',
-      value: function subscribe() {
-        _actionsProfileActions2['default'].postTransactions(_storesProfileStore2['default'].getState().user.username, [{ query: 'aSUBSCRIPTION', data: { gid: this.props.deck.gid } }]);
-        alert("You're subscribed!");
-      }
-    }, {
       key: 'render',
       value: function render() {
         var deck = this.props.deck;
@@ -4102,12 +4101,6 @@ module.exports =
               'Description: ',
               deck.description
             ),
-            _react2['default'].createElement(
-              _reactBootstrap.Button,
-              { onClick: this.subscribe.bind(this) },
-              'Subscribe'
-            ),
-            _react2['default'].createElement('br', null),
             _react2['default'].createElement(
               _reactBootstrap.Button,
               { onClick: this.open.bind(this) },
