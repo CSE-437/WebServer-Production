@@ -6036,6 +6036,40 @@ module.exports =
   
   var router = new _express.Router();
   
+  router.use(function callee$0$0(req, res, next) {
+    var user;
+    return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
+      while (1) switch (context$1$0.prev = context$1$0.next) {
+        case 0:
+          user = new Parse.User();
+  
+          if (req.session.sessionToken) {
+            context$1$0.next = 6;
+            break;
+          }
+  
+          if (req.body.sessionToken) {
+            context$1$0.next = 4;
+            break;
+          }
+  
+          return context$1$0.abrupt('return', res.status(400).json({ error: "Need to send session token " }));
+  
+        case 4:
+          context$1$0.next = 6;
+          return regeneratorRuntime.awrap(user.become(req.body.sessionToken));
+  
+        case 6:
+          req.user = user;
+          next();
+  
+        case 8:
+        case 'end':
+          return context$1$0.stop();
+      }
+    }, null, _this);
+  });
+  
   router.get('/', function callee$0$0(req, res) {
     var query, limit;
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
@@ -6118,7 +6152,7 @@ module.exports =
           if (req.body.gid) {
             query.equalTo('gid', req.body.gid);
           } else if (req.body.did) {
-            query.equalTo('gid', req.session.username + ':' + req.body.did);
+            query.equalTo('gid', (req.session.username || req.user.get('username')) + ':' + req.body.did);
           }
           query.find({
             success: function success(results) {
@@ -6130,16 +6164,16 @@ module.exports =
               Object.keys(req.body).forEach(function (key) {
                 return newDeck.set(key, req.body[key]);
               });
-              var gid = req.body.gid || req.session.username + ':' + req.body.did;
+              var gid = req.body.gid || (req.session.username || req.user.get('username')) + ':' + req.body.did;
               var did = gid.split(':')[1];
               newDeck.set('gid', gid);
               newDeck.set('did', did);
-              newDeck.set('owner', req.session.username);
+              newDeck.set('owner', req.session.username || req.user.get('username'));
               newDeck.save(null, {
                 success: function success(deck) {
                   console.log('here2');
                   var userQuery = new Parse.Query(Parse.User);
-                  userQuery.equalTo('username', req.session.username);
+                  userQuery.equalTo('username', req.session.username || req.user.get('username'));
                   userQuery.find({
                     success: function success(user) {
                       console.log('here3');
@@ -6155,9 +6189,9 @@ module.exports =
   
                   // Set Ownership of Deck
                   var t = new Parse.Object('Transaction');
-                  t.set('on', req.session.username);
+                  t.set('on', req.session.username || req.user.get('username'));
                   t.set('for', 'User');
-                  t.set('owner', req.session.username);
+                  t.set('owner', req.session.username || req.user.get('username'));
                   t.set('indexGroup', randomstring(30));
                   t.set('index', 0);
                   t.set('query', 'aDECK');
@@ -6261,7 +6295,7 @@ module.exports =
             });
             t.set('on', req.gid);
             t.set('for', 'Deck');
-            t.set('owner', req.session.username);
+            t.set('owner', req.session.username || req.user.get('username'));
             t.set('indexGroup', indexGroup);
             t.set('index', index);
             return t;
