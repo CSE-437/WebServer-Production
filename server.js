@@ -6188,6 +6188,7 @@ module.exports =
                   console.log('here5');
   
                   // Set Ownership of Deck
+                  console.log("here");
                   var t = new Parse.Object('Transaction');
                   t.set('on', req.session.username || req.user.get('username'));
                   t.set('for', 'User');
