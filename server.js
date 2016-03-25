@@ -5885,6 +5885,7 @@ module.exports =
             query.equalTo('did', req.query.did);
           }
           query.limit(req.query.limit || 20);
+          console.log(req.query);
   
           query.find({
             success: function success(results) {
@@ -5898,7 +5899,7 @@ module.exports =
             sessionToken: req.session.sessionToken
           });
   
-        case 10:
+        case 11:
         case 'end':
           return context$1$0.stop();
       }
