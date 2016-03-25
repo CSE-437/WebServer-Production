@@ -83,50 +83,44 @@ module.exports =
   
   var _routes2 = _interopRequireDefault(_routes);
   
-  var _componentsHtml = __webpack_require__(87);
+  var _componentsHtml = __webpack_require__(86);
   
   var _componentsHtml2 = _interopRequireDefault(_componentsHtml);
   
-  var _assets = __webpack_require__(88);
+  var _assets = __webpack_require__(87);
   
   var _assets2 = _interopRequireDefault(_assets);
   
   var _config = __webpack_require__(14);
   
-  var _morgan = __webpack_require__(89);
+  var _morgan = __webpack_require__(88);
   
   var _morgan2 = _interopRequireDefault(_morgan);
   
-  var _cookieParser = __webpack_require__(90);
+  var _cookieParser = __webpack_require__(89);
   
   var _cookieParser2 = _interopRequireDefault(_cookieParser);
   
-  var _bodyParser = __webpack_require__(91);
+  var _bodyParser = __webpack_require__(90);
   
   var _bodyParser2 = _interopRequireDefault(_bodyParser);
   
-  var _expressSession = __webpack_require__(92);
+  var _expressSession = __webpack_require__(91);
   
   var _expressSession2 = _interopRequireDefault(_expressSession);
   
-  var _parseNode = __webpack_require__(93);
+  var _parseNode = __webpack_require__(92);
   
   var _parseNode2 = _interopRequireDefault(_parseNode);
   
-  var _apiUsersUserUtil = __webpack_require__(94);
-  
-  var _apiUsersUserUtil2 = _interopRequireDefault(_apiUsersUserUtil);
-  
-  var ParseStore = __webpack_require__(95)(_expressSession2['default']);
+  var ParseStore = __webpack_require__(93)(_expressSession2['default']);
   
   _parseNode2['default'].initialize(process.env.APP_ID || "AnkiHubParse");
   _parseNode2['default'].serverURL = process.env.SERVER_URL || "https://ankihubparse2.herokuapp.com/parse";
   
-  var io = __webpack_require__(96)(server);
+  var io = __webpack_require__(94)(server);
   
   var server = global.server = (0, _express2['default'])();
-  
-  //Configure sessions
   
   //
   // Register Node.js middleware
@@ -150,11 +144,11 @@ module.exports =
   //
   // Register API middleware
   // -----------------------------------------------------------------------------
-  server.use('/api/users', __webpack_require__(97));
-  server.use('/api/decks', __webpack_require__(100));
-  server.use('/api/cards', __webpack_require__(103));
-  server.use('/api/todo', __webpack_require__(105));
-  server.use('/api/content', __webpack_require__(106));
+  server.use('/api/users', __webpack_require__(95));
+  server.use('/api/decks', __webpack_require__(98));
+  server.use('/api/cards', __webpack_require__(101));
+  server.use('/api/todo', __webpack_require__(103));
+  server.use('/api/content', __webpack_require__(105));
   
   //
   // Register server-side rendering middleware
@@ -327,27 +321,27 @@ module.exports =
   
   var _componentsDeckPage2 = _interopRequireDefault(_componentsDeckPage);
   
-  var _componentsLoginPage = __webpack_require__(66);
+  var _componentsLoginPage = __webpack_require__(65);
   
   var _componentsLoginPage2 = _interopRequireDefault(_componentsLoginPage);
   
-  var _componentsRegisterPage = __webpack_require__(69);
+  var _componentsRegisterPage = __webpack_require__(68);
   
   var _componentsRegisterPage2 = _interopRequireDefault(_componentsRegisterPage);
   
-  var _componentsNotFoundPage = __webpack_require__(72);
+  var _componentsNotFoundPage = __webpack_require__(71);
   
   var _componentsNotFoundPage2 = _interopRequireDefault(_componentsNotFoundPage);
   
-  var _componentsErrorPage = __webpack_require__(75);
+  var _componentsErrorPage = __webpack_require__(74);
   
   var _componentsErrorPage2 = _interopRequireDefault(_componentsErrorPage);
   
-  var _componentsProfilePage = __webpack_require__(78);
+  var _componentsProfilePage = __webpack_require__(77);
   
   var _componentsProfilePage2 = _interopRequireDefault(_componentsProfilePage);
   
-  var _componentsSingleDeckPage = __webpack_require__(81);
+  var _componentsSingleDeckPage = __webpack_require__(80);
   
   var _componentsSingleDeckPage2 = _interopRequireDefault(_componentsSingleDeckPage);
   
@@ -2319,12 +2313,14 @@ module.exports =
       _classCallCheck(this, _Navigation);
   
       _get(Object.getPrototypeOf(_Navigation.prototype), 'constructor', this).call(this, props);
-      this.state = objectAssign(_storesProfileStore2['default'].getState(), { showModal: false });
+      this.state = objectAssign(_storesProfileStore2['default'].getState(), { showModal: false, showRegisterModal: false });
       // need to use bind so that the this variable for onChange
       // refers to this DeckPage object not the function
       this.onChange = this.onChange.bind(this);
       this.openLogInModal = this.openLogInModal.bind(this);
       this.closeLogInModal = this.closeLogInModal.bind(this);
+      this.openRegisterModal = this.openRegisterModal.bind(this);
+      this.closeRegisterModal = this.closeRegisterModal.bind(this);
     }
   
     _createClass(Navigation, [{
@@ -2366,6 +2362,27 @@ module.exports =
         _actionsProfileActions2['default'].logOut();
       }
     }, {
+      key: 'openRegisterModal',
+      value: function openRegisterModal() {
+        console.log('register');
+        this.setState({ showRegisterModal: true });
+      }
+    }, {
+      key: 'closeRegisterModal',
+      value: function closeRegisterModal() {
+        this.setState({ showRegisterModal: false });
+      }
+    }, {
+      key: 'register',
+      value: function register(event) {
+        event.preventDefault();
+        var username = event.target[0].value;
+        var email = event.target[1].value;
+        var password = event.target[2].value;
+        _actionsProfileActions2['default'].signup({ username: username, email: email, password: password });
+        this.closeRegisterModal();
+      }
+    }, {
       key: 'onChange',
       value: function onChange(state) {
         console.log("new state");
@@ -2382,6 +2399,12 @@ module.exports =
           _reactBootstrap.NavItem,
           { onClick: this.logOut },
           'Log Out'
+        );
+  
+        var RegisterModalButton = _react2['default'].createElement(
+          _reactBootstrap.NavItem,
+          { onClick: this.openRegisterModal },
+          'Register'
         );
   
         return _react2['default'].createElement(
@@ -2422,6 +2445,7 @@ module.exports =
               _reactBootstrap.Nav,
               { pullRight: true },
               LogInModalButton,
+              RegisterModalButton,
               _react2['default'].createElement(
                 _reactBootstrap.NavItem,
                 { href: '/profile', onClick: _Link2['default'].handleClick },
@@ -2463,6 +2487,40 @@ module.exports =
               _react2['default'].createElement(
                 _reactBootstrap.Button,
                 { onClick: this.closeLogInModal },
+                'Close'
+              )
+            )
+          ),
+          _react2['default'].createElement(
+            _reactBootstrap.Modal,
+            { show: this.state.showRegisterModal, onHide: this.closeRegisterModal },
+            _react2['default'].createElement(
+              _reactBootstrap.Modal.Header,
+              { closeButton: true },
+              _react2['default'].createElement(
+                _reactBootstrap.Modal.Title,
+                { id: 'contained-modal-title-lg' },
+                'Register for AnkiHub'
+              )
+            ),
+            _react2['default'].createElement(
+              _reactBootstrap.Modal.Body,
+              null,
+              _react2['default'].createElement(
+                'form',
+                { onSubmit: this.register.bind(this) },
+                _react2['default'].createElement(_reactBootstrap.Input, { type: 'text', label: 'Username', placeholder: 'Username', ref: 'usernameField', value: this.state.username }),
+                _react2['default'].createElement(_reactBootstrap.Input, { type: 'text', label: 'Email', placeholder: 'Email', ref: 'emailField', value: this.state.email }),
+                _react2['default'].createElement(_reactBootstrap.Input, { type: 'password', label: 'Password', ref: 'passwordField' }),
+                _react2['default'].createElement(_reactBootstrap.ButtonInput, { type: 'submit', value: 'Register' })
+              )
+            ),
+            _react2['default'].createElement(
+              _reactBootstrap.Modal.Footer,
+              null,
+              _react2['default'].createElement(
+                _reactBootstrap.Button,
+                { onClick: this.closeRegisterModal },
                 'Close'
               )
             )
@@ -3329,17 +3387,17 @@ module.exports =
   
   var _Link2 = _interopRequireDefault(_Link);
   
-  var _reactLoader = __webpack_require__(62);
+  var _reactLoader = __webpack_require__(61);
   
   var _reactLoader2 = _interopRequireDefault(_reactLoader);
   
   var _reactBootstrap = __webpack_require__(41);
   
-  var _DeckLibDeckList = __webpack_require__(63);
+  var _DeckLibDeckList = __webpack_require__(62);
   
   var _DeckLibDeckList2 = _interopRequireDefault(_DeckLibDeckList);
   
-  var _miscSearchBar = __webpack_require__(65);
+  var _miscSearchBar = __webpack_require__(64);
   
   var _miscSearchBar2 = _interopRequireDefault(_miscSearchBar);
   
@@ -3667,8 +3725,6 @@ module.exports =
   
   var _coreDispatcher2 = _interopRequireDefault(_coreDispatcher);
   
-  var _coreMisc = __webpack_require__(61);
-  
   var _toastr = __webpack_require__(38);
   
   var _toastr2 = _interopRequireDefault(_toastr);
@@ -3720,9 +3776,9 @@ module.exports =
     }, {
       key: 'postTransactions',
       value: function postTransactions(gid, transactions) {
-        console.log(arguments);
+        var t = { transactions: transactions };
         var self = this;
-        _jquery2['default'].post('/api/decks/' + gid, transactions).done(function (data) {
+        _jquery2['default'].post('/api/decks/' + gid, t).done(function (data) {
           self.postTransactionsSuccess(data);
         }).fail(function (data) {
           self.postTransactionsFail(data);
@@ -3750,33 +3806,10 @@ module.exports =
 /* 61 */
 /***/ function(module, exports) {
 
-  "use strict";
-  
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  var toQueryString = function toQueryString(obj, prefix) {
-  
-    var str = [];
-    for (var p in obj) {
-      if (obj.hasOwnProperty(p)) {
-        var k = prefix ? prefix + "[" + p + "]" : p,
-            v = obj[p];
-        str.push(typeof v == "object" ? serialize(v, k) : encodeURIComponent(k) + "=" + encodeURIComponent(v));
-      }
-    }
-    return str.join("&");
-  };
-  exports.toQueryString = toQueryString;
-
-/***/ },
-/* 62 */
-/***/ function(module, exports) {
-
   module.exports = require("react-loader");
 
 /***/ },
-/* 63 */
+/* 62 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -3801,7 +3834,7 @@ module.exports =
   
   var _reactBootstrap = __webpack_require__(41);
   
-  var _DeckListItem = __webpack_require__(64);
+  var _DeckListItem = __webpack_require__(63);
   
   var _DeckListItem2 = _interopRequireDefault(_DeckListItem);
   
@@ -3835,7 +3868,7 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 64 */
+/* 63 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -4025,7 +4058,7 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 65 */
+/* 64 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -4129,7 +4162,7 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 66 */
+/* 65 */
 /***/ function(module, exports, __webpack_require__) {
 
   /**
@@ -4161,7 +4194,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _LoginPageScss = __webpack_require__(67);
+  var _LoginPageScss = __webpack_require__(66);
   
   var _LoginPageScss2 = _interopRequireDefault(_LoginPageScss);
   
@@ -4224,11 +4257,11 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 67 */
+/* 66 */
 /***/ function(module, exports, __webpack_require__) {
 
   
-      var content = __webpack_require__(68);
+      var content = __webpack_require__(67);
       var insertCss = __webpack_require__(20);
   
       if (typeof content === 'string') {
@@ -4241,7 +4274,7 @@ module.exports =
     
 
 /***/ },
-/* 68 */
+/* 67 */
 /***/ function(module, exports, __webpack_require__) {
 
   exports = module.exports = __webpack_require__(19)();
@@ -4258,7 +4291,7 @@ module.exports =
   };
 
 /***/ },
-/* 69 */
+/* 68 */
 /***/ function(module, exports, __webpack_require__) {
 
   /**
@@ -4290,7 +4323,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _RegisterPageScss = __webpack_require__(70);
+  var _RegisterPageScss = __webpack_require__(69);
   
   var _RegisterPageScss2 = _interopRequireDefault(_RegisterPageScss);
   
@@ -4407,11 +4440,11 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 70 */
+/* 69 */
 /***/ function(module, exports, __webpack_require__) {
 
   
-      var content = __webpack_require__(71);
+      var content = __webpack_require__(70);
       var insertCss = __webpack_require__(20);
   
       if (typeof content === 'string') {
@@ -4424,7 +4457,7 @@ module.exports =
     
 
 /***/ },
-/* 71 */
+/* 70 */
 /***/ function(module, exports, __webpack_require__) {
 
   exports = module.exports = __webpack_require__(19)();
@@ -4441,7 +4474,7 @@ module.exports =
   };
 
 /***/ },
-/* 72 */
+/* 71 */
 /***/ function(module, exports, __webpack_require__) {
 
   /**
@@ -4473,7 +4506,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _NotFoundPageScss = __webpack_require__(73);
+  var _NotFoundPageScss = __webpack_require__(72);
   
   var _NotFoundPageScss2 = _interopRequireDefault(_NotFoundPageScss);
   
@@ -4534,11 +4567,11 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 73 */
+/* 72 */
 /***/ function(module, exports, __webpack_require__) {
 
   
-      var content = __webpack_require__(74);
+      var content = __webpack_require__(73);
       var insertCss = __webpack_require__(20);
   
       if (typeof content === 'string') {
@@ -4551,7 +4584,7 @@ module.exports =
     
 
 /***/ },
-/* 74 */
+/* 73 */
 /***/ function(module, exports, __webpack_require__) {
 
   exports = module.exports = __webpack_require__(19)();
@@ -4565,7 +4598,7 @@ module.exports =
 
 
 /***/ },
-/* 75 */
+/* 74 */
 /***/ function(module, exports, __webpack_require__) {
 
   /**
@@ -4597,7 +4630,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _ErrorPageScss = __webpack_require__(76);
+  var _ErrorPageScss = __webpack_require__(75);
   
   var _ErrorPageScss2 = _interopRequireDefault(_ErrorPageScss);
   
@@ -4657,11 +4690,11 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 76 */
+/* 75 */
 /***/ function(module, exports, __webpack_require__) {
 
   
-      var content = __webpack_require__(77);
+      var content = __webpack_require__(76);
       var insertCss = __webpack_require__(20);
   
       if (typeof content === 'string') {
@@ -4674,7 +4707,7 @@ module.exports =
     
 
 /***/ },
-/* 77 */
+/* 76 */
 /***/ function(module, exports, __webpack_require__) {
 
   exports = module.exports = __webpack_require__(19)();
@@ -4688,7 +4721,7 @@ module.exports =
 
 
 /***/ },
-/* 78 */
+/* 77 */
 /***/ function(module, exports, __webpack_require__) {
 
   /**
@@ -4720,7 +4753,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _ProfilePageScss = __webpack_require__(79);
+  var _ProfilePageScss = __webpack_require__(78);
   
   var _ProfilePageScss2 = _interopRequireDefault(_ProfilePageScss);
   
@@ -4744,7 +4777,7 @@ module.exports =
   
   var _reactBootstrap = __webpack_require__(41);
   
-  var _DeckLibDeckList = __webpack_require__(63);
+  var _DeckLibDeckList = __webpack_require__(62);
   
   var _DeckLibDeckList2 = _interopRequireDefault(_DeckLibDeckList);
   
@@ -4845,11 +4878,11 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 79 */
+/* 78 */
 /***/ function(module, exports, __webpack_require__) {
 
   
-      var content = __webpack_require__(80);
+      var content = __webpack_require__(79);
       var insertCss = __webpack_require__(20);
   
       if (typeof content === 'string') {
@@ -4862,7 +4895,7 @@ module.exports =
     
 
 /***/ },
-/* 80 */
+/* 79 */
 /***/ function(module, exports, __webpack_require__) {
 
   exports = module.exports = __webpack_require__(19)();
@@ -4879,7 +4912,7 @@ module.exports =
   };
 
 /***/ },
-/* 81 */
+/* 80 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -4908,7 +4941,7 @@ module.exports =
   
   // Applies custmo style
   
-  var _SingleDeckPageScss = __webpack_require__(82);
+  var _SingleDeckPageScss = __webpack_require__(81);
   
   var _SingleDeckPageScss2 = _interopRequireDefault(_SingleDeckPageScss);
   
@@ -4922,11 +4955,11 @@ module.exports =
   
   var _actionsProfileActions2 = _interopRequireDefault(_actionsProfileActions);
   
-  var _storesSingleDeckStore = __webpack_require__(84);
+  var _storesSingleDeckStore = __webpack_require__(83);
   
   var _storesSingleDeckStore2 = _interopRequireDefault(_storesSingleDeckStore);
   
-  var _actionsSingleDeckActions = __webpack_require__(85);
+  var _actionsSingleDeckActions = __webpack_require__(84);
   
   var _actionsSingleDeckActions2 = _interopRequireDefault(_actionsSingleDeckActions);
   
@@ -4934,17 +4967,17 @@ module.exports =
   
   var _Link2 = _interopRequireDefault(_Link);
   
-  var _reactLoader = __webpack_require__(62);
+  var _reactLoader = __webpack_require__(61);
   
   var _reactLoader2 = _interopRequireDefault(_reactLoader);
   
   var _reactBootstrap = __webpack_require__(41);
   
-  var _CardLibCardList = __webpack_require__(86);
+  var _CardLibCardList = __webpack_require__(85);
   
   var _CardLibCardList2 = _interopRequireDefault(_CardLibCardList);
   
-  var _miscSearchBar = __webpack_require__(65);
+  var _miscSearchBar = __webpack_require__(64);
   
   var _miscSearchBar2 = _interopRequireDefault(_miscSearchBar);
   
@@ -5109,11 +5142,11 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 82 */
+/* 81 */
 /***/ function(module, exports, __webpack_require__) {
 
   
-      var content = __webpack_require__(83);
+      var content = __webpack_require__(82);
       var insertCss = __webpack_require__(20);
   
       if (typeof content === 'string') {
@@ -5126,7 +5159,7 @@ module.exports =
     
 
 /***/ },
-/* 83 */
+/* 82 */
 /***/ function(module, exports, __webpack_require__) {
 
   exports = module.exports = __webpack_require__(19)();
@@ -5143,7 +5176,7 @@ module.exports =
   };
 
 /***/ },
-/* 84 */
+/* 83 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -5199,7 +5232,7 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 85 */
+/* 84 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -5248,7 +5281,7 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 86 */
+/* 85 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -5341,7 +5374,7 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 87 */
+/* 86 */
 /***/ function(module, exports, __webpack_require__) {
 
   /**
@@ -5449,79 +5482,59 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 88 */
+/* 87 */
 /***/ function(module, exports) {
 
   module.exports = require("./assets");
 
 /***/ },
-/* 89 */
+/* 88 */
 /***/ function(module, exports) {
 
   module.exports = require("morgan");
 
 /***/ },
-/* 90 */
+/* 89 */
 /***/ function(module, exports) {
 
   module.exports = require("cookie-parser");
 
 /***/ },
-/* 91 */
+/* 90 */
 /***/ function(module, exports) {
 
   module.exports = require("body-parser");
 
 /***/ },
-/* 92 */
+/* 91 */
 /***/ function(module, exports) {
 
   module.exports = require("express-session");
 
 /***/ },
-/* 93 */
+/* 92 */
 /***/ function(module, exports) {
 
   module.exports = require("parse/node");
 
 /***/ },
-/* 94 */
-/***/ function(module, exports) {
-
-  "use strict";
-  
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports["default"] = {
-    UserToObject: function UserToObject(user) {
-      return {
-        username: user.get("username"),
-        objectId: user.get("objectId"),
-        sessionToken: user.get("sessionToken")
-      };
-    }
-  };
-  module.exports = exports["default"];
-
-/***/ },
-/* 95 */
+/* 93 */
 /***/ function(module, exports) {
 
   module.exports = require("connect-parse");
 
 /***/ },
-/* 96 */
+/* 94 */
 /***/ function(module, exports) {
 
   module.exports = require("socket.io");
 
 /***/ },
-/* 97 */
+/* 95 */
 /***/ function(module, exports, __webpack_require__) {
 
-  //Register todos with aws dynammodb.
-  //https://github.com/yortus/asyncawait
+  // Register todos with aws dynammodb.
+  // https://github.com/yortus/asyncawait
   'use strict';
   
   Object.defineProperty(exports, '__esModule', {
@@ -5532,27 +5545,21 @@ module.exports =
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
-  var _bluebird = __webpack_require__(98);
-  
-  var _bluebird2 = _interopRequireDefault(_bluebird);
-  
   var _express = __webpack_require__(3);
   
-  var _parseNode = __webpack_require__(93);
+  var _parseNode = __webpack_require__(92);
   
   var _parseNode2 = _interopRequireDefault(_parseNode);
   
-  var _UserUtil = __webpack_require__(94);
+  var _coreIsArray = __webpack_require__(96);
   
-  var _UserUtil2 = _interopRequireDefault(_UserUtil);
+  var _coreIsArray2 = _interopRequireDefault(_coreIsArray);
   
-  var _transactionsTransactionModel = __webpack_require__(99);
-  
-  var _transactionsTransactionModel2 = _interopRequireDefault(_transactionsTransactionModel);
+  var randomstring = __webpack_require__(97).generate;
   
   var router = new _express.Router();
   
-  router.get('/', function callee$0$0(req, res, next) {
+  router.get('/', function callee$0$0(req, res) {
     var query;
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
@@ -5560,19 +5567,16 @@ module.exports =
           query = new _parseNode2['default'].Query(_parseNode2['default'].User);
   
           if (req.query.username) {
-  
-            query.contains("username", req.query.username);
+            query.equalTo('username', req.query.username);
           }
           query.find({
             success: function success(results) {
-              //console.log("Succssfully retrieved ", results);
-              return res.status(200).send(results);
+              return res.status(200).json(results);
             },
-            error: function error(err) {
-              //console.log("Failed to get decks ", err);
-              return res.status(400).send(err);
+            error: function error(results, _error) {
+              return res.status(400).json({ users: results, error: _error });
             },
-            sessionToken: req.session.sessionToken
+            sessionToken: req.session.sessionToken || req.body.sessionToken
           });
   
         case 3:
@@ -5581,7 +5585,8 @@ module.exports =
       }
     }, null, _this);
   });
-  router.post('/signup', function callee$0$0(req, res, next) {
+  
+  router.post('/signup', function callee$0$0(req, res) {
     var username, password, newUser;
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
@@ -5596,19 +5601,24 @@ module.exports =
   
           newUser = new _parseNode2['default'].User();
   
-          newUser.set("username", username);
-          newUser.set("password", password);
-          newUser.set("subscriptions", []);
+          newUser.set('username', username);
+          newUser.set('password', password);
+          newUser.set('subscriptions', []);
           newUser.signUp(null, {
             success: function success(user) {
               req.session.regenerate(function (err) {
+                if (err) {
+                  return res.status(400).json({ error: err });
+                }
                 req.session.sessionToken = user.toJSON().sessionToken;
                 req.session.username = user.toJSON().username;
-                res.status(200).send({ err: null, user: user });
+                var u = user.toJSON();
+                u.sessionID = req.session.sessionID;
+                res.status(200).json({ user: u });
               });
             },
-            error: function error(user, _error) {
-              res.status(400).send({ err: _error, user: user.toJSON() });
+            error: function error(user, _error2) {
+              return res.status(400).json({ err: _error2, user: user.toJSON() });
             },
             sessionToken: req.session.sessionToken
           });
@@ -5616,7 +5626,7 @@ module.exports =
           break;
   
         case 10:
-          return context$1$0.abrupt('return', res.status(400).send({ err: { msg: "Need username and password" } }));
+          return context$1$0.abrupt('return', res.status(400).send({ error: { message: 'Need username and password', data: req.body } }));
   
         case 11:
         case 'end':
@@ -5624,7 +5634,8 @@ module.exports =
       }
     }, null, _this);
   });
-  router.get('/whoami', function callee$0$0(req, res, next) {
+  
+  router.get('/whoami', function callee$0$0(req, res) {
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
         case 0:
@@ -5655,18 +5666,20 @@ module.exports =
                 req.session.sessionToken = user.toJSON().sessionToken;
                 req.session.username = user.toJSON().username;
                 req.user = user;
-                res.status(200).json(user.toJSON());
+                var u = user.toJSON();
+                u.sessionID = req.sessionID;
+                res.status(200).json({ user: u });
               });
             },
-            error: function error(user, _error2) {
-              res.status(400).json({ error: _error2, user: user.toJSON() });
+            error: function error(user, _error3) {
+              res.status(400).json({ error: _error3, user: user.toJSON() });
             }
           });
           context$1$0.next = 7;
           break;
   
         case 6:
-          return context$1$0.abrupt('return', res.status(400).json({ error: { msg: "Need username and password" } }));
+          return context$1$0.abrupt('return', res.status(400).json({ error: { msg: 'Need username and password', data: req.body } }));
   
         case 7:
         case 'end':
@@ -5675,12 +5688,12 @@ module.exports =
     }, null, _this);
   });
   
-  router.post('/logout', function callee$0$0(req, res, next) {
+  router.post('/logout', function callee$0$0(req, res) {
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
         case 0:
           req.session.destroy();
-          res.status(200).send("Logged out");
+          res.status(200).send('Logged out');
   
         case 2:
         case 'end':
@@ -5709,15 +5722,15 @@ module.exports =
         case 0:
           query = new _parseNode2['default'].Query(_parseNode2['default'].User);
   
-          query.equalTo("username", req.username);
+          query.equalTo('username', req.username);
           query.find({
             success: function success(results) {
               return res.status(200).json(results.map(function (r) {
                 return r.toJSON();
               }));
             },
-            error: function error(deck, _error3) {
-              return res.status(400).send({ err: _error3, deck: deck });
+            error: function error(deck, _error4) {
+              return res.status(400).send({ err: _error4, deck: deck });
             },
             sessionToken: req.session.sessionToken
           });
@@ -5732,51 +5745,52 @@ module.exports =
   
   //Expects [transactions] TODO deal with Fork
   //TODO make stransaction method
-  router.post('/:username', function callee$0$0(req, res, next) {
-    var current_id, transactions, parsedTransactions;
+  router.post('/:username', function callee$0$0(req, res) {
+    var indexGroup, bodyTransactions, transactions;
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
         case 0:
-          current_id = req.username;
+          indexGroup = randomstring(30);
   
-          if (!(!req.body.isArray && !(req.body.length > 0))) {
-            context$1$0.next = 3;
+          console.log("body", req.body);
+          bodyTransactions = req.body.transactions;
+  
+          console.log("transactions", (0, _coreIsArray2['default'])(bodyTransactions));
+  
+          if (!(!(0, _coreIsArray2['default'])(bodyTransactions) && !(bodyTransactions.length > 0))) {
+            context$1$0.next = 6;
             break;
           }
   
-          return context$1$0.abrupt('return', res.status(400).send({ err: "Must send array of transactions" }));
-  
-        case 3:
-          transactions = req.body.map(function (body) {
-            var t = new _parseNode2['default'].Object("Transaction");
-            return TransactionUtil.fromRequestBody(t, body);
-          });
-          parsedTransactions = [];
-  
-          transactions.forEach(function (t) {
-            console.log("here5");
-            t.set("on", current_id);
-            t.save(null, {
-              success: function success(trans) {
-                //TODO maintain order
-  
-                parsedTransactions.push({ transaction: trans, error: null });
-                if (parsedTransactions.length == transactions.length) {
-                  res.status(200).send(parsedTransactions);
-                }
-              },
-              error: function error(trans, _error4) {
-  
-                parsedTransactions.push({ transaction: trans, error: _error4 });
-                if (parsedTransactions.length == transactions.length) {
-                  res.status(400).send(parsedTransactions);
-                }
-              },
-              sessionToken: req.session.sessionToken
-            });
-          });
+          return context$1$0.abrupt('return', res.status(400).json({ error: 'Must send array of transactions: IsArray: ' + bodyTransactions.isArray() + ', length: bodyTransactions.length' }));
   
         case 6:
+          console.log("here2");
+          transactions = bodyTransactions.map(function (body, index) {
+            var t = new _parseNode2['default'].Object('Transaction');
+            Object.keys(body).forEach(function (key) {
+              return t.set(key, body[key]);
+            });
+            t.set('on', req.username);
+            t.set('for', 'User');
+            t.set('owner', req.session.username);
+            t.set('indexGroup', indexGroup);
+            t.set('index', index);
+            return t;
+          });
+  
+          _parseNode2['default'].Object.saveAll(transactions, {
+            success: function success(list) {
+              return res.status(200).json(list);
+            },
+            error: function error(_error5) {
+              return res.status(400).json(_error5);
+            },
+            sessionToken: req.session.sessionToken
+          });
+          return context$1$0.abrupt('return', null);
+  
+        case 10:
         case 'end':
           return context$1$0.stop();
       }
@@ -5785,38 +5799,30 @@ module.exports =
   exports['default'] = router;
   module.exports = exports['default'];
 
-  //console.log("IN get all decks")
-
 /***/ },
-/* 98 */
+/* 96 */
 /***/ function(module, exports) {
-
-  module.exports = require("bluebird");
-
-/***/ },
-/* 99 */
-/***/ function(module, exports, __webpack_require__) {
 
   'use strict';
   
   Object.defineProperty(exports, '__esModule', {
     value: true
   });
+  function isArray(obj) {
+    return Object.prototype.toString.call(obj) === '[object Array]';
+  }
   
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
-  var _parseNode = __webpack_require__(93);
-  
-  var _parseNode2 = _interopRequireDefault(_parseNode);
-  
-  var Transaction = _parseNode2['default'].Object.extend('Transaction', {}, {});
-  
-  exports['default'] = Transaction;
-  var TransactionUtil = {};
-  exports.TransactionUtil = TransactionUtil;
+  exports['default'] = isArray;
+  module.exports = exports['default'];
 
 /***/ },
-/* 100 */
+/* 97 */
+/***/ function(module, exports) {
+
+  module.exports = require("randomstring");
+
+/***/ },
+/* 98 */
 /***/ function(module, exports, __webpack_require__) {
 
   // Register todos with aws dynammodb.
@@ -5833,16 +5839,20 @@ module.exports =
   
   var _express = __webpack_require__(3);
   
-  var _DeckModel = __webpack_require__(101);
+  var _coreIsArray = __webpack_require__(96);
+  
+  var _coreIsArray2 = _interopRequireDefault(_coreIsArray);
+  
+  var _DeckModel = __webpack_require__(99);
   
   var _DeckModel2 = _interopRequireDefault(_DeckModel);
   
-  var _transactionsTransactionModel = __webpack_require__(99);
+  var _transactionsTransactionModel = __webpack_require__(100);
   
   var _transactionsTransactionModel2 = _interopRequireDefault(_transactionsTransactionModel);
   
-  var Parse = __webpack_require__(93);
-  var randomstring = __webpack_require__(102).generate;
+  var Parse = __webpack_require__(92);
+  var randomstring = __webpack_require__(97).generate;
   
   var router = new _express.Router();
   
@@ -5851,6 +5861,8 @@ module.exports =
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
         case 0:
+  
+          req.session.sessionToken = req.session.sessionToken || req.body.sessionToken;
           query = new Parse.Query(_DeckModel2['default']);
   
           if (req.query.keywords) {
@@ -5886,7 +5898,7 @@ module.exports =
             sessionToken: req.session.sessionToken
           });
   
-        case 9:
+        case 10:
         case 'end':
           return context$1$0.stop();
       }
@@ -5898,7 +5910,8 @@ module.exports =
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
         case 0:
-          console.log("here");
+          req.session.sessionToken = req.session.sessionToken || req.body.sessionToken;
+  
           query = new Parse.Query(_DeckModel2['default']);
   
           if (!(!req.body.gid && !req.body.did)) {
@@ -5930,7 +5943,7 @@ module.exports =
               newDeck.set('gid', gid);
               newDeck.set('did', did);
               newDeck.set('owner', req.session.username);
-              console.log('here1.5', req.session.username);
+              console.log('here1.5', req.body.sessionToken);
               //      Parse.User.logIn('aarthi', 'password', {
               //        success: function(user) {
               //            console.log('success login', req.user);
@@ -5940,7 +5953,6 @@ module.exports =
               //            console.log(user + error);
               //        }
               //      });
-              console.log('request is', Parse.User.current());
               newDeck.save(null, {
                 success: function success(deck) {
                   console.log('here2');
@@ -5973,20 +5985,20 @@ module.exports =
                       return res.status(200).json(deck.toJSON());
                     },
                     error: function error(err) {
-                      return res.status(400).json({ error: err, deck: deck.toJSON() });
+                      return res.status(401).json({ error: err, deck: deck.toJSON() });
                     },
                     sessionToken: req.session.sessionToken
                   });
                 },
                 error: function error(deck, _error) {
-                  return res.status(400).json({ error: _error, deck: deck.toJSON() });
+                  return res.status(402).json({ error: _error, deck: deck.toJSON() });
                 },
                 sessionToken: req.session.sessionToken
               });
               return null;
             },
             error: function error(err) {
-              return res.status(500).json({ error: err, deck: {} });
+              return res.status(403).json({ error: err, deck: {} });
             },
             sessionToken: req.session.sessionToken
           });
@@ -6017,6 +6029,8 @@ module.exports =
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
         case 0:
+  
+          req.session.sessionToken = req.session.sessionToken || req.body.sessionToken;
           query = new Parse.Query(_DeckModel2['default']);
   
           query.equalTo('gid', req.gid);
@@ -6032,7 +6046,7 @@ module.exports =
             sessionToken: req.session.sessionToken
           });
   
-        case 3:
+        case 4:
         case 'end':
           return context$1$0.stop();
       }
@@ -6040,23 +6054,28 @@ module.exports =
   });
   
   router.post('/:gid', function callee$0$0(req, res) {
-    var indexGroup, transactions;
+    var indexGroup, bodyTransactions, transactions;
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
         case 0:
+          req.session.sessionToken = req.session.sessionToken || req.body.sessionToken;
           indexGroup = randomstring(30);
   
-          console.log(req.body);
+          console.log("body", req.body);
+          bodyTransactions = req.body.transactions;
   
-          if (!(!req.body.isArray && !(req.body.length > 0))) {
-            context$1$0.next = 4;
+          console.log("transactions", (0, _coreIsArray2['default'])(bodyTransactions));
+  
+          if (!(!(0, _coreIsArray2['default'])(bodyTransactions) && !(bodyTransactions.length > 0))) {
+            context$1$0.next = 7;
             break;
           }
   
-          return context$1$0.abrupt('return', res.status(400).json({ error: 'Must send array of transactions ' + !req.body.isArray + ' }, ' + req.body.length }));
+          return context$1$0.abrupt('return', res.status(400).json({ error: 'Must send array of transactions: IsArray: ' + bodyTransactions.isArray() + ', length: bodyTransactions.length' }));
   
-        case 4:
-          transactions = req.body.map(function (body, index) {
+        case 7:
+          console.log("here2");
+          transactions = bodyTransactions.map(function (body, index) {
             var t = new Parse.Object('Transaction');
             Object.keys(body).forEach(function (key) {
               return t.set(key, body[key]);
@@ -6080,7 +6099,7 @@ module.exports =
           });
           return context$1$0.abrupt('return', null);
   
-        case 7:
+        case 11:
         case 'end':
           return context$1$0.stop();
       }
@@ -6092,6 +6111,7 @@ module.exports =
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
         case 0:
+          req.session.sessionToken = req.session.sessionToken || req.body.sessionToken;
           query = new Parse.Query(_transactionsTransactionModel2['default']);
   
           if (req.query.indexGroup) {
@@ -6115,7 +6135,7 @@ module.exports =
             sessionToken: req.session.sessionToken
           });
   
-        case 6:
+        case 7:
         case 'end':
           return context$1$0.stop();
       }
@@ -6126,7 +6146,7 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 101 */
+/* 99 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -6137,7 +6157,7 @@ module.exports =
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
-  var _parseNode = __webpack_require__(93);
+  var _parseNode = __webpack_require__(92);
   
   var _parseNode2 = _interopRequireDefault(_parseNode);
   
@@ -6147,13 +6167,29 @@ module.exports =
   exports.DeckUtil = DeckUtil;
 
 /***/ },
-/* 102 */
-/***/ function(module, exports) {
+/* 100 */
+/***/ function(module, exports, __webpack_require__) {
 
-  module.exports = require("randomstring");
+  'use strict';
+  
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+  
+  var _parseNode = __webpack_require__(92);
+  
+  var _parseNode2 = _interopRequireDefault(_parseNode);
+  
+  var Transaction = _parseNode2['default'].Object.extend('Transaction', {}, {});
+  
+  exports['default'] = Transaction;
+  var TransactionUtil = {};
+  exports.TransactionUtil = TransactionUtil;
 
 /***/ },
-/* 103 */
+/* 101 */
 /***/ function(module, exports, __webpack_require__) {
 
   // Register todos with aws dynammodb.
@@ -6170,16 +6206,16 @@ module.exports =
   
   var _express = __webpack_require__(3);
   
-  var _CardModel = __webpack_require__(104);
+  var _CardModel = __webpack_require__(102);
   
   var _CardModel2 = _interopRequireDefault(_CardModel);
   
-  var _transactionsTransactionModel = __webpack_require__(99);
+  var _transactionsTransactionModel = __webpack_require__(100);
   
   var _transactionsTransactionModel2 = _interopRequireDefault(_transactionsTransactionModel);
   
-  var Parse = __webpack_require__(93);
-  var randomstring = __webpack_require__(102).generate;
+  var Parse = __webpack_require__(92);
+  var randomstring = __webpack_require__(97).generate;
   
   var router = new _express.Router();
   
@@ -6358,7 +6394,7 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 104 */
+/* 102 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -6369,7 +6405,7 @@ module.exports =
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
-  var _parseNode = __webpack_require__(93);
+  var _parseNode = __webpack_require__(92);
   
   var _parseNode2 = _interopRequireDefault(_parseNode);
   
@@ -6379,7 +6415,7 @@ module.exports =
   exports.DeckUtil = DeckUtil;
 
 /***/ },
-/* 105 */
+/* 103 */
 /***/ function(module, exports, __webpack_require__) {
 
   //Register todos with aws dynammodb.
@@ -6395,7 +6431,7 @@ module.exports =
   
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
   
-  var _bluebird = __webpack_require__(98);
+  var _bluebird = __webpack_require__(104);
   
   var _bluebird2 = _interopRequireDefault(_bluebird);
   
@@ -6454,7 +6490,13 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 106 */
+/* 104 */
+/***/ function(module, exports) {
+
+  module.exports = require("bluebird");
+
+/***/ },
+/* 105 */
 /***/ function(module, exports, __webpack_require__) {
 
   /**
@@ -6476,7 +6518,7 @@ module.exports =
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
-  var _fs = __webpack_require__(107);
+  var _fs = __webpack_require__(106);
   
   var _fs2 = _interopRequireDefault(_fs);
   
@@ -6484,15 +6526,15 @@ module.exports =
   
   var _express = __webpack_require__(3);
   
-  var _bluebird = __webpack_require__(98);
+  var _bluebird = __webpack_require__(104);
   
   var _bluebird2 = _interopRequireDefault(_bluebird);
   
-  var _jade = __webpack_require__(108);
+  var _jade = __webpack_require__(107);
   
   var _jade2 = _interopRequireDefault(_jade);
   
-  var _frontMatter = __webpack_require__(109);
+  var _frontMatter = __webpack_require__(108);
   
   var _frontMatter2 = _interopRequireDefault(_frontMatter);
   
@@ -6595,19 +6637,19 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 107 */
+/* 106 */
 /***/ function(module, exports) {
 
   module.exports = require("fs");
 
 /***/ },
-/* 108 */
+/* 107 */
 /***/ function(module, exports) {
 
   module.exports = require("jade");
 
 /***/ },
-/* 109 */
+/* 108 */
 /***/ function(module, exports) {
 
   module.exports = require("front-matter");
