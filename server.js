@@ -237,14 +237,6 @@ module.exports =
     });
   });
   
-  //time out
-  
-  function haltOnTimedout(req, res, next) {
-    if (!req.timedout) next();
-  }
-  server.use((0, _connectTimeout2['default'])(600));
-  server.use(haltOnTimedout);
-  
   //
   // Launch the server
   // -----------------------------------------------------------------------------
@@ -6037,33 +6029,64 @@ module.exports =
   var router = new _express.Router();
   
   router.use(function callee$0$0(req, res, next) {
-    var user;
+    var body;
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
         case 0:
-          user = new Parse.User();
+          console.log("session 0", req.username, req.sessionToken);
   
-          if (req.session.sessionToken) {
-            context$1$0.next = 6;
+          if (!(req.session && req.session.username && req.session.sessionToken)) {
+            context$1$0.next = 8;
             break;
           }
   
-          if (req.body.sessionToken) {
-            context$1$0.next = 4;
-            break;
-          }
-  
-          return context$1$0.abrupt('return', res.status(400).json({ error: "Need to send session token " }));
-  
-        case 4:
-          context$1$0.next = 6;
-          return regeneratorRuntime.awrap(user.become(req.body.sessionToken));
-  
-        case 6:
-          req.user = user;
-          next();
+          console.log("session 1");
+          req.username = req.session.username;
+          req.sessionToken = req.session.sessionToken;
+          return context$1$0.abrupt('return', next());
   
         case 8:
+          if (!(0, _coreIsArray2['default'])(req.body)) {
+            context$1$0.next = 20;
+            break;
+          }
+  
+          body = req.body[0];
+  
+          if (!(body && (body.username || body.owner) && body.sessionToken)) {
+            context$1$0.next = 17;
+            break;
+          }
+  
+          console.log("session 2");
+          req.username = body.username || body.owner;
+          req.sessionToken = body.sessionToken;
+          return context$1$0.abrupt('return', next());
+  
+        case 17:
+          return context$1$0.abrupt('return', res.status(400).json({ error: " Must send username and sessionToken with the first element of array" }));
+  
+        case 18:
+          context$1$0.next = 27;
+          break;
+  
+        case 20:
+          if (!(req.body && (req.body.username || req.body.owner) && req.body.sessionToken)) {
+            context$1$0.next = 27;
+            break;
+          }
+  
+          console.log("session 3");
+          req.username = req.body.owner || req.body.username;
+          console.log("session 3.5");
+          req.sessionToken = req.body.sessionToken;
+          console.log("session 4");
+          return context$1$0.abrupt('return', next());
+  
+        case 27:
+          return context$1$0.abrupt('return', res.status(400).json({ error: "Must send username and session Token" }));
+  
+        case 28:
         case 'end':
           return context$1$0.stop();
       }
@@ -6123,7 +6146,7 @@ module.exports =
             error: function error(r, err) {
               return res.status(400).json(err);
             },
-            sessionToken: req.session.sessionToken || req.body.sessionToken
+            sessionToken: req.sessionToken
           });
   
         case 18:
@@ -6138,49 +6161,55 @@ module.exports =
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
         case 0:
+          console.log("Post Deck 1");
           query = new Parse.Query(_DeckModel2['default']);
   
           if (!(!req.body.gid && !req.body.did)) {
-            context$1$0.next = 3;
+            context$1$0.next = 4;
             break;
           }
   
           return context$1$0.abrupt('return', res.status(400).json({ err: 'Must have a did or gid' }));
   
-        case 3:
+        case 4:
+          console.log("Post Deck 2");
   
           if (req.body.gid) {
             query.equalTo('gid', req.body.gid);
           } else if (req.body.did) {
-            query.equalTo('gid', (req.session.username || req.user.get('username')) + ':' + req.body.did);
+            query.equalTo('gid', req.username + ':' + req.body.did);
           }
+          console.log("Post Deck 3");
           query.find({
             success: function success(results) {
+              console.log("Post Deck 4", results);
               if (results[0]) {
                 return res.status(400).json({ error: 'Deck already Exist' });
               }
               // TODO : Validate Decks
+              console.log("Post Deck 5");
               var newDeck = new Parse.Object('Deck');
               Object.keys(req.body).forEach(function (key) {
                 return newDeck.set(key, req.body[key]);
               });
-              var gid = req.body.gid || (req.session.username || req.user.get('username')) + ':' + req.body.did;
+              var gid = req.body.gid || req.username + ':' + req.body.did;
               var did = gid.split(':')[1];
               newDeck.set('gid', gid);
               newDeck.set('did', did);
-              newDeck.set('owner', req.session.username || req.user.get('username'));
+              newDeck.set('owner', req.username);
+              console.log("Post Deck 6");
               newDeck.save(null, {
                 success: function success(deck) {
                   console.log('here2');
                   var userQuery = new Parse.Query(Parse.User);
-                  userQuery.equalTo('username', req.session.username || req.user.get('username'));
+                  userQuery.equalTo('username', req.username);
                   userQuery.find({
                     success: function success(user) {
                       console.log('here3');
                       if (!user.get('decks')) {
                         user.set('decks', []);
                       }
-                      user.add('decks', deck);
+                      user.addUnique('decks', deck);
                       console.log('here4');
                       user.save();
                     }
@@ -6190,9 +6219,9 @@ module.exports =
                   // Set Ownership of Deck
                   console.log("here");
                   var t = new Parse.Object('Transaction');
-                  t.set('on', req.session.username || req.user.get('username'));
+                  t.set('on', req.username);
                   t.set('for', 'User');
-                  t.set('owner', req.session.username || req.user.get('username'));
+                  t.set('owner', req.username);
                   t.set('indexGroup', randomstring(30));
                   t.set('index', 0);
                   t.set('query', 'aDECK');
@@ -6204,24 +6233,24 @@ module.exports =
                     error: function error(deck, errr) {
                       return res.status(401).json({ error: err, deck: deck.toJSON() });
                     },
-                    sessionToken: req.session.sessionToken || req.body.sessionToken
+                    sessionToken: req.sessionToken
                   });
                 },
                 error: function error(deck, _error) {
                   return res.status(402).json({ error: _error, deck: deck.toJSON() });
                 },
-                sessionToken: req.session.sessionToken || req.body.sessionToken
+                sessionToken: req.sessionToken
               });
               return null;
             },
             error: function error(deck, err) {
               return res.status(403).json({ error: err, deck: {} });
             },
-            sessionToken: req.session.sessionToken || req.body.sessionToken
+            sessionToken: req.sessionToken
           });
           return context$1$0.abrupt('return', null);
   
-        case 6:
+        case 9:
         case 'end':
           return context$1$0.stop();
       }
@@ -6258,7 +6287,7 @@ module.exports =
             error: function error(deck, _error2) {
               return res.status(400).json({ error: _error2, deck: deck.toJSON(deck) });
             },
-            sessionToken: req.session.sessionToken || req.body.sessionToken
+            sessionToken: req.sessionToken
           });
   
         case 3:
@@ -6296,7 +6325,7 @@ module.exports =
             });
             t.set('on', req.gid);
             t.set('for', 'Deck');
-            t.set('owner', req.session.username || req.user.get('username'));
+            t.set('owner', req.username);
             t.set('indexGroup', indexGroup);
             t.set('index', index);
             return t;
@@ -6345,7 +6374,7 @@ module.exports =
             error: function error(r, _error4) {
               return res.status(500).json(_error4);
             },
-            sessionToken: req.session.sessionToken || req.body.sessionToken
+            sessionToken: req.sessionToken
           });
   
         case 6:
