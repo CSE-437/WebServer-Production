@@ -1992,7 +1992,7 @@ module.exports =
                           _react2['default'].createElement(
                               'span',
                               null,
-                              'sexy header omg!!! check out the nav bar under me'
+                              ' '
                           )
                       )
                   )
@@ -2422,7 +2422,7 @@ module.exports =
         _storesProfileStore2['default'].listen(this.onChange);
         $.notify({
           title: "Welcome:",
-          message: "This plugin has been provided to you by Robert McIntosh aka mouse0270"
+          message: "src\components\Navigation\Navigation.js to change this"
         });
         // As soon as it is poling for data get data
       }
@@ -3154,7 +3154,11 @@ module.exports =
         return _react2['default'].createElement(
           'footer',
           { className: cx },
-          'sexy footer'
+          _react2['default'].createElement(
+            'a',
+            { href: 'https://github.com/CSE-437' },
+            'Github'
+          )
         );
       }
     }]);
@@ -6082,7 +6086,7 @@ module.exports =
                 return d.toJSON();
               }));
             },
-            error: function error(err) {
+            error: function error(r, err) {
               return res.status(400).json(err);
             },
             sessionToken: req.session.sessionToken || req.body.sessionToken
@@ -6162,7 +6166,7 @@ module.exports =
                     success: function success() {
                       return res.status(200).json(deck.toJSON());
                     },
-                    error: function error(err) {
+                    error: function error(deck, errr) {
                       return res.status(401).json({ error: err, deck: deck.toJSON() });
                     },
                     sessionToken: req.session.sessionToken || req.body.sessionToken
@@ -6175,7 +6179,7 @@ module.exports =
               });
               return null;
             },
-            error: function error(err) {
+            error: function error(deck, err) {
               return res.status(403).json({ error: err, deck: {} });
             },
             sessionToken: req.session.sessionToken || req.body.sessionToken
@@ -6267,7 +6271,7 @@ module.exports =
             success: function success(list) {
               return res.status(200).json(list);
             },
-            error: function error(_error3) {
+            error: function error(t, _error3) {
               return res.status(500).json(_error3);
             },
             sessionToken: req.session.sessionToken || req.body[0].sessionToken
@@ -6303,7 +6307,7 @@ module.exports =
                 return deck.toJSON();
               }));
             },
-            error: function error(_error4) {
+            error: function error(r, _error4) {
               return res.status(500).json(_error4);
             },
             sessionToken: req.session.sessionToken || req.body.sessionToken
