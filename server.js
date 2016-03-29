@@ -57,7 +57,7 @@ module.exports =
   
   'use strict';
   
-  var _this = this;
+  var _this2 = this;
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
   
@@ -149,68 +149,11 @@ module.exports =
   //
   // Register API middleware
   // -----------------------------------------------------------------------------
-  server.use('/api', function callee$0$0(req, res, next) {
-    var body;
-    return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
-      while (1) switch (context$1$0.prev = context$1$0.next) {
-        case 0:
-          if (!(req.session && req.session.username && req.session.sessionToken)) {
-            context$1$0.next = 6;
-            break;
-          }
-  
-          req.username = req.session.username;
-          req.sessionToken = req.session.sessionToken;
-          return context$1$0.abrupt('return', next());
-  
-        case 6:
-          if (!IsArray(req.body)) {
-            context$1$0.next = 17;
-            break;
-          }
-  
-          body = req.body[0];
-  
-          if (!(body && (body.username || body.owner) && body.sessionToken)) {
-            context$1$0.next = 14;
-            break;
-          }
-  
-          req.username = body.username || body.owner;
-          req.sessionToken = body.sessionToken;
-          return context$1$0.abrupt('return', next());
-  
-        case 14:
-          return context$1$0.abrupt('return', res.status(400).json({ error: " Must send username and sessionToken with the first element of array" }));
-  
-        case 15:
-          context$1$0.next = 21;
-          break;
-  
-        case 17:
-          if (!(req.body && (req.body.username || req.body.owner) && req.body.sessionToken)) {
-            context$1$0.next = 21;
-            break;
-          }
-  
-          req.username = req.body.owner || req.body.username;
-          req.sessionToken = req.body.sessionToken;
-          return context$1$0.abrupt('return', next());
-  
-        case 21:
-          return context$1$0.abrupt('return', res.status(400).json({ error: "Must send username and session Token" }));
-  
-        case 22:
-        case 'end':
-          return context$1$0.stop();
-      }
-    }, null, _this);
-  });
-  server.use('/api/users', __webpack_require__(96));
-  server.use('/api/decks', __webpack_require__(99));
-  server.use('/api/cards', __webpack_require__(102));
-  server.use('/api/todo', __webpack_require__(104));
-  server.use('/api/content', __webpack_require__(106));
+  server.use('/api/content', __webpack_require__(96));
+  server.use('/api/users', __webpack_require__(101));
+  server.use('/api/decks', __webpack_require__(104));
+  server.use('/api/cards', __webpack_require__(107));
+  server.use('/api/todo', __webpack_require__(109));
   
   //
   // Register server-side rendering middleware
@@ -218,7 +161,7 @@ module.exports =
   
   server.get('*', function callee$0$0(req, res, next) {
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
-      var _this2 = this;
+      var _this = this;
   
       while (1) switch (context$1$0.prev = context$1$0.next) {
         case 0:
@@ -261,7 +204,7 @@ module.exports =
                 case 'end':
                   return context$2$0.stop();
               }
-            }, null, _this2);
+            }, null, _this);
           })());
   
         case 3:
@@ -278,7 +221,7 @@ module.exports =
         case 'end':
           return context$1$0.stop();
       }
-    }, null, _this, [[0, 5]]);
+    }, null, _this2, [[0, 5]]);
   });
   
   //Instantiate Socket IO
@@ -5760,6 +5703,171 @@ module.exports =
 /* 96 */
 /***/ function(module, exports, __webpack_require__) {
 
+  /**
+   * React Starter Kit (https://www.reactstarterkit.com/)
+   *
+   * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.txt file in the root directory of this source tree.
+   */
+  
+  'use strict';
+  
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  
+  var _this = this;
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+  
+  var _fs = __webpack_require__(97);
+  
+  var _fs2 = _interopRequireDefault(_fs);
+  
+  var _path = __webpack_require__(2);
+  
+  var _express = __webpack_require__(3);
+  
+  var _bluebird = __webpack_require__(98);
+  
+  var _bluebird2 = _interopRequireDefault(_bluebird);
+  
+  var _jade = __webpack_require__(99);
+  
+  var _jade2 = _interopRequireDefault(_jade);
+  
+  var _frontMatter = __webpack_require__(100);
+  
+  var _frontMatter2 = _interopRequireDefault(_frontMatter);
+  
+  // A folder with Jade/Markdown/HTML content pages
+  var CONTENT_DIR = (0, _path.join)(__dirname, './content');
+  
+  // Extract 'front matter' metadata and generate HTML
+  var parseJade = function parseJade(path, jadeContent) {
+    var fmContent = (0, _frontMatter2['default'])(jadeContent);
+    var htmlContent = _jade2['default'].render(fmContent.body);
+    //combines objects into one.
+    return Object.assign({ path: path, content: htmlContent }, fmContent.attributes);
+  };
+  
+  var readFile = _bluebird2['default'].promisify(_fs2['default'].readFile);
+  var fileExists = function fileExists(filename) {
+    return new _bluebird2['default'](function (resolve) {
+      _fs2['default'].exists(filename, resolve);
+    });
+  };
+  
+  var router = new _express.Router();
+  
+  router.get('/', function callee$0$0(req, res, next) {
+    var path, fileName, source, content;
+    return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
+      while (1) switch (context$1$0.prev = context$1$0.next) {
+        case 0:
+          context$1$0.prev = 0;
+          path = req.query.path;
+  
+          console.log(path);
+  
+          if (!(!path || path === 'undefined')) {
+            context$1$0.next = 6;
+            break;
+          }
+  
+          res.status(400).send({ error: 'The \'path\' query parameter cannot be empty.' });
+          return context$1$0.abrupt('return');
+  
+        case 6:
+          fileName = (0, _path.join)(CONTENT_DIR, (path === '/' ? '/index' : path) + '.jade');
+  
+          console.log(fileName);
+          context$1$0.next = 10;
+          return regeneratorRuntime.awrap(fileExists(fileName));
+  
+        case 10:
+          if (context$1$0.sent) {
+            context$1$0.next = 12;
+            break;
+          }
+  
+          fileName = (0, _path.join)(CONTENT_DIR, path + '/index.jade');
+  
+        case 12:
+          context$1$0.next = 14;
+          return regeneratorRuntime.awrap(fileExists(fileName));
+  
+        case 14:
+          if (context$1$0.sent) {
+            context$1$0.next = 18;
+            break;
+          }
+  
+          res.status(404).send({ error: 'The page \'' + path + '\' is not found.' });
+          context$1$0.next = 23;
+          break;
+  
+        case 18:
+          context$1$0.next = 20;
+          return regeneratorRuntime.awrap(readFile(fileName, { encoding: 'utf8' }));
+  
+        case 20:
+          source = context$1$0.sent;
+          content = parseJade(path, source);
+  
+          //Passed to routes.js.
+          res.status(200).send(content);
+  
+        case 23:
+          context$1$0.next = 28;
+          break;
+  
+        case 25:
+          context$1$0.prev = 25;
+          context$1$0.t0 = context$1$0['catch'](0);
+  
+          next(context$1$0.t0);
+  
+        case 28:
+        case 'end':
+          return context$1$0.stop();
+      }
+    }, null, _this, [[0, 25]]);
+  });
+  
+  exports['default'] = router;
+  module.exports = exports['default'];
+
+/***/ },
+/* 97 */
+/***/ function(module, exports) {
+
+  module.exports = require("fs");
+
+/***/ },
+/* 98 */
+/***/ function(module, exports) {
+
+  module.exports = require("bluebird");
+
+/***/ },
+/* 99 */
+/***/ function(module, exports) {
+
+  module.exports = require("jade");
+
+/***/ },
+/* 100 */
+/***/ function(module, exports) {
+
+  module.exports = require("front-matter");
+
+/***/ },
+/* 101 */
+/***/ function(module, exports, __webpack_require__) {
+
   // Register todos with aws dynammodb.
   // https://github.com/yortus/asyncawait
   'use strict';
@@ -5778,11 +5886,11 @@ module.exports =
   
   var _parseNode2 = _interopRequireDefault(_parseNode);
   
-  var _coreIsArray = __webpack_require__(97);
+  var _coreIsArray = __webpack_require__(102);
   
   var _coreIsArray2 = _interopRequireDefault(_coreIsArray);
   
-  var randomstring = __webpack_require__(98).generate;
+  var randomstring = __webpack_require__(103).generate;
   
   var router = new _express.Router();
   
@@ -6027,7 +6135,7 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 97 */
+/* 102 */
 /***/ function(module, exports) {
 
   'use strict';
@@ -6043,13 +6151,13 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 98 */
+/* 103 */
 /***/ function(module, exports) {
 
   module.exports = require("randomstring");
 
 /***/ },
-/* 99 */
+/* 104 */
 /***/ function(module, exports, __webpack_require__) {
 
   // Register todos with aws dynammodb.
@@ -6066,22 +6174,80 @@ module.exports =
   
   var _express = __webpack_require__(3);
   
-  var _coreIsArray = __webpack_require__(97);
+  var _coreIsArray = __webpack_require__(102);
   
   var _coreIsArray2 = _interopRequireDefault(_coreIsArray);
   
-  var _DeckModel = __webpack_require__(100);
+  var _DeckModel = __webpack_require__(105);
   
   var _DeckModel2 = _interopRequireDefault(_DeckModel);
   
-  var _transactionsTransactionModel = __webpack_require__(101);
+  var _transactionsTransactionModel = __webpack_require__(106);
   
   var _transactionsTransactionModel2 = _interopRequireDefault(_transactionsTransactionModel);
   
   var Parse = __webpack_require__(92);
-  var randomstring = __webpack_require__(98).generate;
+  var randomstring = __webpack_require__(103).generate;
   
   var router = new _express.Router();
+  
+  router.use(function callee$0$0(req, res, next) {
+    var body;
+    return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
+      while (1) switch (context$1$0.prev = context$1$0.next) {
+        case 0:
+          if (!(req.session && req.session.username && req.session.sessionToken)) {
+            context$1$0.next = 6;
+            break;
+          }
+  
+          req.username = req.session.username;
+          req.sessionToken = req.session.sessionToken;
+          return context$1$0.abrupt('return', next());
+  
+        case 6:
+          if (!(0, _coreIsArray2['default'])(req.body)) {
+            context$1$0.next = 17;
+            break;
+          }
+  
+          body = req.body[0];
+  
+          if (!(body && (body.username || body.owner) && body.sessionToken)) {
+            context$1$0.next = 14;
+            break;
+          }
+  
+          req.username = body.username || body.owner;
+          req.sessionToken = body.sessionToken;
+          return context$1$0.abrupt('return', next());
+  
+        case 14:
+          return context$1$0.abrupt('return', res.status(400).json({ error: " Must send username and sessionToken with the first element of array" }));
+  
+        case 15:
+          context$1$0.next = 21;
+          break;
+  
+        case 17:
+          if (!(req.body && (req.body.username || req.body.owner) && req.body.sessionToken)) {
+            context$1$0.next = 21;
+            break;
+          }
+  
+          req.username = req.body.owner || req.body.username;
+          req.sessionToken = req.body.sessionToken;
+          return context$1$0.abrupt('return', next());
+  
+        case 21:
+          return context$1$0.abrupt('return', res.status(400).json({ error: "Must send username and session Token" }));
+  
+        case 22:
+        case 'end':
+          return context$1$0.stop();
+      }
+    }, null, _this);
+  });
   
   router.get('/', function callee$0$0(req, res) {
     var query, limit;
@@ -6351,7 +6517,7 @@ module.exports =
   //console.log(bodyTransactions)
 
 /***/ },
-/* 100 */
+/* 105 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -6372,7 +6538,7 @@ module.exports =
   exports.DeckUtil = DeckUtil;
 
 /***/ },
-/* 101 */
+/* 106 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -6394,7 +6560,7 @@ module.exports =
   exports.TransactionUtil = TransactionUtil;
 
 /***/ },
-/* 102 */
+/* 107 */
 /***/ function(module, exports, __webpack_require__) {
 
   // Register todos with aws dynammodb.
@@ -6411,22 +6577,80 @@ module.exports =
   
   var _express = __webpack_require__(3);
   
-  var _coreIsArray = __webpack_require__(97);
+  var _coreIsArray = __webpack_require__(102);
   
   var _coreIsArray2 = _interopRequireDefault(_coreIsArray);
   
-  var _CardModel = __webpack_require__(103);
+  var _CardModel = __webpack_require__(108);
   
   var _CardModel2 = _interopRequireDefault(_CardModel);
   
-  var _transactionsTransactionModel = __webpack_require__(101);
+  var _transactionsTransactionModel = __webpack_require__(106);
   
   var _transactionsTransactionModel2 = _interopRequireDefault(_transactionsTransactionModel);
   
   var Parse = __webpack_require__(92);
-  var randomstring = __webpack_require__(98).generate;
+  var randomstring = __webpack_require__(103).generate;
   
   var router = new _express.Router();
+  
+  router.use(function callee$0$0(req, res, next) {
+    var body;
+    return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
+      while (1) switch (context$1$0.prev = context$1$0.next) {
+        case 0:
+          if (!(req.session && req.session.username && req.session.sessionToken)) {
+            context$1$0.next = 6;
+            break;
+          }
+  
+          req.username = req.session.username;
+          req.sessionToken = req.session.sessionToken;
+          return context$1$0.abrupt('return', next());
+  
+        case 6:
+          if (!(0, _coreIsArray2['default'])(req.body)) {
+            context$1$0.next = 17;
+            break;
+          }
+  
+          body = req.body[0];
+  
+          if (!(body && (body.username || body.owner) && body.sessionToken)) {
+            context$1$0.next = 14;
+            break;
+          }
+  
+          req.username = body.username || body.owner;
+          req.sessionToken = body.sessionToken;
+          return context$1$0.abrupt('return', next());
+  
+        case 14:
+          return context$1$0.abrupt('return', res.status(400).json({ error: " Must send username and sessionToken with the first element of array" }));
+  
+        case 15:
+          context$1$0.next = 21;
+          break;
+  
+        case 17:
+          if (!(req.body && (req.body.username || req.body.owner) && req.body.sessionToken)) {
+            context$1$0.next = 21;
+            break;
+          }
+  
+          req.username = req.body.owner || req.body.username;
+          req.sessionToken = req.body.sessionToken;
+          return context$1$0.abrupt('return', next());
+  
+        case 21:
+          return context$1$0.abrupt('return', res.status(400).json({ error: "Must send username and session Token" }));
+  
+        case 22:
+        case 'end':
+          return context$1$0.stop();
+      }
+    }, null, _this);
+  });
   
   router.get('/', function callee$0$0(req, res) {
     var query, limit;
@@ -6607,7 +6831,7 @@ module.exports =
   //console.log(bodyTransactions)
 
 /***/ },
-/* 103 */
+/* 108 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -6628,7 +6852,7 @@ module.exports =
   exports.DeckUtil = DeckUtil;
 
 /***/ },
-/* 104 */
+/* 109 */
 /***/ function(module, exports, __webpack_require__) {
 
   //Register todos with aws dynammodb.
@@ -6644,7 +6868,7 @@ module.exports =
   
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
   
-  var _bluebird = __webpack_require__(105);
+  var _bluebird = __webpack_require__(98);
   
   var _bluebird2 = _interopRequireDefault(_bluebird);
   
@@ -6701,171 +6925,6 @@ module.exports =
   
   exports['default'] = router;
   module.exports = exports['default'];
-
-/***/ },
-/* 105 */
-/***/ function(module, exports) {
-
-  module.exports = require("bluebird");
-
-/***/ },
-/* 106 */
-/***/ function(module, exports, __webpack_require__) {
-
-  /**
-   * React Starter Kit (https://www.reactstarterkit.com/)
-   *
-   * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.txt file in the root directory of this source tree.
-   */
-  
-  'use strict';
-  
-  Object.defineProperty(exports, '__esModule', {
-    value: true
-  });
-  
-  var _this = this;
-  
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
-  var _fs = __webpack_require__(107);
-  
-  var _fs2 = _interopRequireDefault(_fs);
-  
-  var _path = __webpack_require__(2);
-  
-  var _express = __webpack_require__(3);
-  
-  var _bluebird = __webpack_require__(105);
-  
-  var _bluebird2 = _interopRequireDefault(_bluebird);
-  
-  var _jade = __webpack_require__(108);
-  
-  var _jade2 = _interopRequireDefault(_jade);
-  
-  var _frontMatter = __webpack_require__(109);
-  
-  var _frontMatter2 = _interopRequireDefault(_frontMatter);
-  
-  // A folder with Jade/Markdown/HTML content pages
-  var CONTENT_DIR = (0, _path.join)(__dirname, './content');
-  
-  // Extract 'front matter' metadata and generate HTML
-  var parseJade = function parseJade(path, jadeContent) {
-    var fmContent = (0, _frontMatter2['default'])(jadeContent);
-    var htmlContent = _jade2['default'].render(fmContent.body);
-    //combines objects into one.
-    return Object.assign({ path: path, content: htmlContent }, fmContent.attributes);
-  };
-  
-  var readFile = _bluebird2['default'].promisify(_fs2['default'].readFile);
-  var fileExists = function fileExists(filename) {
-    return new _bluebird2['default'](function (resolve) {
-      _fs2['default'].exists(filename, resolve);
-    });
-  };
-  
-  var router = new _express.Router();
-  
-  router.get('/', function callee$0$0(req, res, next) {
-    var path, fileName, source, content;
-    return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
-      while (1) switch (context$1$0.prev = context$1$0.next) {
-        case 0:
-          context$1$0.prev = 0;
-          path = req.query.path;
-  
-          console.log(path);
-  
-          if (!(!path || path === 'undefined')) {
-            context$1$0.next = 6;
-            break;
-          }
-  
-          res.status(400).send({ error: 'The \'path\' query parameter cannot be empty.' });
-          return context$1$0.abrupt('return');
-  
-        case 6:
-          fileName = (0, _path.join)(CONTENT_DIR, (path === '/' ? '/index' : path) + '.jade');
-  
-          console.log(fileName);
-          context$1$0.next = 10;
-          return regeneratorRuntime.awrap(fileExists(fileName));
-  
-        case 10:
-          if (context$1$0.sent) {
-            context$1$0.next = 12;
-            break;
-          }
-  
-          fileName = (0, _path.join)(CONTENT_DIR, path + '/index.jade');
-  
-        case 12:
-          context$1$0.next = 14;
-          return regeneratorRuntime.awrap(fileExists(fileName));
-  
-        case 14:
-          if (context$1$0.sent) {
-            context$1$0.next = 18;
-            break;
-          }
-  
-          res.status(404).send({ error: 'The page \'' + path + '\' is not found.' });
-          context$1$0.next = 23;
-          break;
-  
-        case 18:
-          context$1$0.next = 20;
-          return regeneratorRuntime.awrap(readFile(fileName, { encoding: 'utf8' }));
-  
-        case 20:
-          source = context$1$0.sent;
-          content = parseJade(path, source);
-  
-          //Passed to routes.js.
-          res.status(200).send(content);
-  
-        case 23:
-          context$1$0.next = 28;
-          break;
-  
-        case 25:
-          context$1$0.prev = 25;
-          context$1$0.t0 = context$1$0['catch'](0);
-  
-          next(context$1$0.t0);
-  
-        case 28:
-        case 'end':
-          return context$1$0.stop();
-      }
-    }, null, _this, [[0, 25]]);
-  });
-  
-  exports['default'] = router;
-  module.exports = exports['default'];
-
-/***/ },
-/* 107 */
-/***/ function(module, exports) {
-
-  module.exports = require("fs");
-
-/***/ },
-/* 108 */
-/***/ function(module, exports) {
-
-  module.exports = require("jade");
-
-/***/ },
-/* 109 */
-/***/ function(module, exports) {
-
-  module.exports = require("front-matter");
 
 /***/ }
 /******/ ]);
