@@ -6934,6 +6934,10 @@ module.exports =
           query = new Parse.Query(_CardModel2['default']);
   
           query.equalTo('gid', req.gid);
+          query.include('CardType');
+          query.include('CardType.FrontSide');
+          query.include('CardType.BackSide');
+          query.include('CardStyle');
           query.find({
             success: function success(results) {
               return res.status(200).json(results.map(function (d) {
@@ -6946,7 +6950,7 @@ module.exports =
             sessionToken: req.sessionToken
           });
   
-        case 3:
+        case 7:
         case 'end':
           return context$1$0.stop();
       }
