@@ -2439,6 +2439,7 @@ module.exports =
       key: 'logOut',
       value: function logOut() {
         _actionsProfileActions2['default'].logOut();
+        window.location.reload();
       }
     }, {
       key: 'openRegisterModal',
@@ -2457,6 +2458,7 @@ module.exports =
         var username = event.target[0].value;
         var password = event.target[1].value;
         _actionsProfileActions2['default'].signUp({ username: username, password: password });
+        _actionsProfileActions2['default'].logIn({ username: username, password: password });
         this.closeRegisterModal();
       }
     }, {
@@ -2476,11 +2478,11 @@ module.exports =
           { onClick: this.logOut },
           'Log Out'
         );
-        var RegisterModalButton = _react2['default'].createElement(
+        var RegisterModalButton = !this.state.loggedIn ? _react2['default'].createElement(
           _reactBootstrap.NavItem,
           { onClick: this.openRegisterModal },
           'Register'
-        );
+        ) : null;
         var numNotifications = this.state.transactions.filter(function (t) {
           return !t.acknowledged;
         }).length;
@@ -6356,6 +6358,9 @@ module.exports =
           if (req.query.did) {
             query.equalTo('did', req.query.did);
           }
+          if (req.query.since) {
+            query.whereGreaterThan('createdAt', req.query.since);
+          }
           limit = req.query.limit ? parseInt(req.query.limit, 10) : 20;
   
           query.limit(limit);
@@ -6372,7 +6377,7 @@ module.exports =
             sessionToken: req.sessionToken
           });
   
-        case 10:
+        case 11:
         case 'end':
           return context$1$0.stop();
       }
@@ -6937,7 +6942,7 @@ module.exports =
           query.include('CardType');
           query.include('CardType.FrontSide');
           query.include('CardType.BackSide');
-          query.include('CardStyle');
+          query.include('style');
           query.find({
             success: function success(results) {
               return res.status(200).json(results.map(function (d) {
@@ -6964,9 +6969,6 @@ module.exports =
         case 0:
           query = new Parse.Query(_transactionsTransactionModel2['default']);
   
-          if (req.query.indexGroup) {
-            query.equalTo('indexGroup', req.query.indexGroup);
-          }
           if (req.query.since) {
             query.whereGreaterThan('createdAt', req.query.since);
           }
@@ -6985,7 +6987,7 @@ module.exports =
             sessionToken: req.sessionToken
           });
   
-        case 6:
+        case 5:
         case 'end':
           return context$1$0.stop();
       }
@@ -7027,7 +7029,7 @@ module.exports =
             success: function success(list) {
               return res.status(200).json(list);
             },
-            error: function error(t, _error3) {
+            error: function error(_error3) {
               console.log(_arguments);return res.status(500).json(_error3);
             },
             sessionToken: req.sessionToken
