@@ -314,15 +314,15 @@ module.exports =
   
   var _componentsApp2 = _interopRequireDefault(_componentsApp);
   
-  var _componentsContentPage = __webpack_require__(50);
+  var _componentsContentPage = __webpack_require__(51);
   
   var _componentsContentPage2 = _interopRequireDefault(_componentsContentPage);
   
-  var _componentsContactPage = __webpack_require__(53);
+  var _componentsContactPage = __webpack_require__(54);
   
   var _componentsContactPage2 = _interopRequireDefault(_componentsContactPage);
   
-  var _componentsDeckPage = __webpack_require__(56);
+  var _componentsDeckPage = __webpack_require__(57);
   
   var _componentsDeckPage2 = _interopRequireDefault(_componentsDeckPage);
   
@@ -1489,11 +1489,11 @@ module.exports =
   
   var _Header2 = _interopRequireDefault(_Header);
   
-  var _Feedback = __webpack_require__(43);
+  var _Feedback = __webpack_require__(44);
   
   var _Feedback2 = _interopRequireDefault(_Feedback);
   
-  var _Footer = __webpack_require__(46);
+  var _Footer = __webpack_require__(47);
   
   var _Footer2 = _interopRequireDefault(_Footer);
   
@@ -2353,7 +2353,11 @@ module.exports =
   
   var _actionsProfileActions2 = _interopRequireDefault(_actionsProfileActions);
   
-  var _NavigationScss = __webpack_require__(40);
+  var _actionsDeckActions = __webpack_require__(40);
+  
+  var _actionsDeckActions2 = _interopRequireDefault(_actionsDeckActions);
+  
+  var _NavigationScss = __webpack_require__(41);
   
   var _NavigationScss2 = _interopRequireDefault(_NavigationScss);
   
@@ -2365,7 +2369,7 @@ module.exports =
   
   var _Link2 = _interopRequireDefault(_Link);
   
-  var _reactBootstrap = __webpack_require__(42);
+  var _reactBootstrap = __webpack_require__(43);
   
   var _toastr = __webpack_require__(38);
   
@@ -2433,6 +2437,7 @@ module.exports =
         var username = event.target[0].value;
         var password = event.target[1].value;
         _actionsProfileActions2['default'].logIn({ username: username, password: password });
+        _actionsDeckActions2['default'].setLoginState(true);
         this.closeLogInModal();
       }
     }, {
@@ -2970,8 +2975,110 @@ module.exports =
 /* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
+  'use strict';
   
-      var content = __webpack_require__(41);
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  
+  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+  
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+  
+  var _coreDispatcher = __webpack_require__(34);
+  
+  var _coreDispatcher2 = _interopRequireDefault(_coreDispatcher);
+  
+  var _toastr = __webpack_require__(38);
+  
+  var _toastr2 = _interopRequireDefault(_toastr);
+  
+  var _jquery = __webpack_require__(37);
+  
+  var _jquery2 = _interopRequireDefault(_jquery);
+  
+  var DeckActions = (function () {
+    function DeckActions() {
+      _classCallCheck(this, DeckActions);
+  
+      this.generateActions('setLoginState', 'reloadDecks', 'getAllDecksFail', 'getAllDecksSuccess', 'uploadDeckSuccess', 'uploadDeckFail', 'getDeckSuccess', 'getDeckFail', 'postTransactionsSuccess', 'postTransactionsFail', 'getTransactionsSuccess', 'getTransactionsFail');
+    }
+  
+    _createClass(DeckActions, [{
+      key: 'setLoginState',
+      value: function setLoginState(bool) {
+        self.setLoginState(bool);
+      }
+    }, {
+      key: 'getAllDecks',
+      value: function getAllDecks(options) {
+        var self = this;
+        var optionsString = options && !_jquery2['default'].isEmptyObject(options) ? '?' + _jquery2['default'].param(options, true) : '';
+        var queryString = '/api/decks' + optionsString;
+        self.reloadDecks();
+        _jquery2['default'].get(queryString).done(function (data) {
+          self.getAllDecksSuccess(data);
+        }).fail(function (data) {
+          self.getAllDecksFail(data);
+        });
+      }
+    }, {
+      key: 'uploadDeck',
+      value: function uploadDeck(deck) {
+        var self = this;
+        _jquery2['default'].post('/api/decks', decks).done(function (data) {
+          self.uploadDeckSuccess(data);
+        }).fail(function (data) {
+          self.uploadDeckFail(data);
+        });
+      }
+    }, {
+      key: 'getDeck',
+      value: function getDeck(did) {
+        var self = this;
+        _jquery2['default'].get('/api/decks/' + did).done(function (data) {
+          self.getDeckSuccess(data);
+        }).fail(function (data) {
+          self.getDeckFail(data);
+        });
+      }
+    }, {
+      key: 'postTransactions',
+      value: function postTransactions(gid, transactions) {
+        var t = { transactions: transactions };
+        var self = this;
+        _jquery2['default'].post('/api/decks/' + gid, t).done(function (data) {
+          self.postTransactionsSuccess(data);
+        }).fail(function (data) {
+          self.postTransactionsFail(data);
+        });
+      }
+    }, {
+      key: 'getTransactions',
+      value: function getTransactions(did) {
+        var self = this;
+        _jquery2['default'].get('/api/decks/' + did + '/transactions').done(function (data) {
+          self.getTransactionsSuccess(data);
+        }).fail(function (data) {
+          self.getTransactionsFail(data);
+        });
+      }
+    }]);
+  
+    return DeckActions;
+  })();
+  
+  exports['default'] = _coreDispatcher2['default'].createActions(DeckActions);
+  module.exports = exports['default'];
+
+/***/ },
+/* 41 */
+/***/ function(module, exports, __webpack_require__) {
+
+  
+      var content = __webpack_require__(42);
       var insertCss = __webpack_require__(20);
   
       if (typeof content === 'string') {
@@ -2984,7 +3091,7 @@ module.exports =
     
 
 /***/ },
-/* 41 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
   exports = module.exports = __webpack_require__(19)();
@@ -3003,13 +3110,13 @@ module.exports =
   };
 
 /***/ },
-/* 42 */
+/* 43 */
 /***/ function(module, exports) {
 
   module.exports = require("react-bootstrap");
 
 /***/ },
-/* 43 */
+/* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
   /**
@@ -3041,7 +3148,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _FeedbackScss = __webpack_require__(44);
+  var _FeedbackScss = __webpack_require__(45);
   
   var _FeedbackScss2 = _interopRequireDefault(_FeedbackScss);
   
@@ -3096,11 +3203,11 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 44 */
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
   
-      var content = __webpack_require__(45);
+      var content = __webpack_require__(46);
       var insertCss = __webpack_require__(20);
   
       if (typeof content === 'string') {
@@ -3113,7 +3220,7 @@ module.exports =
     
 
 /***/ },
-/* 45 */
+/* 46 */
 /***/ function(module, exports, __webpack_require__) {
 
   exports = module.exports = __webpack_require__(19)();
@@ -3132,7 +3239,7 @@ module.exports =
   };
 
 /***/ },
-/* 46 */
+/* 47 */
 /***/ function(module, exports, __webpack_require__) {
 
   /**
@@ -3164,7 +3271,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _FooterScss = __webpack_require__(47);
+  var _FooterScss = __webpack_require__(48);
   
   var _FooterScss2 = _interopRequireDefault(_FooterScss);
   
@@ -3176,7 +3283,7 @@ module.exports =
   
   var _Link2 = _interopRequireDefault(_Link);
   
-  var _classnames = __webpack_require__(49);
+  var _classnames = __webpack_require__(50);
   
   var _classnames2 = _interopRequireDefault(_classnames);
   
@@ -3206,11 +3313,11 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 47 */
+/* 48 */
 /***/ function(module, exports, __webpack_require__) {
 
   
-      var content = __webpack_require__(48);
+      var content = __webpack_require__(49);
       var insertCss = __webpack_require__(20);
   
       if (typeof content === 'string') {
@@ -3223,7 +3330,7 @@ module.exports =
     
 
 /***/ },
-/* 48 */
+/* 49 */
 /***/ function(module, exports, __webpack_require__) {
 
   exports = module.exports = __webpack_require__(19)();
@@ -3240,13 +3347,13 @@ module.exports =
   };
 
 /***/ },
-/* 49 */
+/* 50 */
 /***/ function(module, exports) {
 
   module.exports = require("classnames");
 
 /***/ },
-/* 50 */
+/* 51 */
 /***/ function(module, exports, __webpack_require__) {
 
   /**
@@ -3278,7 +3385,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _ContentPageScss = __webpack_require__(51);
+  var _ContentPageScss = __webpack_require__(52);
   
   var _ContentPageScss2 = _interopRequireDefault(_ContentPageScss);
   
@@ -3343,11 +3450,11 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 51 */
+/* 52 */
 /***/ function(module, exports, __webpack_require__) {
 
   
-      var content = __webpack_require__(52);
+      var content = __webpack_require__(53);
       var insertCss = __webpack_require__(20);
   
       if (typeof content === 'string') {
@@ -3360,7 +3467,7 @@ module.exports =
     
 
 /***/ },
-/* 52 */
+/* 53 */
 /***/ function(module, exports, __webpack_require__) {
 
   exports = module.exports = __webpack_require__(19)();
@@ -3377,7 +3484,7 @@ module.exports =
   };
 
 /***/ },
-/* 53 */
+/* 54 */
 /***/ function(module, exports, __webpack_require__) {
 
   /**
@@ -3409,7 +3516,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _ContactPageScss = __webpack_require__(54);
+  var _ContactPageScss = __webpack_require__(55);
   
   var _ContactPageScss2 = _interopRequireDefault(_ContactPageScss);
   
@@ -3472,11 +3579,11 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 54 */
+/* 55 */
 /***/ function(module, exports, __webpack_require__) {
 
   
-      var content = __webpack_require__(55);
+      var content = __webpack_require__(56);
       var insertCss = __webpack_require__(20);
   
       if (typeof content === 'string') {
@@ -3489,7 +3596,7 @@ module.exports =
     
 
 /***/ },
-/* 55 */
+/* 56 */
 /***/ function(module, exports, __webpack_require__) {
 
   exports = module.exports = __webpack_require__(19)();
@@ -3506,7 +3613,7 @@ module.exports =
   };
 
 /***/ },
-/* 56 */
+/* 57 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -3535,17 +3642,17 @@ module.exports =
   
   // Applies custmo style
   
-  var _DeckPageScss = __webpack_require__(57);
+  var _DeckPageScss = __webpack_require__(58);
   
   var _DeckPageScss2 = _interopRequireDefault(_DeckPageScss);
   
   // Import custom styles
   
-  var _storesDeckStore = __webpack_require__(59);
+  var _storesDeckStore = __webpack_require__(60);
   
   var _storesDeckStore2 = _interopRequireDefault(_storesDeckStore);
   
-  var _actionsDeckActions = __webpack_require__(60);
+  var _actionsDeckActions = __webpack_require__(40);
   
   var _actionsDeckActions2 = _interopRequireDefault(_actionsDeckActions);
   
@@ -3565,7 +3672,7 @@ module.exports =
   
   var _reactLoader2 = _interopRequireDefault(_reactLoader);
   
-  var _reactBootstrap = __webpack_require__(42);
+  var _reactBootstrap = __webpack_require__(43);
   
   var _DeckLibDeckList = __webpack_require__(62);
   
@@ -3649,7 +3756,7 @@ module.exports =
     }, {
       key: 'render',
       value: function render() {
-        return _react2['default'].createElement(
+        var page = this.state.loggedIn ? _react2['default'].createElement(
           'div',
           { className: _DeckPageScss2['default'].root },
           _react2['default'].createElement(
@@ -3729,7 +3836,12 @@ module.exports =
             ),
             _react2['default'].createElement('br', null)
           )
+        ) : _react2['default'].createElement(
+          'h3',
+          null,
+          'Please Login'
         );
+        return page;
       }
     }]);
   
@@ -3742,11 +3854,11 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 57 */
+/* 58 */
 /***/ function(module, exports, __webpack_require__) {
 
   
-      var content = __webpack_require__(58);
+      var content = __webpack_require__(59);
       var insertCss = __webpack_require__(20);
   
       if (typeof content === 'string') {
@@ -3759,7 +3871,7 @@ module.exports =
     
 
 /***/ },
-/* 58 */
+/* 59 */
 /***/ function(module, exports, __webpack_require__) {
 
   exports = module.exports = __webpack_require__(19)();
@@ -3776,7 +3888,7 @@ module.exports =
   };
 
 /***/ },
-/* 59 */
+/* 60 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -3795,7 +3907,7 @@ module.exports =
   
   var _coreDispatcher2 = _interopRequireDefault(_coreDispatcher);
   
-  var _actionsDeckActions = __webpack_require__(60);
+  var _actionsDeckActions = __webpack_require__(40);
   
   var _actionsDeckActions2 = _interopRequireDefault(_actionsDeckActions);
   
@@ -3813,9 +3925,30 @@ module.exports =
       this.state.workingDeck = null;
       this.state.transactions = [];
       this.state.decksLoaded = false;
+      this.state.loggedIn = false;
     }
   
+    /* *********************
+    LOGIN FUNCTIONS
+    ***********************/
+  
     _createClass(DeckStore, [{
+      key: 'setLoginState',
+      value: function setLoginState(bool) {
+        this.setState({ loggedIn: bool });
+      }
+    }, {
+      key: 'onPostTransactionsSuccess',
+      value: function onPostTransactionsSuccess() {
+        ProfileActions.updateUser({ username: this.state.user.username });
+      }
+    }, {
+      key: 'onUpdateUserSuccess',
+      value: function onUpdateUserSuccess(u) {
+        var user = u || this.state.user;
+        this.setState({ user: user });
+      }
+    }, {
       key: 'onReloadDecks',
       value: function onReloadDecks() {
         this.setState({ decksLoaded: false });
@@ -3886,103 +4019,6 @@ module.exports =
   module.exports = exports['default'];
 
 /***/ },
-/* 60 */
-/***/ function(module, exports, __webpack_require__) {
-
-  'use strict';
-  
-  Object.defineProperty(exports, '__esModule', {
-    value: true
-  });
-  
-  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-  
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-  
-  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-  
-  var _coreDispatcher = __webpack_require__(34);
-  
-  var _coreDispatcher2 = _interopRequireDefault(_coreDispatcher);
-  
-  var _toastr = __webpack_require__(38);
-  
-  var _toastr2 = _interopRequireDefault(_toastr);
-  
-  var _jquery = __webpack_require__(37);
-  
-  var _jquery2 = _interopRequireDefault(_jquery);
-  
-  var DeckActions = (function () {
-    function DeckActions() {
-      _classCallCheck(this, DeckActions);
-  
-      this.generateActions('reloadDecks', 'getAllDecksFail', 'getAllDecksSuccess', 'uploadDeckSuccess', 'uploadDeckFail', 'getDeckSuccess', 'getDeckFail', 'postTransactionsSuccess', 'postTransactionsFail', 'getTransactionsSuccess', 'getTransactionsFail');
-    }
-  
-    _createClass(DeckActions, [{
-      key: 'getAllDecks',
-      value: function getAllDecks(options) {
-        var self = this;
-        var optionsString = options && !_jquery2['default'].isEmptyObject(options) ? '?' + _jquery2['default'].param(options, true) : '';
-        var queryString = '/api/decks' + optionsString;
-        self.reloadDecks();
-        _jquery2['default'].get(queryString).done(function (data) {
-          self.getAllDecksSuccess(data);
-        }).fail(function (data) {
-          self.getAllDecksFail(data);
-        });
-      }
-    }, {
-      key: 'uploadDeck',
-      value: function uploadDeck(deck) {
-        var self = this;
-        _jquery2['default'].post('/api/decks', decks).done(function (data) {
-          self.uploadDeckSuccess(data);
-        }).fail(function (data) {
-          self.uploadDeckFail(data);
-        });
-      }
-    }, {
-      key: 'getDeck',
-      value: function getDeck(did) {
-        var self = this;
-        _jquery2['default'].get('/api/decks/' + did).done(function (data) {
-          self.getDeckSuccess(data);
-        }).fail(function (data) {
-          self.getDeckFail(data);
-        });
-      }
-    }, {
-      key: 'postTransactions',
-      value: function postTransactions(gid, transactions) {
-        var t = { transactions: transactions };
-        var self = this;
-        _jquery2['default'].post('/api/decks/' + gid, t).done(function (data) {
-          self.postTransactionsSuccess(data);
-        }).fail(function (data) {
-          self.postTransactionsFail(data);
-        });
-      }
-    }, {
-      key: 'getTransactions',
-      value: function getTransactions(did) {
-        var self = this;
-        _jquery2['default'].get('/api/decks/' + did + '/transactions').done(function (data) {
-          self.getTransactionsSuccess(data);
-        }).fail(function (data) {
-          self.getTransactionsFail(data);
-        });
-      }
-    }]);
-  
-    return DeckActions;
-  })();
-  
-  exports['default'] = _coreDispatcher2['default'].createActions(DeckActions);
-  module.exports = exports['default'];
-
-/***/ },
 /* 61 */
 /***/ function(module, exports) {
 
@@ -4012,7 +4048,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _reactBootstrap = __webpack_require__(42);
+  var _reactBootstrap = __webpack_require__(43);
   
   var _DeckListItem = __webpack_require__(63);
   
@@ -4099,7 +4135,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _actionsDeckActions = __webpack_require__(60);
+  var _actionsDeckActions = __webpack_require__(40);
   
   var _actionsDeckActions2 = _interopRequireDefault(_actionsDeckActions);
   
@@ -4111,7 +4147,7 @@ module.exports =
   
   var _storesProfileStore2 = _interopRequireDefault(_storesProfileStore);
   
-  var _storesDeckStore = __webpack_require__(59);
+  var _storesDeckStore = __webpack_require__(60);
   
   var _storesDeckStore2 = _interopRequireDefault(_storesDeckStore);
   
@@ -4119,7 +4155,7 @@ module.exports =
   
   var _Link2 = _interopRequireDefault(_Link);
   
-  var _reactBootstrap = __webpack_require__(42);
+  var _reactBootstrap = __webpack_require__(43);
   
   var DeckListItem = (function (_Component) {
     _inherits(DeckListItem, _Component);
@@ -4291,7 +4327,7 @@ module.exports =
   
   var _Link2 = _interopRequireDefault(_Link);
   
-  var _reactBootstrap = __webpack_require__(42);
+  var _reactBootstrap = __webpack_require__(43);
   
   var SearchBar = (function (_Component) {
     _inherits(SearchBar, _Component);
@@ -4541,7 +4577,7 @@ module.exports =
   
   var _actionsProfileActions2 = _interopRequireDefault(_actionsProfileActions);
   
-  var _reactBootstrap = __webpack_require__(42);
+  var _reactBootstrap = __webpack_require__(43);
   
   var title = 'New User Registration';
   
@@ -4981,7 +5017,7 @@ module.exports =
   
   // Boostrap components
   
-  var _reactBootstrap = __webpack_require__(42);
+  var _reactBootstrap = __webpack_require__(43);
   
   var _DeckLibDeckList = __webpack_require__(62);
   
@@ -5202,7 +5238,7 @@ module.exports =
   
   var _reactLoader2 = _interopRequireDefault(_reactLoader);
   
-  var _reactBootstrap = __webpack_require__(42);
+  var _reactBootstrap = __webpack_require__(43);
   
   var _CardLibCardList = __webpack_require__(85);
   
@@ -5426,7 +5462,7 @@ module.exports =
   
   var _coreDispatcher2 = _interopRequireDefault(_coreDispatcher);
   
-  var _actionsDeckActions = __webpack_require__(60);
+  var _actionsDeckActions = __webpack_require__(40);
   
   var _actionsDeckActions2 = _interopRequireDefault(_actionsDeckActions);
   
@@ -5535,7 +5571,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _reactBootstrap = __webpack_require__(42);
+  var _reactBootstrap = __webpack_require__(43);
   
   var CardList = (function (_Component) {
     _inherits(CardList, _Component);
@@ -6551,6 +6587,8 @@ module.exports =
   router.post('/:gid', function callee$0$0(req, res) {
     var indexGroup, bodyTransactions, transactions;
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
+      var _arguments = arguments;
+  
       while (1) switch (context$1$0.prev = context$1$0.next) {
         case 0:
           indexGroup = randomstring(30);
@@ -6577,18 +6615,21 @@ module.exports =
             return t;
           });
   
+          console.log(transactions.map(function (t) {
+            return t.toJSON();
+          }));
           Parse.Object.saveAll(transactions, {
             success: function success(list) {
               return res.status(200).json(list);
             },
             error: function error(t, _error4) {
-              return res.status(500).json(_error4);
+              return res.status(501).json(_arguments);
             },
             sessionToken: req.sessionToken
           });
           return context$1$0.abrupt('return', null);
   
-        case 7:
+        case 8:
         case 'end':
           return context$1$0.stop();
       }
