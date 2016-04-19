@@ -6423,6 +6423,7 @@ module.exports =
           if (req.query.since) {
             query.whereGreaterThan('createdAt', req.query.since);
           }
+          query.equalTo('on', req.gid);
           query.limit(req.query.limit || 20);
           query.descending('createdAt');
   
@@ -6438,7 +6439,7 @@ module.exports =
             sessionToken: req.sessionToken
           });
   
-        case 6:
+        case 7:
         case 'end':
           return context$1$0.stop();
       }
