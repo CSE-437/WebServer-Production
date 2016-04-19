@@ -6410,7 +6410,7 @@ module.exports =
     }, null, _this);
   });
   
-  router.get('/:gid/transactions', function callee$0$0(req, res) {
+  router.all('/:gid/transactions', function callee$0$0(req, res) {
     var query;
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
@@ -7188,7 +7188,7 @@ module.exports =
     }, null, _this);
   });
   
-  router.all('/:objectId', function callee$0$0(req, res) {
+  router.get('/:objectId', function callee$0$0(req, res) {
     var query;
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
