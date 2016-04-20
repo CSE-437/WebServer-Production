@@ -6398,12 +6398,12 @@ module.exports =
           return context$1$0.abrupt('return', res.status(400).json({ error: " Must send username and sessionToken with the first element of array" }));
   
         case 15:
-          context$1$0.next = 21;
+          context$1$0.next = 27;
           break;
   
         case 17:
           if (!(req.body && (req.body.username || req.body.owner) && req.body.sessionToken)) {
-            context$1$0.next = 21;
+            context$1$0.next = 23;
             break;
           }
   
@@ -6411,10 +6411,20 @@ module.exports =
           req.sessionToken = req.body.sessionToken;
           return context$1$0.abrupt('return', next());
   
-        case 21:
+        case 23:
+          if (!(req.query && (req.query.username || req.query.owner) && req.query.sessionToken)) {
+            context$1$0.next = 27;
+            break;
+          }
+  
+          req.username = req.query.owner || req.query.username;
+          req.sessionToken = req.query.sessionToken;
+          return context$1$0.abrupt('return', next());
+  
+        case 27:
           return context$1$0.abrupt('return', res.status(400).json({ error: "Must send username and session Token" }));
   
-        case 22:
+        case 28:
         case 'end':
           return context$1$0.stop();
       }
@@ -7018,12 +7028,12 @@ module.exports =
           return context$1$0.abrupt('return', res.status(400).json({ error: " Must send username and sessionToken with the first element of array" }));
   
         case 15:
-          context$1$0.next = 21;
+          context$1$0.next = 27;
           break;
   
         case 17:
           if (!(req.body && (req.body.username || req.body.owner) && req.body.sessionToken)) {
-            context$1$0.next = 21;
+            context$1$0.next = 23;
             break;
           }
   
@@ -7031,10 +7041,20 @@ module.exports =
           req.sessionToken = req.body.sessionToken;
           return context$1$0.abrupt('return', next());
   
-        case 21:
+        case 23:
+          if (!(req.query && (req.query.username || req.query.owner) && req.query.sessionToken)) {
+            context$1$0.next = 27;
+            break;
+          }
+  
+          req.username = req.query.owner || req.query.username;
+          req.sessionToken = req.query.sessionToken;
+          return context$1$0.abrupt('return', next());
+  
+        case 27:
           return context$1$0.abrupt('return', res.status(400).json({ error: "Must send username and session Token" }));
   
-        case 22:
+        case 28:
         case 'end':
           return context$1$0.stop();
       }
