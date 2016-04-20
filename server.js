@@ -6874,8 +6874,8 @@ module.exports =
         for (var _iterator3 = deck.get('cards')[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
           card = _step3.value;
   
-          var front = card.get('notes')[0].Front;
-          var back = card.get('notes')[1].Back;
+          var front = card.get('notes').Front;
+          var back = card.get('notes').Back;
           var tags = card.get('tags').join(' ');
           toReturn = '' + toReturn + front + '; ' + back + '; ' + tags + '\r';
         }
