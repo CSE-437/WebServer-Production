@@ -6535,8 +6535,7 @@ module.exports =
                 res.status(403).json({ error: { message: 'Deck Not Found' } });
               } else {
                 var csv = _DeckModel.DeckUtil.toCSV(result);
-                res.set({ 'Content-Disposition': 'attachment; filename=' + result.get('gid') + '.txt' });
-                res.send(csv);
+                res.status(200).send(csv);
               }
             },
             error: function error(deck, _error2) {
