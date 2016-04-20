@@ -6446,7 +6446,7 @@ module.exports =
   });
   
   router.get('/', function callee$0$0(req, res) {
-    var query, limit;
+    var query, since, limit;
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
         case 0:
@@ -6471,7 +6471,9 @@ module.exports =
             query.equalTo('did', req.query.did);
           }
           if (req.query.since) {
-            query.whereGreaterThan('createdAt', req.query.since);
+            since = Date.parse(req.query.since);
+  
+            query.greaterThanOrEqualTo('createdAt', since);
           }
           limit = req.query.limit ? parseInt(req.query.limit, 10) : 20;
   
@@ -6552,7 +6554,7 @@ module.exports =
   });
   
   router.all('/:gid/transactions', function callee$0$0(req, res) {
-    var query;
+    var query, since;
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
         case 0:
@@ -6562,7 +6564,9 @@ module.exports =
             query.equalTo('indexGroup', req.query.indexGroup);
           }
           if (req.query.since) {
-            query.whereGreaterThan('createdAt', req.query.since);
+            since = Date.parse(req.query.since);
+  
+            query.greaterThanOrEqualTo('createdAt', since);
           }
           query.equalTo('on', req.gid);
           query.limit(req.query.limit || 20);
@@ -7158,7 +7162,7 @@ module.exports =
   });
   
   router.all('/:gid/transactions', function callee$0$0(req, res) {
-    var query;
+    var query, since;
     return regeneratorRuntime.async(function callee$0$0$(context$1$0) {
       while (1) switch (context$1$0.prev = context$1$0.next) {
         case 0:
@@ -7168,7 +7172,9 @@ module.exports =
             query.equalTo('indexGroup', req.query.indexGroup);
           }
           if (req.query.since) {
-            query.whereGreaterThan('createdAt', req.query.since);
+            since = Date.parse(req.query.since);
+  
+            query.greaterThanOrEqualTo('createdAt', since);
           }
           query.equalTo('on', req.gid);
           query.limit(req.query.limit || 20);
