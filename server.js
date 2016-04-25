@@ -6622,9 +6622,9 @@ module.exports =
           }
           query.find({
             success: function success(results) {
-              if (results.length > 0) {
-                return res.status(400).json({ error: 'Deck already Exist' });
-              }
+              // if (results.length > 0) {
+              //   return res.status(400).json({ error: 'Deck already Exist' });
+              // }
               // TODO : Validate Decks
               var newDeck = _DeckModel.DeckUtil.newDeck(req.username, gid, did, req.body);
               if (!newDeck) {
