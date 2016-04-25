@@ -6503,6 +6503,7 @@ module.exports =
         case 0:
           query = _DeckModel.DeckUtil.getDeckWithCardsQuery(req.gid);
   
+          query.descending('createdAt');
           query.find({
             success: function success(results) {
               return res.status(200).json(results.map(function (d) {
@@ -6515,7 +6516,7 @@ module.exports =
             sessionToken: req.sessionToken
           });
   
-        case 2:
+        case 3:
         case 'end':
           return context$1$0.stop();
       }
